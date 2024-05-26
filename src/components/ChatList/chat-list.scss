@@ -1,9 +1,6 @@
-$mainBodyColor: white;
-$mainHeaderColor: #535353;
-$mainFooterColor: #535353;
-$mainBoxChatColor: #f1f1f1;
-$messageColor: white;
-$ownMessageColor: #d0fee1;
+$mainBodyColor: #f1f1f1;
+$mainHeaderColor: #ffffff;
+$mainListChatColor: #f1f1f1;
 
 .chat-list {
   flex: 1;
@@ -14,7 +11,6 @@ $ownMessageColor: #d0fee1;
 
   .chat-list__header {
     display: flex;
-    align-items: center;
     padding: 5px 30px;
     border-radius: 10px 0 0 0;
     background-color: $mainHeaderColor;
@@ -22,8 +18,6 @@ $ownMessageColor: #d0fee1;
     .chat-list__header-user {
       flex: 1;
       display: flex;
-      align-items: center;
-
       background-color: $mainHeaderColor;
 
       img {
@@ -36,6 +30,7 @@ $ownMessageColor: #d0fee1;
       .info {
         display: flex;
         flex-direction: column;
+        align-items: flex-start;
         padding: 0 10px;
 
         h4 {
@@ -46,15 +41,18 @@ $ownMessageColor: #d0fee1;
         .status {
           line-height: 0;
         }
+
       }
     }
 
     .chat-list__header-icons {
-      flex: 1;
       display: flex;
-      justify-content: flex-end;
-
-      background-color: $mainHeaderColor;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid #000;
 
       i {
         color: #000;
@@ -74,7 +72,6 @@ $ownMessageColor: #d0fee1;
       flex: 1;
       padding: 10px;
       border-radius: 10px;
-      border: none;
       outline: none;
     }
 
@@ -86,14 +83,18 @@ $ownMessageColor: #d0fee1;
   .chat-list__content{
     align-items: center;
     overflow: auto;
-    padding: 5px 30px;
     border-radius: 0 0 0 10px;
-    background-color: $mainBoxChatColor;
+    background-color: $mainBodyColor;
     height: 100%;
 
+
     .chat-list__content-user {
+      margin: 5px;
+      background-color: #ffffff;
+      width: 98%;
       display: flex;
       align-items: center;
+      border-radius: 10px;
 
       img {
         width: 50px;
@@ -120,6 +121,11 @@ $ownMessageColor: #d0fee1;
           }
         }
       }
+    }
+    .chat-list__content-user:hover{
+      background-color: #535353;
+      color: white;
+      cursor: pointer;
     }
   }
 }
