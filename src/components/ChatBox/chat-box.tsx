@@ -23,26 +23,34 @@ function ChatBox() {
             <div className="chat-box__content">
                 <div className="message">
                     <div className="content">
-                        <p>Chào Đăng !</p>
+                        <p>
+                            <img src={typing} alt=""/>
+                            Chào Đăng !
+                        </p>
                     </div>
                 </div>
 
-                <div className="message own">
+                <div className="own-message">
                     <div className="content">
-                        <p>Chào Trúc !</p>
+                        <p>
+                            <img src={typing} alt=""/>
+                            Chào Trúc !
+                        </p>
                     </div>
                 </div>
             </div>
 
             <div className="chat-box__footer">
-                <input type="text" placeholder="Type a message..."/>
-                <i className="bi bi-paperclip"></i>
-                <i className="bi bi-emoji-smile"></i>
+                <div className="chat-box__footer-container">
+                    <input type="text" placeholder="Type a message..."/>
+                    <i className="bi bi-paperclip"></i>
+                    <i className="bi bi-emoji-smile"></i>
 
-                <button className="send-button">
-                    Send
-                    <i className="bi bi-arrow-right-circle-fill"></i>
-                </button>
+                    <button className="send-button">
+                        Send
+                        <i className="bi bi-arrow-right-circle-fill"></i>
+                    </button>
+                </div>
             </div>
         </div>
     )

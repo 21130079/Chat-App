@@ -1,6 +1,7 @@
 .chat-list {
   flex: 1;
-  background-color: red;
+  border-radius: 10px 0 0 10px;
+  background-color: #d0fee1;
 }
 
 /*# sourceMappingURL=chat-list.css.map */

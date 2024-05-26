@@ -14,7 +14,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 2fr;
     background: linear-gradient(to bottom, rgb(6, 108, 100), rgb(14, 48, 122));
-    width: 900px;
+    width: 900px !important;
     margin: 10% auto;
     height: 450px;
     border-radius: 5px;
@@ -28,7 +28,6 @@ body {
     font-weight: lighter;
     letter-spacing: 2px;
     margin-top: 15%;
-    padding: 40px;
 }
 
 .content-holder h2 {
@@ -58,6 +57,7 @@ button {
     background-color: white;
     border-radius: 5px;
     margin: 5px;
+    height: 400px;
 }
 
 .login-form-container {

@@ -18,7 +18,7 @@ function Login() {
         <div className="container">
             <div className="box-1">
                 <div className="content-holder">
-                    <h3>Welcome to chat-app</h3>
+                    <h6>Welcome to chat-app</h6>
                     <img id="typing-img" src={typing} alt="typing"/>
                     {formType === FormType.LOGIN ? (
                         <button className="button-1" onClick={() => handleFormSwitch(FormType.SIGNUP)}>Sign up</button>
