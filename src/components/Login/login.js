@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './login.css';
 import typing from './typing.gif';
+
 const FormType = {
     LOGIN: 'login',
     SIGNUP: 'signup',

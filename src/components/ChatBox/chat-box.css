@@ -1,0 +1,101 @@
+.chat-box {
+  flex: 2;
+  background-color: blue;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.chat-box .chat-box__header {
+  display: flex;
+  background-color: lightblue;
+  align-items: center;
+  padding: 5px 30px;
+}
+.chat-box .chat-box__header .chat-box__header-user {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: #08817b;
+}
+.chat-box .chat-box__header .chat-box__header-user img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.chat-box .chat-box__header .chat-box__header-user .info {
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+}
+.chat-box .chat-box__header .chat-box__header-user .info h4 {
+  display: flex;
+  font-weight: bold;
+}
+.chat-box .chat-box__header .chat-box__header-user .info .status {
+  line-height: 0;
+}
+.chat-box .chat-box__header .chat-box__header-icons {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #61dafb;
+}
+.chat-box .chat-box__header .chat-box__header-icons i {
+  font-size: 1.4rem;
+}
+.chat-box .chat-box__content {
+  padding: 20px;
+  flex: 1;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+}
+.chat-box .chat-box__content .message {
+  max-width: 70%;
+  display: flex;
+}
+.chat-box .chat-box__content .message.own {
+  align-self: flex-end;
+}
+.chat-box .chat-box__content .message p {
+  border-radius: 10px;
+  padding: 5px 20px;
+  background-color: #ff675d;
+}
+.chat-box .chat-box__footer {
+  display: flex;
+  align-items: center;
+  margin: auto 20px 20px;
+  justify-content: space-between;
+  height: 50px;
+  border-radius: 7px;
+  background-color: white;
+}
+.chat-box .chat-box__footer input {
+  flex: 1;
+  border: none;
+  outline: none;
+  margin: 20px;
+  font-size: 17px;
+}
+.chat-box .chat-box__footer i {
+  display: flex;
+  font-size: 1.4rem;
+  margin: 0 10px;
+  cursor: pointer;
+}
+.chat-box .chat-box__footer .send-button {
+  display: inline-flex;
+  align-items: flex-end;
+  padding: 5px 20px;
+  margin: 0 20px;
+  border-radius: 10px;
+  border: none;
+  background-color: pink;
+}
+.chat-box .chat-box__footer .send-button i {
+  font-size: 1.4rem;
+}
+
+/*# sourceMappingURL=chat-box.css.map */
