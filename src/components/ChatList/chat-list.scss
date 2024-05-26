@@ -1,8 +1,131 @@
-$mainChatListColor: #d0fee1;
+$mainBodyColor: #f1f1f1;
+$mainHeaderColor: #ffffff;
+$mainListChatColor: #f1f1f1;
 
 .chat-list {
   flex: 1;
-  border-radius: 10px 0 0 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 10px 0 0 0;
 
-  background-color: $mainChatListColor;
+  .chat-list__header {
+    display: flex;
+    padding: 5px 30px;
+    border-radius: 10px 0 0 0;
+    background-color: $mainHeaderColor;
+
+    .chat-list__header-user {
+      flex: 1;
+      display: flex;
+      background-color: $mainHeaderColor;
+
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 10px;
+
+        h4 {
+          display: flex;
+          font-weight: bold;
+        }
+
+        .status {
+          line-height: 0;
+        }
+
+      }
+    }
+
+    .chat-list__header-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid #000;
+
+      i {
+        color: #000;
+        font-size: 20px;
+        cursor: pointer;
+      }
+    }
+  }
+  .chat-list__search{
+    display: flex;
+    align-items: center;
+    padding: 10px 30px;
+    border-radius: 0 0 0 0;
+    background-color: $mainHeaderColor;
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    i {
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+  }
+  .chat-list__content{
+    align-items: center;
+    overflow: auto;
+    border-radius: 0 0 0 10px;
+    background-color: $mainBodyColor;
+    height: 100%;
+
+
+    .chat-list__content-user {
+      margin: 5px;
+      background-color: #ffffff;
+      width: 98%;
+      display: flex;
+      align-items: center;
+      border-radius: 10px;
+
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .info-message {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 10px;
+
+        .info {
+          h4 {
+            font-weight: bold;
+          }
+        }
+
+        .message {
+          p {
+            margin-top: 5px;
+          }
+        }
+      }
+    }
+    .chat-list__content-user:hover{
+      background-color: #535353;
+      color: white;
+      cursor: pointer;
+    }
+  }
 }
