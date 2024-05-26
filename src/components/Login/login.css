@@ -1,52 +1,46 @@
-*{
+* {
     margin: 0px;
     padding: 0px;;
 }
 
-body{
+body {
     font-family: Arial, Helvetica, sans-serif;
     display: flex;
     justify-content: center;
 }
 
-.container
-{
+.container {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
     display: grid;
     grid-template-columns: 1fr 2fr;
-    background: linear-gradient(to bottom, rgb(6, 108, 100),  rgb(14, 48, 122));
-    width: 900px;
+    background: linear-gradient(to bottom, rgb(6, 108, 100), rgb(14, 48, 122));
+    width: 900px !important;
     margin: 10% auto;
     height: 450px;
     border-radius: 5px;
     padding: 20px;
 }
 
-.content-holder
-{
+.content-holder {
     text-align: center;
     color: white;
     font-size: 14px;
     font-weight: lighter;
     letter-spacing: 2px;
     margin-top: 15%;
-    padding: 40px;
 }
 
-.content-holder h2
-{
+.content-holder h2 {
     font-size: 34px;
     margin: 20px auto;
 }
 
-.content-holder p
-{
+.content-holder p {
     margin: 30px auto;
 }
 
-.content-holder button
-{
-    border:none;
+.content-holder button {
+    border: none;
     font-size: 15px;
     padding: 10px;
     border-radius: 6px;
@@ -54,32 +48,31 @@ body{
     width: 150px;
     margin: 20px auto;
 }
-button{
+
+button {
     cursor: pointer;
 }
 
-.box-2{
+.box-2 {
     background-color: white;
     border-radius: 5px;
     margin: 5px;
+    height: 400px;
 }
 
-.login-form-container
-{
+.login-form-container {
     text-align: center;
     margin-top: 10%;
 
 }
 
-.login-form-container h1
-{
+.login-form-container h1 {
     color: #11438a;
     font-size: 24px;
     padding: 20px;
 }
 
-.input-field
-{
+.input-field {
     box-sizing: border-box;
     font-size: 14px;
     padding: 10px;
@@ -89,7 +82,7 @@ button{
     outline: none;
 }
 
-.login-button{
+.login-button {
     box-sizing: border-box;
     color: white;
     font-size: 14px;
@@ -102,35 +95,28 @@ button{
 }
 
 
-
-.button-2
-{
+.button-2 {
     display: block;
 }
 
 
-
-
-
-.signup-form-container
-{
+.signup-form-container {
     position: relative;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-60%);
+    transform: translate(-50%, -60%);
     text-align: center;
     display: block;
 }
 
 
-.signup-form-container h1
-{
+.signup-form-container h1 {
     color: #08817b;
     font-size: 24px;
     padding: 20px;
 }
 
-.signup-button{
+.signup-button {
     box-sizing: border-box;
     color: white;
     font-size: 14px;
@@ -141,7 +127,8 @@ button{
     outline: none;
     background-color: #088881;
 }
-#typing-img{
+
+#typing-img {
     margin-top: 10px;
     width: 200px;
 }

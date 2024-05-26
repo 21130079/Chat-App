@@ -1,0 +1,16 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(145deg, #a9a9a9, white, #a9a9a9);
+}
+
+.chat-window-container {
+  display: flex;
+  width: 90vw;
+  height: 90vh;
+}
+
+/*# sourceMappingURL=chat-window.css.map */

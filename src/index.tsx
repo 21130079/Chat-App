@@ -3,13 +3,20 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import ChatWindow from "./components/ChatWindow/chat-window";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+      <Router>
+          <Routes>
+              <Route path="/" element={<App />} />
+              <Route path="chat" element={<ChatWindow />} />
+          </Routes>
+      </Router>
   </React.StrictMode>
 );
 

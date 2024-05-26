@@ -1,0 +1,8 @@
+$mainChatListColor: #d0fee1;
+
+.chat-list {
+  flex: 1;
+  border-radius: 10px 0 0 10px;
+
+  background-color: $mainChatListColor;
+}
