@@ -1,7 +1,99 @@
 .chat-list {
   flex: 1;
-  border-radius: 10px 0 0 10px;
-  background-color: #d0fee1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 10px 0 0 0;
+}
+.chat-list .chat-list__header {
+  display: flex;
+  align-items: center;
+  padding: 5px 30px;
+  border-radius: 10px 0 0 0;
+  background-color: #535353;
+}
+.chat-list .chat-list__header .chat-list__header-user {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: #535353;
+}
+.chat-list .chat-list__header .chat-list__header-user img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.chat-list .chat-list__header .chat-list__header-user .info {
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+}
+.chat-list .chat-list__header .chat-list__header-user .info h4 {
+  display: flex;
+  font-weight: bold;
+}
+.chat-list .chat-list__header .chat-list__header-user .info .status {
+  line-height: 0;
+}
+.chat-list .chat-list__header .chat-list__header-icons {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #535353;
+}
+.chat-list .chat-list__header .chat-list__header-icons i {
+  color: #000;
+  font-size: 20px;
+  cursor: pointer;
+}
+.chat-list .chat-list__search {
+  display: flex;
+  align-items: center;
+  padding: 10px 30px;
+  border-radius: 0 0 0 0;
+  background-color: #535353;
+}
+.chat-list .chat-list__search input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+.chat-list .chat-list__search i {
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.chat-list .chat-list__content {
+  align-items: center;
+  overflow: auto;
+  padding: 5px 30px;
+  border-radius: 0 0 0 10px;
+  background-color: #f1f1f1;
+  height: 100%;
+}
+.chat-list .chat-list__content .chat-list__content-user {
+  display: flex;
+  align-items: center;
+}
+.chat-list .chat-list__content .chat-list__content-user img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.chat-list .chat-list__content .chat-list__content-user .info-message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 10px;
+}
+.chat-list .chat-list__content .chat-list__content-user .info-message .info h4 {
+  font-weight: bold;
+}
+.chat-list .chat-list__content .chat-list__content-user .info-message .message p {
+  margin-top: 5px;
 }
 
 /*# sourceMappingURL=chat-list.css.map */
