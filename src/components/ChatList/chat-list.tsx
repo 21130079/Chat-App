@@ -1,12 +1,10 @@
 import React from 'react';
 import "./chat-list.scss"
+import typing from '../Login/typing.gif';
 
 function ChatList() {
     return (
         <div className="chat-list">
-<<<<<<< Updated upstream
-            <h1>Hello1</h1>
-=======
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
                     <img src={typing} alt="avatar"/>
@@ -138,7 +136,6 @@ function ChatList() {
                     </div>
                 </div>
             </div>
->>>>>>> Stashed changes
         </div>
     )
 }
