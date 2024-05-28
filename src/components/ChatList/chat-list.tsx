@@ -1,6 +1,6 @@
+import React from 'react';
 import "./chat-list.scss"
-import typing from "../Login/typing.gif";
-import React from "react";
+import typing from '../Login/typing.gif';
 
 function ChatList() {
     return (
@@ -19,9 +19,11 @@ function ChatList() {
                     <i className="bi bi-three-dots"></i>
                 </div>
             </div>
+
             <div className="chat-list__search">
                 <input type="text" placeholder="Search on Chat"/>
             </div>
+
             <div className="chat-list__content">
                 <div className="chat-list__content-user">
                     <img src={typing} alt="avatar"/>
@@ -133,7 +135,6 @@ function ChatList() {
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     )

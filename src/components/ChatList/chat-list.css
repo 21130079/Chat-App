@@ -7,6 +7,7 @@
 }
 .chat-list .chat-list__header {
   display: flex;
+  align-items: center;
   padding: 5px 30px;
   border-radius: 10px 0 0 0;
   background-color: #ffffff;
@@ -60,6 +61,7 @@
   flex: 1;
   padding: 10px;
   border-radius: 10px;
+  height: 6vh;
   outline: none;
 }
 .chat-list .chat-list__search i {
@@ -70,16 +72,16 @@
   align-items: center;
   overflow: auto;
   border-radius: 0 0 0 10px;
-  background-color: #f1f1f1;
-  height: 100%;
+  padding: 20px 20px;
+  background-color: cyan;
 }
 .chat-list .chat-list__content .chat-list__content-user {
-  margin: 5px;
-  background-color: #ffffff;
-  width: 98%;
   display: flex;
   align-items: center;
   border-radius: 10px;
+  margin-bottom: 5px;
+  padding: 0 20px;
+  background-color: #ffffff;
 }
 .chat-list .chat-list__content .chat-list__content-user img {
   width: 50px;
@@ -90,14 +92,14 @@
 .chat-list .chat-list__content .chat-list__content-user .info-message {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  padding: 0 10px;
+  padding: 10px 10px;
 }
 .chat-list .chat-list__content .chat-list__content-user .info-message .info h4 {
   font-weight: bold;
 }
 .chat-list .chat-list__content .chat-list__content-user .info-message .message p {
   margin-top: 5px;
+  line-height: 0;
 }
 .chat-list .chat-list__content .chat-list__content-user:hover {
   background-color: #535353;
