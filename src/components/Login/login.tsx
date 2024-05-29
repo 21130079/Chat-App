@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './login.css';
 import typing from './typing.gif';
+import {getUser, login} from '../../Redux/action';
+import {useDispatch} from "react-redux";
+import {sendLogin, ws} from "../../API/websocket-api";
 
 
 function Login() {
@@ -35,19 +38,58 @@ function Login() {
 }
 
 function LoginForm() {
+    const dispatch = useDispatch();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        // mỗi lần dispatch cái action login thì mới hoạt động code này
+    ws.onmessage = (event) => {
+        const response = JSON.parse(event.data as string);
+        console.log('Nhận dữ liệu từ máy chủ:', response);
+        if(response.status === "success"){
+            dispatch(
+                getUser({
+                     response
+                })
+
+            )
+        }
+    };
+    }, [dispatch]);
+   const handleLogin = () =>{
+        dispatch(
+            login({
+                user: username,
+                pass: password,
+            })
+        )
+   }
+
     return (
         <div className="login-form-container">
             <h1>Login Form</h1>
-            <input type="text" placeholder="Username" className="input-field" />
+            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" className="input-field" />
             <br /><br />
-            <input type="password" placeholder="Password" className="input-field" />
+            <input type="password" onChange={(e) => setPassword(e.target.value)}  placeholder="Password" className="input-field" />
             <br /><br />
-            <button className="login-button" type="button">Login</button>
+            <button className="login-button" onClick={handleLogin} type="button">Login</button>
         </div>
     );
 }
 
 function SignupForm() {
+    const dispatch = useDispatch();
+    const usernameRef = useRef("");
+    const passwordRef = useRef("");
+    const handleSignUp = () =>{
+        dispatch(
+            login({
+                user: usernameRef,
+                passwordRef: passwordRef,
+            })
+        )
+    }
     return (
         <div className="signup-form-container">
             <h1>Sign Up Form</h1>
@@ -57,7 +99,7 @@ function SignupForm() {
             <br /><br />
             <input type="password" placeholder="Password" className="input-field" />
             <br /><br />
-            <button className="signup-button" type="button">Sign Up</button>
+            <button className="signup-button" onClick={handleSignUp} type="button">Sign Up</button>
         </div>
     );
 }

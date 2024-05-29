@@ -5,18 +5,23 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import ChatWindow from "./components/ChatWindow/chat-window";
+import {Provider} from "react-redux";
+import {Store} from "./Redux/store";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-      <Router>
-          <Routes>
-              <Route path="/" element={<App />} />
-              <Route path="chat" element={<ChatWindow />} />
-          </Routes>
-      </Router>
+      <Provider store={Store}>
+          {/*<Router>*/}
+          {/*    <Routes>*/}
+          {/*        <Route path="/" element={<App />} />*/}
+          {/*        <Route path="chat" element={<ChatWindow />} />*/}
+          {/*    </Routes>*/}
+          {/*</Router>*/}
+          <App/>
+      </Provider>
   </React.StrictMode>
 );
 
