@@ -1,5 +1,6 @@
 import { PayloadAction} from "@reduxjs/toolkit";
-import {sendLogin} from "../API/websocket-api";
+import {sendLogin,checkUser} from "../API/websocket-api";
+
 
 const initialState : any ={
     messages : [],
@@ -19,6 +20,15 @@ export const Reducer = (state = initialState, action: PayloadAction<any>)=>{
 
             }
         }
+        case "Check_User":{
+            console.log(action.payload.user);
+            checkUser(action.payload)
+            return{
+                ...state,
+
+            }
+        }
+
         default:{
             return {
                 ...state

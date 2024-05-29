@@ -23,4 +23,20 @@ export const sendLogin = (data: { user: string; pass: string }) => {
 
 }
 
+// kiểm tra tình trạng online (test thử không hoạt động)
+export const checkUser = (data: { user: string}) => {
+    const action = {
+        action: 'onchat',
+        data: {
+            event: 'CHECK_USER',
+            data: {
+                user: data.user,
+            }
+        }
+    };
+    ws.send(JSON.stringify(action));
+
+}
+
+
 

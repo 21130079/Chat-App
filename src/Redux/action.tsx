@@ -6,9 +6,15 @@ export const login=(data:any) =>{
         payload:data,
     }
 }
+export const checkUsername=(data:any) =>{
+    return{
+        type:"Check_User",
+        payload:data,
+    }
+}
 export const getUser=(data:any) =>{
     return{
-        type:"getUser",
+        type:"Get_User",
         payload:data,
     }
 }

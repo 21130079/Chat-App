@@ -1,10 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import './login.css';
 import typing from './typing.gif';
 import {getUser, login} from '../../Redux/action';
 import {useDispatch} from "react-redux";
-import {sendLogin, ws} from "../../API/websocket-api";
-
+import { ws} from "../../API/websocket-api";
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [isLogin, setisLogin ] = useState(true);
@@ -38,22 +38,31 @@ function Login() {
 }
 
 function LoginForm() {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
+    const [errormsg ,seterrormsg] =useState('');
     useEffect(() => {
-        // mỗi lần dispatch cái action login thì mới hoạt động code này
+        // mỗi lần dispatch cái action thì mới hoạt động code này
     ws.onmessage = (event) => {
         const response = JSON.parse(event.data as string);
         console.log('Nhận dữ liệu từ máy chủ:', response);
-        if(response.status === "success"){
-            dispatch(
-                getUser({
-                     response
-                })
+        switch (response.event){
+            case "LOGIN":{
+                if(response.status === "success"){
+                    dispatch(
+                        getUser({
+                            response
+                        })
 
-            )
+                    )
+                    navigate('/chat');
+                }else if(response.status ==="error"){
+                    seterrormsg(response.mes);
+                }
+                break;
+            }
         }
     };
     }, [dispatch]);
@@ -65,14 +74,25 @@ function LoginForm() {
             })
         )
    }
+   const handleChangeUsername=(e: ChangeEvent<HTMLInputElement>) =>{
+       setUsername(e.target.value);
+   }
+    const handleEnterPass=(e: React.KeyboardEvent<HTMLInputElement>) =>{
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    }
 
     return (
         <div className="login-form-container">
             <h1>Login Form</h1>
-            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" className="input-field" />
-            <br /><br />
-            <input type="password" onChange={(e) => setPassword(e.target.value)}  placeholder="Password" className="input-field" />
-            <br /><br />
+            <input type="text" value={username} onChange={handleChangeUsername} placeholder="Username"
+                   className="input-field"/>
+            <br/><br/>
+            <input type="password" onKeyPress={handleEnterPass} onChange={(e) => setPassword(e.target.value)} placeholder="Password"
+                   className="input-field"/>
+            <br/><br/>
+            {errormsg !== '' ? <p className="Text-danger">{errormsg}</p> : <br/>}
             <button className="login-button" onClick={handleLogin} type="button">Login</button>
         </div>
     );
