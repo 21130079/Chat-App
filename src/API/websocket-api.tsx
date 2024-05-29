@@ -35,8 +35,122 @@ export const checkUser = (data: { user: string}) => {
         }
     };
     ws.send(JSON.stringify(action));
-
 }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const register = (data: { user: string,pass:string}) => {
+    const action = {
+        action: 'onchat',
+        data: {
+            event: 'REGISTER',
+            data: {
+                user: data.user,
+                pass: data.pass
+            }
+        }
+    };
+    ws.send(JSON.stringify(action));
+}

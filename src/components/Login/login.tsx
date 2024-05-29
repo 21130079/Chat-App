@@ -1,14 +1,14 @@
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import './login.css';
 import typing from './typing.gif';
 import {getUser, login} from '../../Redux/action';
 import {useDispatch} from "react-redux";
-import { ws} from "../../API/websocket-api";
+import {register, ws} from "../../API/websocket-api";
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
-    const [isLogin, setisLogin ] = useState(true);
 
+    const [isLogin, setisLogin ] = useState(true);
     const handleFormSwitch = (isLogin: boolean) => {
         setisLogin(isLogin);
     };
@@ -43,8 +43,8 @@ function LoginForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errormsg ,seterrormsg] =useState('');
-    useEffect(() => {
-        // mỗi lần dispatch cái action thì mới hoạt động code này
+
+
     ws.onmessage = (event) => {
         const response = JSON.parse(event.data as string);
         console.log('Nhận dữ liệu từ máy chủ:', response);
@@ -65,7 +65,7 @@ function LoginForm() {
             }
         }
     };
-    }, [dispatch]);
+
    const handleLogin = () =>{
         dispatch(
             login({
@@ -100,25 +100,52 @@ function LoginForm() {
 
 function SignupForm() {
     const dispatch = useDispatch();
-    const usernameRef = useRef("");
-    const passwordRef = useRef("");
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [repassword, setRePassword] = useState('');
+    const [errormsg ,seterrormsg] =useState('');
+    const navigate = useNavigate();
     const handleSignUp = () =>{
-        dispatch(
-            login({
-                user: usernameRef,
-                passwordRef: passwordRef,
-            })
-        )
+           if(repassword!==password){
+               seterrormsg ("RePassword and Password are not matched");
+           }else{
+            register({
+                   user: username,
+                   pass: password,
+               })
+           }
     }
+    const handleEnterPass=(e: React.KeyboardEvent<HTMLInputElement>) =>{
+        if (e.key === 'Enter') {
+            handleSignUp();
+        }
+    }
+
+    ws.onmessage = (event) => {
+        const response = JSON.parse(event.data as string);
+        console.log('Nhận dữ liệu từ máy chủ:', response);
+        switch (response.event){
+            case "REGISTER":{
+                if(response.status === "success"){
+                    seterrormsg("register successfully, please log in to continue");
+                }else if(response.status ==="error"){
+                    seterrormsg(response.mes);
+                }
+                break;
+            }
+        }
+    };
+
     return (
         <div className="signup-form-container">
             <h1>Sign Up Form</h1>
-            <input type="text" placeholder="Username" className="input-field" />
+            <input type="text" placeholder="Username"  onChange={(e) => setUsername(e.target.value)} className="input-field" />
             <br /><br />
-            <input type="email" placeholder="Email" className="input-field" />
+            <input type="password" placeholder="Password"  onChange={(e) => setPassword(e.target.value)} className="input-field" />
             <br /><br />
-            <input type="password" placeholder="Password" className="input-field" />
+            <input type="password" placeholder="RePassword" onKeyPress={handleEnterPass}  onChange={(e) => setRePassword(e.target.value)} className="input-field" />
             <br /><br />
+            {errormsg !== '' ? <p className="Text-danger">{errormsg}</p> : <br/>}
             <button className="signup-button" onClick={handleSignUp} type="button">Sign Up</button>
         </div>
     );
