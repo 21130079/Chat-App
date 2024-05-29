@@ -25,7 +25,7 @@ function ChatBox() {
                     <div className="content">
                         <p>
                             <img src={typing} alt=""/>
-                            Chào Đăng !
+                            Chào Đạt !
                         </p>
                     </div>
                 </div>
@@ -34,7 +34,7 @@ function ChatBox() {
                     <div className="content">
                         <p>
                             <img src={typing} alt=""/>
-                            Chào Trúc !
+                            Chào Giang !
                         </p>
                     </div>
                 </div>
