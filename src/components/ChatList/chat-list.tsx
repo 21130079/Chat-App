@@ -1,6 +1,6 @@
 import React from 'react';
 import "./chat-list.scss"
-import typing from '../Login/typing.gif';
+import typing from '../../assets/images/typing.gif';
 
 function ChatList() {
     return (
@@ -31,7 +31,7 @@ function ChatList() {
                         <div className="info">
                             <h4>Name</h4>
                         </div>
-                        <div className="message">
+                        <div className="chat-list-message">
                             <p>You: Chào Giang</p>
                         </div>
                     </div>
@@ -42,7 +42,7 @@ function ChatList() {
                         <div className="info">
                             <h4>Name</h4>
                         </div>
-                        <div className="message">
+                        <div className="chat-list-message">
                             <p>You: Chào Giang</p>
                         </div>
                     </div>
@@ -53,7 +53,7 @@ function ChatList() {
                         <div className="info">
                             <h4>Name</h4>
                         </div>
-                        <div className="message">
+                        <div className="chat-list-message">
                             <p>You: Chào Giang</p>
                         </div>
                     </div>
@@ -64,7 +64,7 @@ function ChatList() {
                         <div className="info">
                             <h4>Name</h4>
                         </div>
-                        <div className="message">
+                        <div className="chat-list-message">
                             <p>You: Chào Giang</p>
                         </div>
                     </div>
@@ -75,7 +75,7 @@ function ChatList() {
                         <div className="info">
                             <h4>Name</h4>
                         </div>
-                        <div className="message">
+                        <div className="chat-list-message">
                             <p>You: Chào Giang</p>
                         </div>
                     </div>
@@ -86,7 +86,7 @@ function ChatList() {
                         <div className="info">
                             <h4>Name</h4>
                         </div>
-                        <div className="message">
+                        <div className="chat-list-message">
                             <p>You: Chào Giang</p>
                         </div>
                     </div>
@@ -97,7 +97,7 @@ function ChatList() {
                         <div className="info">
                             <h4>Name</h4>
                         </div>
-                        <div className="message">
+                        <div className="chat-list-message">
                             <p>You: Chào Giang</p>
                         </div>
                     </div>
@@ -108,29 +108,7 @@ function ChatList() {
                         <div className="info">
                             <h4>Name</h4>
                         </div>
-                        <div className="message">
-                            <p>You: Chào Giang</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
-                        </div>
-                        <div className="message">
-                            <p>You: Chào Giang</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
-                        </div>
-                        <div className="message">
+                        <div className="chat-list-message">
                             <p>You: Chào Giang</p>
                         </div>
                     </div>

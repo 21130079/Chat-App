@@ -97,7 +97,7 @@
 .chat-list .chat-list__content .chat-list__content-user .info-message .info h4 {
   font-weight: bold;
 }
-.chat-list .chat-list__content .chat-list__content-user .info-message .message p {
+.chat-list .chat-list__content .chat-list__content-user .info-message .chat-list-message p {
   margin-top: 5px;
   line-height: 0;
 }
