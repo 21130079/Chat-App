@@ -44,7 +44,6 @@ function LoginForm() {
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
 
-
     ws.onmessage = (event) => {
         const response = JSON.parse(event.data as string);
         console.log('Nhận dữ liệu từ máy chủ:', response);
@@ -56,6 +55,7 @@ function LoginForm() {
                             response
                         })
                     )
+                    localStorage.setItem("username", username)
                     navigate('/chat');
                 } else if (response.status === "error") {
                     setErrorMsg(response.mes);
@@ -99,12 +99,10 @@ function LoginForm() {
 }
 
 function SignupForm() {
-    const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
-    const navigate = useNavigate();
     const handleSignUp = () => {
         if (rePassword !== password) {
             setErrorMsg("RePassword and Password are not matched");
