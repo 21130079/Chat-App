@@ -1,0 +1,27 @@
+$ownMessageColor: #d0fee1;
+
+.own-message {
+  max-width: 70%;
+  display: flex;
+
+  align-self: flex-end;
+
+  p {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    border-radius: 10px;
+    padding: 5px 5px 5px 20px;
+    box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
+    -webkit-box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
+    -moz-box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
+
+    background-color: $ownMessageColor;
+
+    img {
+      width: 30px;
+      height: 30px;
+      margin-left: 10px;
+    }
+  }
+}

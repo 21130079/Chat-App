@@ -6,8 +6,6 @@ const wsUrl :string = 'ws://140.238.54.136:8080/chat/chat';
 // Connect to WebSocket server
 export const ws = new w3cwebsocket(wsUrl);
 
-
-
 export const sendLogin = (data: { user: string; pass: string }) => {
     const action = {
         action: 'onchat',
@@ -20,7 +18,6 @@ export const sendLogin = (data: { user: string; pass: string }) => {
         }
     };
     ws.send(JSON.stringify(action));
-
 }
 
 // kiểm tra tình trạng online (test thử không hoạt động)

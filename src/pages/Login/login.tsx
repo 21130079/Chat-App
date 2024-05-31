@@ -1,23 +1,23 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import './login.css';
-import typing from './typing.gif';
-import {getUser, login} from '../../Redux/action';
+import typing from '../../assets/images/typing.gif';
+import {getUser, login} from '../../redux/action';
 import {useDispatch} from "react-redux";
-import {register, ws} from "../../API/websocket-api";
-import { useNavigate } from 'react-router-dom';
+import {register, ws} from "../../api/websocket-api";
+import {useNavigate} from 'react-router-dom';
 
 function Login() {
 
-    const [isLogin, setisLogin ] = useState(true);
+    const [isLogin, setIsLogin] = useState(true);
     const handleFormSwitch = (isLogin: boolean) => {
-        setisLogin(isLogin);
+        setIsLogin(isLogin);
     };
 
     return (
         <div className="container">
             <div className="box-1">
                 <div className="content-holder">
-                    <h3>Welcome to chat-app</h3>
+                    <h5>Welcome to chat-app</h5>
                     <img id="typing-img" src={typing} alt="typing"/>
                     {isLogin ? (
                         <button className="button-1" onClick={() => handleFormSwitch(false)}>Sign up</button>
@@ -28,9 +28,9 @@ function Login() {
             </div>
             <div className="box-2">
                 {isLogin ? (
-                    <LoginForm />
+                    <LoginForm/>
                 ) : (
-                    <SignupForm />
+                    <SignupForm/>
                 )}
             </div>
         </div>
@@ -42,42 +42,41 @@ function LoginForm() {
     const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [errormsg ,seterrormsg] =useState('');
-
+    const [errorMsg, setErrorMsg] = useState('');
 
     ws.onmessage = (event) => {
         const response = JSON.parse(event.data as string);
         console.log('Nhận dữ liệu từ máy chủ:', response);
-        switch (response.event){
-            case "LOGIN":{
-                if(response.status === "success"){
+        switch (response.event) {
+            case "LOGIN": {
+                if (response.status === "success") {
                     dispatch(
                         getUser({
                             response
                         })
-
                     )
+                    localStorage.setItem("username", username)
                     navigate('/chat');
-                }else if(response.status ==="error"){
-                    seterrormsg(response.mes);
+                } else if (response.status === "error") {
+                    setErrorMsg(response.mes);
                 }
                 break;
             }
         }
     };
 
-   const handleLogin = () =>{
+    const handleLogin = () => {
         dispatch(
             login({
                 user: username,
                 pass: password,
             })
         )
-   }
-   const handleChangeUsername=(e: ChangeEvent<HTMLInputElement>) =>{
-       setUsername(e.target.value);
-   }
-    const handleEnterPass=(e: React.KeyboardEvent<HTMLInputElement>) =>{
+    }
+    const handleChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+    }
+    const handleEnterPass = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleLogin();
         }
@@ -89,33 +88,32 @@ function LoginForm() {
             <input type="text" value={username} onChange={handleChangeUsername} placeholder="Username"
                    className="input-field"/>
             <br/><br/>
-            <input type="password" onKeyPress={handleEnterPass} onChange={(e) => setPassword(e.target.value)} placeholder="Password"
+            <input type="password" onKeyPress={handleEnterPass} onChange={(e) => setPassword(e.target.value)}
+                   placeholder="Password"
                    className="input-field"/>
             <br/><br/>
-            {errormsg !== '' ? <p className="Text-danger">{errormsg}</p> : <br/>}
+            {errorMsg !== '' ? <p className="Text-danger">{errorMsg}</p> : <br/>}
             <button className="login-button" onClick={handleLogin} type="button">Login</button>
         </div>
     );
 }
 
 function SignupForm() {
-    const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [repassword, setRePassword] = useState('');
-    const [errormsg ,seterrormsg] =useState('');
-    const navigate = useNavigate();
-    const handleSignUp = () =>{
-           if(repassword!==password){
-               seterrormsg ("RePassword and Password are not matched");
-           }else{
+    const [rePassword, setRePassword] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const handleSignUp = () => {
+        if (rePassword !== password) {
+            setErrorMsg("RePassword and Password are not matched");
+        } else {
             register({
-                   user: username,
-                   pass: password,
-               })
-           }
+                user: username,
+                pass: password,
+            })
+        }
     }
-    const handleEnterPass=(e: React.KeyboardEvent<HTMLInputElement>) =>{
+    const handleEnterPass = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleSignUp();
         }
@@ -124,12 +122,12 @@ function SignupForm() {
     ws.onmessage = (event) => {
         const response = JSON.parse(event.data as string);
         console.log('Nhận dữ liệu từ máy chủ:', response);
-        switch (response.event){
-            case "REGISTER":{
-                if(response.status === "success"){
-                    seterrormsg("register successfully, please log in to continue");
-                }else if(response.status ==="error"){
-                    seterrormsg(response.mes);
+        switch (response.event) {
+            case "REGISTER": {
+                if (response.status === "success") {
+                    setErrorMsg("register successfully, please log in to continue");
+                } else if (response.status === "error") {
+                    setErrorMsg(response.mes);
                 }
                 break;
             }
@@ -139,13 +137,16 @@ function SignupForm() {
     return (
         <div className="signup-form-container">
             <h1>Sign Up Form</h1>
-            <input type="text" placeholder="Username"  onChange={(e) => setUsername(e.target.value)} className="input-field" />
-            <br /><br />
-            <input type="password" placeholder="Password"  onChange={(e) => setPassword(e.target.value)} className="input-field" />
-            <br /><br />
-            <input type="password" placeholder="RePassword" onKeyPress={handleEnterPass}  onChange={(e) => setRePassword(e.target.value)} className="input-field" />
-            <br /><br />
-            {errormsg !== '' ? <p className="Text-danger">{errormsg}</p> : <br/>}
+            <input type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)}
+                   className="input-field"/>
+            <br/><br/>
+            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}
+                   className="input-field"/>
+            <br/><br/>
+            <input type="password" placeholder="RePassword" onKeyPress={handleEnterPass}
+                   onChange={(e) => setRePassword(e.target.value)} className="input-field"/>
+            <br/><br/>
+            {errorMsg !== '' ? <p className="Text-danger">{errorMsg}</p> : <br/>}
             <button className="signup-button" onClick={handleSignUp} type="button">Sign Up</button>
         </div>
     );

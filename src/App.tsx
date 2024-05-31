@@ -1,14 +1,22 @@
 import React from 'react';
 import './App.css';
-import Login from "./components/Login/login";
-import {Outlet} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import {publicRoutes} from './routes/routes';
 
 function App() {
     return (
-        <div className="App">
-           <Outlet></Outlet>
-        </div>
-
+        <Router>
+            <div className="App">
+                <Routes>
+                    {
+                        publicRoutes.map((route, index) => {
+                            const Page = route.component;
+                            return <Route key={index} path={route.path} element={<Page/>}/>
+                        })
+                    }
+                </Routes>
+            </div>
+        </Router>
     );
 }
 

@@ -1,5 +1,5 @@
 import { PayloadAction} from "@reduxjs/toolkit";
-import {sendLogin,checkUser} from "../API/websocket-api";
+import {sendLogin,checkUser} from "../api/websocket-api";
 
 
 const initialState : any ={
