@@ -1,8 +1,40 @@
-import React from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import "./chat-list.scss"
 import typing from '../../assets/images/typing.gif';
+import {
+    getPeopleChatMessages,
+    getRoomChatMessages,
+    getUserList,
+    sendPeopleChat,
+    sendRoomChat,
+    ws
+} from "../../api/websocket-api";
+
+interface User {
+    name: string;
+    type: number;
+    actionTime: string;
+}
 
 function ChatList() {
+
+    const handleIconClick = () => {
+        setIsMenuOpen(!isMenuOpen);
+    }
+
+    const [users, setUsers] = useState<User[]>([]);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    useEffect(() => {
+        ws.onmessage = (event) => {
+            const response = JSON.parse(event.data as string);
+            if (response.event === "GET_USER_LIST") {
+                setUsers(response.data);
+            }
+        };
+        getUserList();
+    }, []);
+
     return (
         <div className="chat-list">
             <div className="chat-list__header">
@@ -15,8 +47,14 @@ function ChatList() {
                     </div>
                 </div>
 
-                <div className="chat-list__header-icons">
+                <div className="chat-list__header-icons" onClick={handleIconClick}>
                     <i className="bi bi-three-dots"></i>
+                    {isMenuOpen && (
+                        <div className="dropdown-menu">
+                            <div className="dropdown-item">Action</div>
+                            <div className="dropdown-item" >Another action</div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -25,94 +63,21 @@ function ChatList() {
             </div>
 
             <div className="chat-list__content">
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
+                {users.map((user, index) => (
+                    <div key={index} className="chat-list__content-user">
+                        <div className="avatar">
+                            {user.name.charAt(0).toUpperCase()}
                         </div>
-                        <div className="chat-list-message">
-                            <p>You: Chào Giang</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
-                        </div>
-                        <div className="chat-list-message">
-                            <p>You: Chào Giang</p>
+                        <div className="info-message">
+                            <div className="info">
+                                <h4>{user.name}</h4>
+                            </div>
+                            <div className="chat-list-message">
+                                <p>{user.actionTime}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
-                        </div>
-                        <div className="chat-list-message">
-                            <p>You: Chào Giang</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
-                        </div>
-                        <div className="chat-list-message">
-                            <p>You: Chào Giang</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
-                        </div>
-                        <div className="chat-list-message">
-                            <p>You: Chào Giang</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
-                        </div>
-                        <div className="chat-list-message">
-                            <p>You: Chào Giang</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
-                        </div>
-                        <div className="chat-list-message">
-                            <p>You: Chào Giang</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="chat-list__content-user">
-                    <img src={typing} alt="avatar"/>
-                    <div className="info-message">
-                        <div className="info">
-                            <h4>Name</h4>
-                        </div>
-                        <div className="chat-list-message">
-                            <p>You: Chào Giang</p>
-                        </div>
-                    </div>
-                </div>
+                ))}
             </div>
         </div>
     )
