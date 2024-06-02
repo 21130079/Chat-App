@@ -3,11 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import "./chat-list.scss"
 import typing from '../../assets/images/typing.gif';
 import {
-    getPeopleChatMessages,
-    getRoomChatMessages,
     getUserList,
-    sendPeopleChat,
-    sendRoomChat,
     logout,
     ws
 } from "../../api/websocket-api";
@@ -19,6 +15,14 @@ interface User {
 }
 
 function ChatList() {
+    const [searchText, setSearchText] = useState('');
+    const [users, setUsers] = useState<User[]>([]);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+    }
+
     const navigate = useNavigate();
     const handleIconClick = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -26,11 +30,7 @@ function ChatList() {
     const handleLogout = () => {
         logout();
         navigate('/');
-
     }
-
-    const [users, setUsers] = useState<User[]>([]);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         ws.onmessage = (event) => {
@@ -41,6 +41,8 @@ function ChatList() {
         };
         getUserList();
     }, []);
+
+    const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
 
     return (
         <div className="chat-list">
@@ -66,11 +68,11 @@ function ChatList() {
             </div>
 
             <div className="chat-list__search">
-                <input type="text" placeholder="Search on Chat"/>
+                <input type="text" placeholder="Search on Chat" onChange={handleSearch}/>
             </div>
 
             <div className="chat-list__content">
-                {users.map((user, index) => (
+                {filteredUsers.map((user, index) => (
                     <div key={index} className="chat-list__content-user">
                         <div className="avatar">
                             {user.name.charAt(0).toUpperCase()}

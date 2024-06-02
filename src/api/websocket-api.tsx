@@ -6,10 +6,8 @@ const wsUrl :string = 'ws://140.238.54.136:8080/chat/chat';
 // Connect to WebSocket server
 export let ws = new w3cwebsocket(wsUrl);
 
-ws.onclose = () => {
-    ws = new w3cwebsocket(wsUrl);
-}
 
+// Function to send login data
 export const sendLogin = (data: { user: string; pass: string }) => {
     const action = {
         action: 'onchat',

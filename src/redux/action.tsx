@@ -16,3 +16,4 @@ export const getUser = (data: any) => {
         payload: data,
     }
 }
+

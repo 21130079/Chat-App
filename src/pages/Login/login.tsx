@@ -59,7 +59,6 @@ function LoginForm() {
                 } else if (response.status === "error") {
                     setErrorMsg(response.mes);
                 }
-                break;
             }
         }
     };
