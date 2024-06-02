@@ -63,6 +63,8 @@ $mainListChatColor: #f1f1f1;
       }
 
       .dropdown-menu {
+       left: 500px;
+        top: 70px;
         display: block;
         position: absolute;
         background-color: #f9f9f9;
@@ -96,9 +98,6 @@ $mainListChatColor: #f1f1f1;
           background-color: #e5e5e5;
         }
       }
-      //&:hover{
-      //  display: block;
-      //}
     }
   }
   .chat-list__search{

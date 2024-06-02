@@ -4,7 +4,11 @@ import {w3cwebsocket} from 'websocket';
 const wsUrl :string = 'ws://140.238.54.136:8080/chat/chat';
 
 // Connect to WebSocket server
-export const ws = new w3cwebsocket(wsUrl);
+export let ws = new w3cwebsocket(wsUrl);
+
+ws.onclose = () => {
+    ws = new w3cwebsocket(wsUrl);
+}
 
 export const sendLogin = (data: { user: string; pass: string }) => {
     const action = {

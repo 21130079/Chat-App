@@ -7,7 +7,6 @@ import {register, ws} from "../../api/websocket-api";
 import {useNavigate} from 'react-router-dom';
 
 function Login() {
-
     const [isLogin, setIsLogin] = useState(true);
     const handleFormSwitch = (isLogin: boolean) => {
         setIsLogin(isLogin);

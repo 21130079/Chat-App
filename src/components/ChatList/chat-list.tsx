@@ -1,4 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import "./chat-list.scss"
 import typing from '../../assets/images/typing.gif';
 import {
@@ -7,6 +8,7 @@ import {
     getUserList,
     sendPeopleChat,
     sendRoomChat,
+    logout,
     ws
 } from "../../api/websocket-api";
 
@@ -17,9 +19,14 @@ interface User {
 }
 
 function ChatList() {
-
+    const navigate = useNavigate();
     const handleIconClick = () => {
         setIsMenuOpen(!isMenuOpen);
+    }
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+
     }
 
     const [users, setUsers] = useState<User[]>([]);
@@ -52,7 +59,7 @@ function ChatList() {
                     {isMenuOpen && (
                         <div className="dropdown-menu">
                             <div className="dropdown-item">Action</div>
-                            <div className="dropdown-item" >Another action</div>
+                            <div className="dropdown-item" onClick={handleLogout}>Logout</div>
                         </div>
                     )}
                 </div>
