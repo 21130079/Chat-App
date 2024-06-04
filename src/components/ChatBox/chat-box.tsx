@@ -26,6 +26,7 @@ function ChatBox({ user }: ChatBoxProps) {
     const [boxChatData, setBoxChatData] = useState<any>(null);
     const [message, setMessage] = useState<string>('');
     const [isSend, setIsSend] = useState<string>();
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         console.log(user)
@@ -53,11 +54,20 @@ function ChatBox({ user }: ChatBoxProps) {
                     }
 
                 }
-                    // scrollToBottom();
+                     scrollToBottom();
             }
 
     }, [user,isSend]);
 
+    useEffect(() => {
+        scrollToBottom();
+    }, [isSend]);
+
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    };
 
 
 
@@ -105,16 +115,16 @@ function ChatBox({ user }: ChatBoxProps) {
                 </div>
             </div>
 
-            <div className="chat-box__content"  >
+            <div className="chat-box__content">
                 {boxChatData &&
                     boxChatData.slice().reverse()
                         .filter((chatData: any) => chatData.mes.trim().length > 0)
                         .map((chatData: any) => {
                             return username === chatData.name ?
-                                <OwnMessage key={chatData.id} message={chatData.mes} /> :
-                                <Message key={chatData.id} message={chatData.mes} />
+                                <OwnMessage key={chatData.id} message={chatData.mes}/> :
+                                <Message key={chatData.id} message={chatData.mes}/>
                         })}
-
+                <div ref={messagesEndRef}/>
             </div>
 
             <div className="chat-box__footer">

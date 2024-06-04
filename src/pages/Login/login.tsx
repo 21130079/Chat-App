@@ -50,7 +50,6 @@ function LoginForm() {
             case "LOGIN": {
                 if (response.status === "success") {
                     localStorage.setItem("username", username)
-
                     navigate('/chat');
                 } else if (response.status === "error") {
                     setErrorMsg(response.mes);
@@ -61,13 +60,17 @@ function LoginForm() {
 
     const handleLogin = () => {
 
-        dispatch(
-            login({
-                user: username,
-                pass: password,
-            })
+       if(username.trim()!=="" && password.trim()!==""){
+           dispatch(
+               login({
+                   user: username,
+                   pass: password,
+               })
 
-        )
+           )
+       }else{
+           setErrorMsg("Please type your username and password");
+       }
 
 
     }
@@ -83,10 +86,10 @@ function LoginForm() {
     return (
         <div className="login-form-container">
             <h1>Login Form</h1>
-            <input type="text" value={username} onChange={handleChangeUsername} placeholder="Username"
+            <input type="text" value={username}  required={true} onChange={handleChangeUsername} placeholder="Username"
                    className="input-field"/>
             <br/><br/>
-            <input type="password" onKeyPress={handleEnterPass} onChange={(e) => setPassword(e.target.value)}
+            <input type="password" required={true} onKeyPress={handleEnterPass} onChange={(e) => setPassword(e.target.value)}
                    placeholder="Password"
                    className="input-field"/>
             <br/><br/>
@@ -135,13 +138,13 @@ function SignupForm() {
     return (
         <div className="signup-form-container">
             <h1>Sign Up Form</h1>
-            <input type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)}
+            <input type="text" placeholder="Username" required={true} onChange={(e) => setUsername(e.target.value)}
                    className="input-field"/>
             <br/><br/>
-            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}
+            <input type="password" placeholder="Password" required={true} onChange={(e) => setPassword(e.target.value)}
                    className="input-field"/>
             <br/><br/>
-            <input type="password" placeholder="RePassword" onKeyPress={handleEnterPass}
+            <input type="password" required={true} placeholder="RePassword" onKeyPress={handleEnterPass}
                    onChange={(e) => setRePassword(e.target.value)} className="input-field"/>
             <br/><br/>
             {errorMsg !== '' ? <p className="Text-danger">{errorMsg}</p> : <br/>}
