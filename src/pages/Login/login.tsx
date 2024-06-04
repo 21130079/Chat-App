@@ -3,7 +3,7 @@ import './login.css';
 import typing from '../../assets/images/typing.gif';
 import {getUser, login} from '../../redux/action';
 import {useDispatch} from "react-redux";
-import {register, ws} from "../../api/websocket-api";
+import {getUserList, register, ws} from "../../api/websocket-api";
 import {useNavigate} from 'react-router-dom';
 
 function Login() {
@@ -49,12 +49,8 @@ function LoginForm() {
         switch (response.event) {
             case "LOGIN": {
                 if (response.status === "success") {
-                    dispatch(
-                        getUser({
-                            response
-                        })
-                    )
                     localStorage.setItem("username", username)
+
                     navigate('/chat');
                 } else if (response.status === "error") {
                     setErrorMsg(response.mes);
@@ -64,12 +60,16 @@ function LoginForm() {
     };
 
     const handleLogin = () => {
+
         dispatch(
             login({
                 user: username,
                 pass: password,
             })
+
         )
+
+
     }
     const handleChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);

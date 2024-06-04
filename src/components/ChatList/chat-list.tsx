@@ -1,12 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
-import "./chat-list.scss"
+import React, { useState } from 'react';
+import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
-import {
-    getUserList,
-    logout,
-    ws
-} from "../../api/websocket-api";
+import { logout } from "../../api/websocket-api";
 
 interface User {
     name: string;
@@ -14,33 +9,27 @@ interface User {
     actionTime: string;
 }
 
-function ChatList() {
+interface ChatListProps {
+    users: User[];
+    onUserSelect: (user: User) => void;
+}
+
+function ChatList({ users, onUserSelect }: ChatListProps) {
     const [searchText, setSearchText] = useState('');
-    const [users, setUsers] = useState<User[]>([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
-    }
+    };
 
-    const navigate = useNavigate();
     const handleIconClick = () => {
         setIsMenuOpen(!isMenuOpen);
-    }
+    };
+
     const handleLogout = () => {
         logout();
-        navigate('/');
-    }
-
-    useEffect(() => {
-        ws.onmessage = (event) => {
-            const response = JSON.parse(event.data as string);
-            if (response.event === "GET_USER_LIST") {
-                setUsers(response.data);
-            }
-        };
-        getUserList();
-    }, []);
+        window.location.href = '/';
+    };
 
     const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
 
@@ -48,8 +37,7 @@ function ChatList() {
         <div className="chat-list">
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
-                    <img src={typing} alt="avatar"/>
-
+                    <img src={typing} alt="avatar" />
                     <div className="info">
                         <h4>My Name</h4>
                         <p className="status">Status</p>
@@ -68,12 +56,12 @@ function ChatList() {
             </div>
 
             <div className="chat-list__search">
-                <input type="text" placeholder="Search on Chat" onChange={handleSearch}/>
+                <input type="text" placeholder="Search on Chat" onChange={handleSearch} value={searchText} />
             </div>
 
             <div className="chat-list__content">
                 {filteredUsers.map((user, index) => (
-                    <div key={index} className="chat-list__content-user">
+                    <div key={index} className="chat-list__content-user" onClick={() => onUserSelect(user)}>
                         <div className="avatar">
                             {user.name.charAt(0).toUpperCase()}
                         </div>
@@ -89,7 +77,7 @@ function ChatList() {
                 ))}
             </div>
         </div>
-    )
+    );
 }
 
 export default ChatList;
