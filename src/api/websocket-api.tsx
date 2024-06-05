@@ -131,6 +131,7 @@ export const getPeopleChatMessages = (data: { name: string, page: number }) => {
         }
     };
     ws.send(JSON.stringify(action));
+    return 1;
 }
 // Function to send chat message to room
 export const sendRoomChat = (data: { to: string, mes: string }) => {
