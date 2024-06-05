@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
-import { logout } from "../../api/websocket-api";
+import group from '../../assets/images/group.png';
+import {checkUser, logout, ws} from "../../api/websocket-api";
 
 interface User {
     name: string;
@@ -17,6 +18,23 @@ interface ChatListProps {
 function ChatList({ users, onUserSelect }: ChatListProps) {
     const [searchText, setSearchText] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [myStatus, setMyStatus] = useState<string>('Offline');
+
+    const username = localStorage.getItem('username') as string;
+
+    useEffect(() => {
+        checkUser({user: username});
+        ws.onmessage = (event) => {
+            const response = JSON.parse(event.data as string);
+            if (response.event === "CHECK_USER") {
+                if(response.data.status===true) {
+                    setMyStatus('Online');
+                }else{
+                    setMyStatus('Offline');
+                }
+            }
+        };
+    }, []);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
@@ -39,8 +57,8 @@ function ChatList({ users, onUserSelect }: ChatListProps) {
                 <div className="chat-list__header-user">
                     <img src={typing} alt="avatar" />
                     <div className="info">
-                        <h4>My Name</h4>
-                        <p className="status">Status</p>
+                        <h4>{username}</h4>
+                        <p className="status">{myStatus}</p>
                     </div>
                 </div>
 
