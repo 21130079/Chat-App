@@ -59,10 +59,24 @@ function ChatBox({ user }: ChatBoxProps) {
                     break;
 
                 }
+                case "SEND_CHAT": {
+                    console.log(user?.name)
+                    console.log(user?.type)
+                    if(response.data.to === user?.name) {
+                        if (user?.type === 1) {
+                            getRoomChatMessages({name: user?.name, page: 1})
+                        }
+                    }
+                    if(response.data.to === localStorage.getItem("username") as string) {
+                        if (user?.type === 0) {
+                            getPeopleChatMessages({name: user?.name, page: 1})
+                        }
+                    }
+
+                }
             }
             scrollToBottom();
-        }
-
+            }
     }, [user, isSend]);
 
     useEffect(() => {

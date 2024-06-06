@@ -34,12 +34,11 @@ function ChatWindow() {
 
     const handleUserSelect = (user: User) => {
         setSelectedUser(user);
-
     };
 
     return (
         <div className="chat-window-container">
-            <ChatList users={users} onUserSelect={handleUserSelect} />
+            <ChatList users={users} onUserSelect={handleUserSelect}  />
             <ChatBox user={selectedUser} />
         </div>
     );
