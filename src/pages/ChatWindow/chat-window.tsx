@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import ChatList from "../../components/ChatList/chat-list";
 import ChatBox from "../../components/ChatBox/chat-box";
 import "./chat-window.scss";
@@ -18,18 +18,17 @@ function ChatWindow() {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     useEffect(() => {
-         getUserList();
-                ws.onmessage = (event) => {
-                    try {
-                        const response = JSON.parse(event.data as string);
-                        if (response.event === "GET_USER_LIST") {
-                            setUsers(response.data);
-                        }
-                    } catch (error) {
-                        console.error("Error parsing WebSocket message:", error);
-                    }
-                };
-
+        getUserList();
+        ws.onmessage = (event) => {
+            try {
+                const response = JSON.parse(event.data as string);
+                if (response.event === "GET_USER_LIST") {
+                    setUsers(response.data);
+                }
+            } catch (error) {
+                console.error("Error parsing WebSocket message:", error);
+            }
+        };
     }, []);
 
     const handleUserSelect = (user: User) => {
@@ -38,8 +37,8 @@ function ChatWindow() {
 
     return (
         <div className="chat-window-container">
-            <ChatList users={users} onUserSelect={handleUserSelect}  />
-            <ChatBox user={selectedUser} />
+            <ChatList users={users} onUserSelect={handleUserSelect}/>
+            <ChatBox user={selectedUser}/>
         </div>
     );
 }

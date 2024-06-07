@@ -20,7 +20,6 @@ function ChatList({ users, onUserSelect}: ChatListProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const username = localStorage.getItem('username') as string;
 
-
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
     };

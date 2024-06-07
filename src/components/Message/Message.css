@@ -1,8 +1,19 @@
-.message {
+.message-container {
   max-width: 70%;
   display: flex;
+  flex-direction: column;
 }
-.message p {
+.message-container .message-author {
+  display: flex;
+  font-size: 13px;
+  margin-left: 10px;
+  height: 20px;
+}
+.message-container .message-content {
+  display: flex;
+  align-items: center;
+}
+.message-container .message-content .main-message p {
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -13,10 +24,16 @@
   -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
   background-color: white;
 }
-.message p img {
+.message-container .message-content .main-message p img {
   width: 30px;
   height: 30px;
   margin-right: 10px;
+}
+.message-container .message-content .time-message {
+  display: none;
+}
+.message-container .message-content .time-message p {
+  font-size: 13px;
 }
 
 /*# sourceMappingURL=Message.css.map */
