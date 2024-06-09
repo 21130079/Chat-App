@@ -23,22 +23,20 @@ function ChatWindow() {
     const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
     const navigate = useNavigate();
 
+    console.log(ws.readyState)
+
     useEffect(() => {
-        // getUserList();
+        if (ws.readyState === WebSocket.OPEN) {
+            getUserList();
+        }
 
         ws.onopen = () => {
             getUserList();
-        };
-
-        ws.onclose = () => {
-            reLogin({
-                user: username,
-                code: reLoginCode,
-            })
         }
 
         ws.onmessage = (event) => {
             const response = JSON.parse(event.data as string);
+            console.log(response)
             switch (response.event) {
                 case "GET_USER_LIST": {
                     setUsers(response.data);
@@ -49,6 +47,15 @@ function ChatWindow() {
                         navigate('/');
                     }
                     break;
+                }
+                case "AUTH": {
+                    if (response.status === 'error') {
+                        reLogin({
+                            user: username,
+                            code: reLoginCode
+                        })
+                        getUserList();
+                    }
                 }
             }
         };
