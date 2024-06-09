@@ -1,35 +1,32 @@
-import { PayloadAction} from "@reduxjs/toolkit";
-import {sendLogin,checkUser} from "../api/websocket-api";
+import {PayloadAction} from "@reduxjs/toolkit";
+import {sendLogin, checkUser} from "../api/websocket-api";
 
-
-const initialState : any ={
-    messages : [],
-    contacts : [],
+const initialState: any = {
+    messages: [],
+    contacts: [],
 }
-const loadContacts=()=>{
+
+const loadContacts = () => {
     return [];
 }
-export const Reducer = (state = initialState, action: PayloadAction<any>)=>{
 
-    switch (action.type){
-        case "Login":{
-            console.log(action.payload.user);
+export const Reducer = (state = initialState, action: PayloadAction<any>) => {
+    switch (action.type) {
+        case "Login": {
             sendLogin(action.payload)
-            return{
+            return {
                 ...state,
-
             }
         }
-        case "Check_User":{
-            console.log(action.payload.user);
+
+        case "Check_User": {
             checkUser(action.payload)
-            return{
+            return {
                 ...state,
-
             }
         }
 
-        default:{
+        default: {
             return {
                 ...state
             };

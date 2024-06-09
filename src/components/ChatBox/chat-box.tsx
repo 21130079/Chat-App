@@ -18,10 +18,12 @@ interface User {
 }
 
 interface ChatBoxProps {
-    user: User | null;
+    user: User | null,
+    setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void,
+    isMessageChange?: boolean
 }
 
-function ChatBox({user}: ChatBoxProps) {
+function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const username = localStorage.getItem("username");
     const [isRoom, setIsRoom] = useState(true);
     const [boxChatData, setBoxChatData] = useState<any>(null);
@@ -63,8 +65,6 @@ function ChatBox({user}: ChatBoxProps) {
                     break;
                 }
                 case "SEND_CHAT": {
-                    console.log(user?.name)
-                    console.log(user?.type)
                     if (response.data.to === user?.name) {
                         if (user?.type === 1) {
                             getRoomChatMessages({name: user?.name, page: 1})
@@ -115,7 +115,6 @@ function ChatBox({user}: ChatBoxProps) {
         }
     }
 
-
     return (
         <div className="chat-box">
             <div className="chat-box__header">
@@ -132,15 +131,16 @@ function ChatBox({user}: ChatBoxProps) {
             </div>
 
             <div className="chat-box__content" ref={contentRef}>
-                {boxChatData && boxChatData.slice().reverse()
-                    .filter((chatData: any) => chatData.mes.trim().length > 0)
-                    .map((chatData: any) => {
-                        return username === chatData.name
-                            ?
-                            <OwnMessage key={chatData.id} message={chatData}/>
-                            :
-                            <Message key={chatData.id} message={chatData}/>
-                    })
+                {
+                    boxChatData && boxChatData.slice().reverse()
+                        .filter((chatData: any) => chatData.mes.trim().length > 0)
+                        .map((chatData: any) => {
+                            return username === chatData.name
+                                ?
+                                <OwnMessage key={chatData.id} message={chatData}/>
+                                :
+                                <Message key={chatData.id} message={chatData}/>
+                        })
                 }
             </div>
 

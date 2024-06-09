@@ -1,9 +1,9 @@
 import React, {ChangeEvent, useState} from 'react';
 import './login.css';
 import typing from '../../assets/images/typing.gif';
-import {getUser, login} from '../../redux/action';
+import {login} from '../../redux/action';
 import {useDispatch} from "react-redux";
-import {getUserList, register, ws} from "../../api/websocket-api";
+import {register, ws} from "../../api/websocket-api";
 import {useNavigate} from 'react-router-dom';
 
 function Login() {
@@ -45,11 +45,11 @@ function LoginForm() {
 
     ws.onmessage = (event) => {
         const response = JSON.parse(event.data as string);
-        console.log('Nhận dữ liệu từ máy chủ:', response);
         switch (response.event) {
             case "LOGIN": {
                 if (response.status === "success") {
                     localStorage.setItem("username", username)
+                    localStorage.setItem("reLoginCode", response.data.RE_LOGIN_CODE)
                     navigate('/chat');
                 } else if (response.status === "error") {
                     setErrorMsg(response.mes);
@@ -59,24 +59,22 @@ function LoginForm() {
     };
 
     const handleLogin = () => {
-
-       if(username.trim()!=="" && password.trim()!==""){
-           dispatch(
-               login({
-                   user: username,
-                   pass: password,
-               })
-
-           )
-       }else{
-           setErrorMsg("Please type your username and password");
-       }
-
-
+        if (username.trim() !== "" && password.trim() !== "") {
+            dispatch(
+                login({
+                    user: username,
+                    pass: password
+                })
+            )
+        } else {
+            setErrorMsg("Please type your username and password");
+        }
     }
+
     const handleChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
     }
+
     const handleEnterPass = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleLogin();
@@ -86,10 +84,11 @@ function LoginForm() {
     return (
         <div className="login-form-container">
             <h1>Login Form</h1>
-            <input type="text" value={username}  required={true} onChange={handleChangeUsername} placeholder="Username"
+            <input type="text" value={username} required={true} onChange={handleChangeUsername} placeholder="Username"
                    className="input-field"/>
             <br/><br/>
-            <input type="password" required={true} onKeyPress={handleEnterPass} onChange={(e) => setPassword(e.target.value)}
+            <input type="password" required={true} onKeyPress={handleEnterPass}
+                   onChange={(e) => setPassword(e.target.value)}
                    placeholder="Password"
                    className="input-field"/>
             <br/><br/>

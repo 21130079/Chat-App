@@ -4,7 +4,9 @@ import ChatBox from "../../components/ChatBox/chat-box";
 import "./chat-window.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import {getUserList, ws} from "../../api/websocket-api";
+import {getUserList, reLogin, ws} from "../../api/websocket-api";
+import {login} from "../../redux/action";
+import {useNavigate} from "react-router-dom";
 
 interface User {
     name: string;
@@ -14,19 +16,40 @@ interface User {
 
 
 function ChatWindow() {
+    const username: string = localStorage.getItem("username") ?? '';
+    const reLoginCode: string = localStorage.getItem("reLoginCode") ?? '';
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        getUserList();
+        // getUserList();
+
+        ws.onopen = () => {
+            getUserList();
+        };
+
+        ws.onclose = () => {
+            reLogin({
+                user: username,
+                code: reLoginCode,
+            })
+        }
+
         ws.onmessage = (event) => {
-            try {
-                const response = JSON.parse(event.data as string);
-                if (response.event === "GET_USER_LIST") {
+            const response = JSON.parse(event.data as string);
+            switch (response.event) {
+                case "GET_USER_LIST": {
                     setUsers(response.data);
+                    break;
                 }
-            } catch (error) {
-                console.error("Error parsing WebSocket message:", error);
+                case "RE_LOGIN": {
+                    if (response.status === 'error') {
+                        navigate('/');
+                    }
+                    break;
+                }
             }
         };
     }, []);
@@ -37,8 +60,13 @@ function ChatWindow() {
 
     return (
         <div className="chat-window-container">
-            <ChatList users={users} onUserSelect={handleUserSelect}/>
-            <ChatBox user={selectedUser}/>
+            <ChatList users={users}
+                      onUserSelect={handleUserSelect}
+                      isMessageChange={isMessageChange}
+                      setIsMessageChange={setIsMessageChange}/>
+            <ChatBox user={selectedUser}
+                     isMessageChange={isMessageChange}
+                     setIsMessageChange={setIsMessageChange}/>
         </div>
     );
 }
