@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
 import group from '../../assets/images/group.png';
@@ -11,15 +11,16 @@ interface User {
 }
 
 interface ChatListProps {
-    users: User[];
-    onUserSelect: (user: User) => void;
+    users: User[],
+    onUserSelect: (user: User) => void,
+    setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void,
+    isMessageChange?: boolean
 }
 
-function ChatList({ users, onUserSelect}: ChatListProps) {
+function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange}: ChatListProps) {
     const [searchText, setSearchText] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const username = localStorage.getItem('username') as string;
-
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
@@ -40,7 +41,7 @@ function ChatList({ users, onUserSelect}: ChatListProps) {
         <div className="chat-list">
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
-                    <img src={typing} alt="avatar" />
+                    <img src={typing} alt="avatar"/>
                     <div className="info">
                         <h4>{username}</h4>
                         <p className="status">Online</p>
@@ -59,25 +60,27 @@ function ChatList({ users, onUserSelect}: ChatListProps) {
             </div>
 
             <div className="chat-list__search">
-                <input type="text" placeholder="Search on Chat" onChange={handleSearch} value={searchText} />
+                <input type="text" placeholder="Search on Chat" onChange={handleSearch} value={searchText}/>
             </div>
 
             <div className="chat-list__content">
-                {filteredUsers.map((user, index) => (
-                    <div key={index} className="chat-list__content-user" onClick={() => onUserSelect(user)}>
-                        <div className="avatar">
-                            {user.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="info-message">
-                            <div className="info">
-                                <h4>{user.name}</h4>
+                {
+                    filteredUsers.map((user, index) => (
+                        <div key={index} className="chat-list__content-user" onClick={() => onUserSelect(user)}>
+                            <div className="avatar">
+                                {user.name.charAt(0).toUpperCase()}
                             </div>
-                            <div className="chat-list-message">
-                                <p>{user.actionTime}</p>
+                            <div className="info-message">
+                                <div className="info">
+                                    <h4>{user.name}</h4>
+                                </div>
+                                <div className="chat-list-message">
+                                    <p>{user.actionTime}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                }
             </div>
         </div>
     );

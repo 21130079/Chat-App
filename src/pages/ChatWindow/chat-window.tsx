@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import ChatList from "../../components/ChatList/chat-list";
 import ChatBox from "../../components/ChatBox/chat-box";
 import "./chat-window.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import {getUserList, ws} from "../../api/websocket-api";
+import {getUserList, reLogin, ws} from "../../api/websocket-api";
+import {login} from "../../redux/action";
+import {useNavigate} from "react-router-dom";
 
 interface User {
     name: string;
@@ -14,22 +16,49 @@ interface User {
 
 
 function ChatWindow() {
+    const username: string = localStorage.getItem("username") ?? '';
+    const reLoginCode: string = localStorage.getItem("reLoginCode") ?? '';
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
+    const navigate = useNavigate();
+
+    console.log(ws.readyState)
 
     useEffect(() => {
-         getUserList();
-                ws.onmessage = (event) => {
-                    try {
-                        const response = JSON.parse(event.data as string);
-                        if (response.event === "GET_USER_LIST") {
-                            setUsers(response.data);
-                        }
-                    } catch (error) {
-                        console.error("Error parsing WebSocket message:", error);
-                    }
-                };
+        if (ws.readyState === WebSocket.OPEN) {
+            getUserList();
+        }
 
+        ws.onopen = () => {
+            getUserList();
+        }
+
+        ws.onmessage = (event) => {
+            const response = JSON.parse(event.data as string);
+            console.log(response)
+            switch (response.event) {
+                case "GET_USER_LIST": {
+                    setUsers(response.data);
+                    break;
+                }
+                case "RE_LOGIN": {
+                    if (response.status === 'error') {
+                        navigate('/');
+                    }
+                    break;
+                }
+                case "AUTH": {
+                    if (response.status === 'error') {
+                        reLogin({
+                            user: username,
+                            code: reLoginCode
+                        })
+                        getUserList();
+                    }
+                }
+            }
+        };
     }, []);
 
     const handleUserSelect = (user: User) => {
@@ -38,8 +67,13 @@ function ChatWindow() {
 
     return (
         <div className="chat-window-container">
-            <ChatList users={users} onUserSelect={handleUserSelect}  />
-            <ChatBox user={selectedUser} />
+            <ChatList users={users}
+                      onUserSelect={handleUserSelect}
+                      isMessageChange={isMessageChange}
+                      setIsMessageChange={setIsMessageChange}/>
+            <ChatBox user={selectedUser}
+                     isMessageChange={isMessageChange}
+                     setIsMessageChange={setIsMessageChange}/>
         </div>
     );
 }

@@ -1,11 +1,10 @@
 import {w3cwebsocket} from 'websocket';
 
 // WebSocket URL
-const wsUrl :string = 'ws://140.238.54.136:8080/chat/chat';
+const wsUrl: string = 'ws://140.238.54.136:8080/chat/chat';
 
 // Connect to WebSocket server
 export let ws = new w3cwebsocket(wsUrl);
-
 
 // Function to send login data
 export const sendLogin = (data: { user: string; pass: string }) => {
@@ -23,7 +22,7 @@ export const sendLogin = (data: { user: string; pass: string }) => {
 }
 
 // kiểm tra tình trạng online (test thử không hoạt động)
-export const checkUser = (data: { user: string}) => {
+export const checkUser = (data: { user: string }) => {
     const action = {
         action: 'onchat',
         data: {
@@ -36,7 +35,7 @@ export const checkUser = (data: { user: string}) => {
     ws.send(JSON.stringify(action));
 }
 
-export const register = (data: { user: string,pass:string}) => {
+export const register = (data: { user: string, pass: string }) => {
     const action = {
         action: 'onchat',
         data: {
@@ -49,6 +48,7 @@ export const register = (data: { user: string,pass:string}) => {
     };
     ws.send(JSON.stringify(action));
 }
+
 // Function to re-login a user
 export const reLogin = (data: { user: string, code: string }) => {
     const action = {
