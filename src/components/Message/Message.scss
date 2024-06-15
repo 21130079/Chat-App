@@ -17,7 +17,7 @@ $messageColor: white;
     align-items: center;
 
     .main-message {
-      p {
+      div {
         display: flex;
         align-items: center;
         flex-direction: row;
@@ -34,6 +34,14 @@ $messageColor: white;
           height: 30px;
           margin-right: 10px;
         }
+      }
+      .send-image{
+        max-height: 100px;
+        box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
+        -webkit-box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
+        -moz-box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
+        margin-top: 2px;
+        margin-bottom: 20px;
       }
     }
 

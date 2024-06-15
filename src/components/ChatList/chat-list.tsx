@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
-import group from '../../assets/images/group.png';
-import {checkUser, getUserList, logout, ws} from "../../api/websocket-api";
+import {logout} from "../../api/websocket-api";
 
 interface User {
     name: string;

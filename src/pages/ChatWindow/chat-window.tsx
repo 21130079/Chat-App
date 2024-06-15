@@ -36,7 +36,7 @@ function ChatWindow() {
 
         ws.onmessage = (event) => {
             const response = JSON.parse(event.data as string);
-            console.log(response)
+
             switch (response.event) {
                 case "GET_USER_LIST": {
                     setUsers(response.data);
