@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import "./chat-box.scss";
 import typing from '../../assets/images/typing.gif';
+import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 import {
     checkUser,
     getPeopleChatMessages,
@@ -10,6 +12,8 @@ import {
 } from "../../api/websocket-api";
 import Message from "../Message/Message";
 import OwnMessage from "../OwnMessage/OwnMessage";
+import firebase from "firebase/compat";
+import {storage} from "../firebase";
 
 interface User {
     name: string;
@@ -31,7 +35,9 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const [isSend, setIsSend] = useState<boolean>();
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
-
+    const [urlImage, setUrlImage] = useState<string>("");
+    const [urlImageFooter, seturlImageFooter] = useState<string>("");
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
     useEffect(() => {
         scrollToBottom();
     }, [boxChatData]);
@@ -93,26 +99,43 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         setMessage(e.target.value);
     }
 
-    const handleSendMessage = () => {
-        if (message && user && message.trim().length > 0) {
+    const handleSendMessage = async () => {
+        let imageUrl = "";
+        if (selectedImage) {
+            const imageRef = ref(storage, `images/${uuidv4()}`);
+            try {
+                await uploadBytes(imageRef, selectedImage);
+                imageUrl = await getDownloadURL(imageRef);
+                setUrlImage(imageUrl);
+                seturlImageFooter("")
+                setSelectedImage(null);
+            } catch (error) {
+                console.error("Error uploading image: ", error);
+                return;
+            }
+        }
+
+        if ((message && user && message.trim().length > 0) || imageUrl.trim().length > 0) {
             const messageObject = {
-                image: selectedImage,
+                image: imageUrl,
                 message: message
             };
-            if (isRoom) {
+            if (isRoom && user) {
                 sendRoomChat({
                     to: user.name,
                     mes: JSON.stringify(messageObject)
                 });
             } else {
-                sendPeopleChat({
-                    to: user.name,
-                    mes: JSON.stringify(messageObject)
-                });
+               if(user){
+                   sendPeopleChat({
+                       to: user.name,
+                       mes: JSON.stringify(messageObject)
+                   });
+               }
             }
             setIsSend(!isSend);
             setMessage("");
-            setSelectedImage(null);
+            setUrlImage("");
         }
     }
 
@@ -121,15 +144,18 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             handleSendMessage();
         }
     }
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
     const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedImage(reader.result as string);
-            };
             reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                seturlImageFooter(reader.result as string);
+            };
+
+            setSelectedImage(file);
+
         }
     };
 
@@ -166,7 +192,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             <div className="chat-box__footer">
                 <div className="chat-box__footer-container">
                     <div className="chat-box__footer-file">
-                        {selectedImage && <img src={selectedImage}/>}
+                        {selectedImage && <img src={urlImageFooter}/>}
                     </div>
                     <div className="chat-box__footer-typing">
                         <input

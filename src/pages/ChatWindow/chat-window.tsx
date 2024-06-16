@@ -5,7 +5,6 @@ import "./chat-window.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {getUserList, reLogin, ws} from "../../api/websocket-api";
-import {login} from "../../redux/action";
 import {useNavigate} from "react-router-dom";
 
 interface User {
