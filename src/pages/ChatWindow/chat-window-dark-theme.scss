@@ -1,4 +1,4 @@
-$mainColor: #c3c3c3;
+$mainColor: #1e1f22;
 
 body {
   display: flex;
@@ -7,10 +7,10 @@ body {
   height: 100vh;
   width: 100vw;
 
-  background: linear-gradient(145deg, #a9a9a9, white, #a9a9a9);
+  background: linear-gradient(145deg, #a9a9a9, $mainColor, #a9a9a9);
 }
 
-.chat-window-container {
+.chat-window-container.dark-theme {
   display: flex;
   width: 90vw;
   height: 90vh;

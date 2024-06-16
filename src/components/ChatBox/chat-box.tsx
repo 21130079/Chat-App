@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import "./chat-box.scss";
+import "./chat-box-dark-theme.scss";
+import "./chat-box-light-theme.scss";
 import typing from '../../assets/images/typing.gif';
 import {
     checkUser,
@@ -34,8 +35,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
     const [emojiOpened, setEmojiOpened] = useState<boolean>(false);
-
-    console.log(message)
 
     useEffect(() => {
         scrollToBottom();
@@ -129,7 +128,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     }
 
     return (
-        <div className="chat-box">
+        <div className="chat-box dark-theme">
             <div className="chat-box__header">
                 <div className="chat-box__header-user">
                     <img src={typing} alt="avatar"/>

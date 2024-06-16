@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import "./chat-list.scss";
+import "./chat-list-light-theme.scss";
+import "./chat-list-dark-theme.scss";
 import typing from '../../assets/images/typing.gif';
 import group from '../../assets/images/group.png';
 import {checkUser, getUserList, logout, ws} from "../../api/websocket-api";
@@ -38,7 +39,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange}: Ch
     const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
 
     return (
-        <div className="chat-list">
+        <div className="chat-list dark-theme">
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
                     <img src={typing} alt="avatar"/>
