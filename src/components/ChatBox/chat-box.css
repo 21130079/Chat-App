@@ -95,6 +95,14 @@
   margin: 0 5px;
   cursor: pointer;
 }
+.chat-box .chat-box__footer .chat-box__footer-container .emoji {
+  position: relative;
+}
+.chat-box .chat-box__footer .chat-box__footer-container .emoji .emoji-picker {
+  position: absolute;
+  bottom: 40px;
+  right: 0;
+}
 .chat-box .chat-box__footer .chat-box__footer-container .send-button {
   display: inline-flex;
   align-items: flex-end;

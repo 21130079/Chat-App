@@ -120,6 +120,16 @@ $mainBoxChatColor: #f1f1f1;
         cursor: pointer;
       }
 
+      .emoji {
+        position: relative;
+
+        .emoji-picker {
+          position: absolute;
+          bottom: 40px;
+          right: 0;
+        }
+      }
+
       .send-button {
         display: inline-flex;
         align-items: flex-end;

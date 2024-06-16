@@ -10,6 +10,8 @@ import {
 } from "../../api/websocket-api";
 import Message from "../Message/Message";
 import OwnMessage from "../OwnMessage/OwnMessage";
+import EmojiPicker, {EmojiClickData} from "emoji-picker-react";
+import {MouseDownEvent} from "emoji-picker-react/dist/config/config";
 
 interface User {
     name: string;
@@ -31,6 +33,9 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const [isSend, setIsSend] = useState<string>();
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
+    const [emojiOpened, setEmojiOpened] = useState<boolean>(false);
+
+    console.log(message)
 
     useEffect(() => {
         scrollToBottom();
@@ -115,6 +120,14 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         }
     }
 
+    const emojiOpenHandler = () => {
+        setEmojiOpened(!emojiOpened);
+    }
+
+    const emojiHandler = (e: EmojiClickData) => {
+        setMessage(prev => prev + e.emoji);
+    }
+
     return (
         <div className="chat-box">
             <div className="chat-box__header">
@@ -153,8 +166,16 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                         onKeyPress={handleEnterMessage}
                         onChange={handleTypeMessage}
                     />
+
                     <i className="bi bi-paperclip"></i>
-                    <i className="bi bi-emoji-smile"></i>
+
+                    <div className="emoji">
+                        <i className="bi bi-emoji-smile" onClick={emojiOpenHandler}></i>
+                        <div className="emoji-picker">
+                            <EmojiPicker open={emojiOpened} onEmojiClick={emojiHandler}/>
+                        </div>
+                    </div>
+
                     <button className="send-button" onClick={handleSendMessage}>
                         Send
                         <i className="bi bi-arrow-right-circle-fill"></i>
