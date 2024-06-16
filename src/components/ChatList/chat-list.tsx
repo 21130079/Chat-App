@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
 import group from '../../assets/images/group.png';
-import {checkUser, getUserList, logout, ws} from "../../api/websocket-api";
+import {checkUser, getUserList,createRoom, joinRoom, logout, ws} from "../../api/websocket-api";
 
 interface User {
     name: string;
@@ -24,16 +24,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange}: Ch
     const [menuPosition, setMenuPosition] = useState<{left: number, top: number}>({left: 0, top: 0});
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [isAddingFriend, setIsAddingFriend] = useState(true);
-
-    const handleAddClick = () => {
-        if (isAddingFriend) {
-            // Thêm bạn bè
-        } else {
-            // Thực hiện hành động khác
-        }
-    };
-
-
+    
     const username = localStorage.getItem('username') as string;
 
     const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +60,14 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange}: Ch
     const handleCloseAdd=()=>{
         setIsAddOpen(!isAddOpen)
     }
+    const handleAddClick = () => {
+        const roomDetails = { name: addText };
+        if (isAddingFriend) {
+            joinRoom(roomDetails);
+        } else {
+            createRoom(roomDetails);
+        }
+    };
 
 
     const handleAddInput=(e: React.ChangeEvent<HTMLInputElement>)=>{
@@ -112,7 +111,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange}: Ch
             {isAddOpen && (
                 <div className="chat-list__add">
                     <input type="text" placeholder={isAddingFriend ? "Input People Name" : "Input Group Name"} onChange={handleAddInput} value={addText}/>
-                    <button className="add">Add</button>
+                    <button className="add" onClick={handleAddClick}>Add</button>
                     <button className="cancel" onClick={handleCloseAdd}>Cancel</button>
                 </div>)}
 
