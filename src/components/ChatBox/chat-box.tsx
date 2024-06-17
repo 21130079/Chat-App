@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import "./chat-box.scss";
 import typing from '../../assets/images/typing.gif';
+import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 import {
     checkUser,
     getPeopleChatMessages,
@@ -10,6 +12,8 @@ import {
 } from "../../api/websocket-api";
 import Message from "../Message/Message";
 import OwnMessage from "../OwnMessage/OwnMessage";
+import firebase from "firebase/compat";
+import {storage} from "../firebase";
 
 interface User {
     name: string;
@@ -28,10 +32,12 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const [isRoom, setIsRoom] = useState(true);
     const [boxChatData, setBoxChatData] = useState<any>(null);
     const [message, setMessage] = useState<string>('');
-    const [isSend, setIsSend] = useState<string>();
+    const [isSend, setIsSend] = useState<boolean>();
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
-
+    const [urlImage, setUrlImage] = useState<string>("");
+    const [urlImageFooter, seturlImageFooter] = useState<string>("");
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
     useEffect(() => {
         scrollToBottom();
     }, [boxChatData]);
@@ -53,10 +59,12 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             const response = JSON.parse(event.data as string);
             switch (response.event) {
                 case "GET_ROOM_CHAT_MES": {
+                    console.log(response.data.chatData)
                     setBoxChatData(response.data.chatData)
                     break;
                 }
                 case "GET_PEOPLE_CHAT_MES": {
+
                     setBoxChatData(response.data)
                     break;
                 }
@@ -91,21 +99,43 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         setMessage(e.target.value);
     }
 
-    const handleSendMessage = () => {
-        if (message && user && message.trim().length > 0) {
-            if (isRoom) {
+    const handleSendMessage = async () => {
+        let imageUrl = "";
+        if (selectedImage) {
+            const imageRef = ref(storage, `images/${uuidv4()}`);
+            try {
+                await uploadBytes(imageRef, selectedImage);
+                imageUrl = await getDownloadURL(imageRef);
+                setUrlImage(imageUrl);
+                seturlImageFooter("")
+                setSelectedImage(null);
+            } catch (error) {
+                console.error("Error uploading image: ", error);
+                return;
+            }
+        }
+
+        if ((message && user && message.trim().length > 0) || urlImageFooter.trim().length > 0) {
+            const messageObject = {
+                image: imageUrl,
+                message: message
+            };
+            if (isRoom && user) {
                 sendRoomChat({
                     to: user.name,
-                    mes: message
+                    mes: JSON.stringify(messageObject)
                 });
             } else {
-                sendPeopleChat({
-                    to: user.name,
-                    mes: message
-                });
+               if(user){
+                   sendPeopleChat({
+                       to: user.name,
+                       mes: JSON.stringify(messageObject)
+                   });
+               }
             }
-            setIsSend(Date.now() + "");
+            setIsSend(!isSend);
             setMessage("");
+            setUrlImage("");
         }
     }
 
@@ -114,6 +144,23 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             handleSendMessage();
         }
     }
+
+    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                seturlImageFooter(reader.result as string);
+            };
+
+            setSelectedImage(file);
+
+        }
+    };
+    const handleCloseImage =() => {
+        seturlImageFooter("");
+    };
 
     return (
         <div className="chat-box">
@@ -135,30 +182,48 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                     boxChatData && boxChatData.slice().reverse()
                         .filter((chatData: any) => chatData.mes.trim().length > 0)
                         .map((chatData: any) => {
-                            return username === chatData.name
+                            return (username === chatData.name
                                 ?
                                 <OwnMessage key={chatData.id} message={chatData}/>
                                 :
-                                <Message key={chatData.id} message={chatData}/>
+                                <Message key={chatData.id} message={chatData}/>)
+
                         })
                 }
             </div>
 
             <div className="chat-box__footer">
                 <div className="chat-box__footer-container">
-                    <input
-                        type="text"
-                        placeholder="Type a message..."
-                        value={message}
-                        onKeyPress={handleEnterMessage}
-                        onChange={handleTypeMessage}
-                    />
-                    <i className="bi bi-paperclip"></i>
-                    <i className="bi bi-emoji-smile"></i>
-                    <button className="send-button" onClick={handleSendMessage}>
-                        Send
-                        <i className="bi bi-arrow-right-circle-fill"></i>
-                    </button>
+                    <div className="chat-box__footer-file">
+                        {urlImageFooter && <div>
+                            <i className="bi bi-x-circle" onClick={handleCloseImage}></i>
+                            <img src={urlImageFooter}/></div>}
+                    </div>
+                    <div className="chat-box__footer-typing">
+                        <input
+                            type="text"
+                            placeholder="Type a message..."
+                            value={message}
+                            onKeyPress={handleEnterMessage}
+                            onChange={handleTypeMessage}
+                        />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            id="fileInput"
+                            style={{display: 'none'}}
+                        />
+                        <label htmlFor="fileInput">
+                            <i className="bi bi-image"></i>
+                        </label>
+                        <i className="bi bi-paperclip"></i>
+                        <i className="bi bi-emoji-smile"></i>
+                        <button className="send-button" onClick={handleSendMessage}>
+                            Send
+                            <i className="bi bi-arrow-right-circle-fill"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

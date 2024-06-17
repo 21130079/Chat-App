@@ -5,7 +5,6 @@ import "./chat-window.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {getUserList, reLogin, ws} from "../../api/websocket-api";
-import {login} from "../../redux/action";
 import {useNavigate} from "react-router-dom";
 
 interface User {
@@ -36,7 +35,7 @@ function ChatWindow() {
 
         ws.onmessage = (event) => {
             const response = JSON.parse(event.data as string);
-            console.log(response)
+
             switch (response.event) {
                 case "GET_USER_LIST": {
                     setUsers(response.data);

@@ -35,7 +35,28 @@ function Message({ message }: MessageProps) {
             timeRef.current.style.display = 'none';
         }
     }
-
+    const mes = (() => {
+        try {
+            if (message?.mes) {
+                const parsedMessage = JSON.parse(message.mes);
+                return parsedMessage.message;
+            }
+            return message?.mes;
+        } catch (error) {
+            return message?.mes;
+        }
+    })();
+    const image = (() => {
+        try {
+            if (message?.mes) {
+                const parsedMessage = JSON.parse(message.mes);
+                return parsedMessage.image;
+            }
+            return null;
+        } catch (error) {
+            return null;
+        }
+    })();
     return (
         <div className="message-container">
             <div className="message-author">
@@ -44,10 +65,11 @@ function Message({ message }: MessageProps) {
 
             <div className="message-content">
                 <div className="main-message" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    <p>
+                    <div>
                         <img src={typing} alt=""/>
-                        {message?.mes}
-                    </p>
+                        {mes}
+                    </div>
+                    <img className="send-image" src={image} alt=""/>
                 </div>
 
                 <div className="time-message" ref={timeRef}>
