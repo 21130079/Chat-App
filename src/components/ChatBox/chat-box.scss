@@ -103,10 +103,22 @@ $mainBoxChatColor: #f1f1f1;
         margin: 5px 20px;
         display: flex;
         align-items: start;
-        img{
-          margin-top: 10px;
-          max-height: 100px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+
+        div{
+          display: grid;
+          img{
+            margin-top: 10px;
+            max-height: 100px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+          }
+          i{
+            justify-self: right;
+            position: absolute;
+            margin-top: 8px;
+            margin-right: 3px;
+            font-size: 22px;
+            cursor: pointer;
+          }
         }
       }
       .chat-box__footer-typing {

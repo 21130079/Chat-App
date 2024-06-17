@@ -115,7 +115,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             }
         }
 
-        if ((message && user && message.trim().length > 0) || imageUrl.trim().length > 0) {
+        if ((message && user && message.trim().length > 0) || urlImageFooter.trim().length > 0) {
             const messageObject = {
                 image: imageUrl,
                 message: message
@@ -158,6 +158,9 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
 
         }
     };
+    const handleCloseImage =() => {
+        seturlImageFooter("");
+    };
 
     return (
         <div className="chat-box">
@@ -192,7 +195,9 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             <div className="chat-box__footer">
                 <div className="chat-box__footer-container">
                     <div className="chat-box__footer-file">
-                        {selectedImage && <img src={urlImageFooter}/>}
+                        {urlImageFooter && <div>
+                            <i className="bi bi-x-circle" onClick={handleCloseImage}></i>
+                            <img src={urlImageFooter}/></div>}
                     </div>
                     <div className="chat-box__footer-typing">
                         <input
