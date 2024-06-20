@@ -118,13 +118,18 @@
   cursor: pointer;
 }
 .chat-list .chat-list__add .add {
-  margin: 10px;
-  width: 90px;
-  height: 50px;
+  margin: 5px;
+  width: 50px;
+  height: 30px;
+}
+.chat-list .chat-list__add .join {
+  width: 50px;
+  height: 30px;
 }
 .chat-list .chat-list__add .cancel {
-  width: 90px;
-  height: 50px;
+  margin: 5px;
+  width: 50px;
+  height: 30px;
 }
 .chat-list .chat-list__content {
   align-items: center;

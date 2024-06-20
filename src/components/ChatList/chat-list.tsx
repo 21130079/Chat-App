@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
-import group from '../../assets/images/group.png';
 import {checkUser, getUserList,createRoom, joinRoom, logout, ws} from "../../api/websocket-api";
+import {current} from "@reduxjs/toolkit";
 
 interface User {
     name: string;
@@ -14,10 +14,12 @@ interface ChatListProps {
     users: User[],
     onUserSelect: (user: User) => void,
     setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    isMessageChange?: boolean
+    isMessageChange?: boolean,
+    onUsersChange?: (users: User[]) => void
 }
 
-function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange}: ChatListProps) {
+
+function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onUsersChange}: ChatListProps) {
     const [searchText, setSearchText] = useState('');
     const [addText, setAddText] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -61,11 +63,24 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange}: Ch
         setIsAddOpen(!isAddOpen)
     }
     const handleAddClick = () => {
-        const roomDetails = { name: addText };
+        const name = { name: addText };
         if (isAddingFriend) {
-            joinRoom(roomDetails);
+            if (onUsersChange) {
+                onUsersChange([{name: name.name, type: 0, actionTime: new Date(Date.now()).toLocaleString()}, ...users]);
+            }
         } else {
-            createRoom(roomDetails);
+            createRoom(name);
+            if (onUsersChange) {
+                onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString()}, ...users]);
+            }
+        }
+    };
+
+    const handleJoinClick = () => {
+        const name = { name: addText };
+        joinRoom(name);
+        if (onUsersChange) {
+            onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString()}, ...users]);
         }
     };
 
@@ -79,7 +94,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange}: Ch
         window.location.href = '/';
     };
 
-    const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
+    let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
 
     return (
         <div className="chat-list">
@@ -110,8 +125,10 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange}: Ch
             </div>
             {isAddOpen && (
                 <div className="chat-list__add">
-                    <input type="text" placeholder={isAddingFriend ? "Input People Name" : "Input Group Name"} onChange={handleAddInput} value={addText}/>
-                    <button className="add" onClick={handleAddClick}>Add</button>
+                    <input type="text" placeholder={isAddingFriend ? "Input People Name" : "Input Group Name"}
+                           onChange={handleAddInput} value={addText}/>
+                    <button className="add" onClick={handleAddClick}>{isAddingFriend ? "Add" : "Create"}</button>
+                    {!isAddingFriend && <button className="join" onClick={handleJoinClick}>Join</button>}
                     <button className="cancel" onClick={handleCloseAdd}>Cancel</button>
                 </div>)}
 

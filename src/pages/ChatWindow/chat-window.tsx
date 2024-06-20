@@ -67,10 +67,13 @@ function ChatWindow() {
 
     return (
         <div className="chat-window-container">
-            <ChatList users={users}
-                      onUserSelect={handleUserSelect}
-                      isMessageChange={isMessageChange}
-                      setIsMessageChange={setIsMessageChange}/>
+            <ChatList
+                users={users}
+                onUserSelect={handleUserSelect}
+                setIsMessageChange={setIsMessageChange}
+                isMessageChange={isMessageChange}
+                onUsersChange={setUsers}
+            />
             <ChatBox user={selectedUser}
                      isMessageChange={isMessageChange}
                      setIsMessageChange={setIsMessageChange}/>
