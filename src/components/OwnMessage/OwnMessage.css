@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
 }
-.own-message-container .message-content .main-message p {
+.own-message-container .message-content .main-message div {
   display: flex;
   align-items: center;
   flex-direction: row-reverse;
@@ -26,10 +26,18 @@
   -moz-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
   background-color: #d0fee1;
 }
-.own-message-container .message-content .main-message p img {
+.own-message-container .message-content .main-message div img {
   width: 30px;
   height: 30px;
   margin-left: 10px;
+}
+.own-message-container .message-content .main-message .send-image {
+  max-height: 100px;
+  box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
+  margin-top: 2px;
+  margin-bottom: 20px;
 }
 .own-message-container .message-content .time-message {
   display: none;

@@ -93,45 +93,67 @@ $mainBoxChatColor: #f1f1f1;
 
   .chat-box__footer {
     border-radius: 0 0 10px 0;
-
     background-color: $mainBoxChatColor;
 
     .chat-box__footer-container {
-      display: flex;
-      align-items: center;
       margin: auto 20px 20px;
-      justify-content: space-between;
-      height: 50px;
-      border-radius: 7px;
       background-color: $mainFooterColor;
-
-      input {
-        flex: 1;
-        border: none;
-        outline: none;
-        margin: 20px;
-        font-size: 17px;
-      }
-
-      i {
+      border-radius: 7px;
+      .chat-box__footer-file {
+        margin: 5px 20px;
         display: flex;
-        font-size: 1.4rem;
-        margin: 0 5px;
-        cursor: pointer;
+        align-items: start;
+
+        div{
+          display: grid;
+          img{
+            margin-top: 10px;
+            max-height: 100px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+          }
+          i{
+            justify-self: right;
+            position: absolute;
+            margin-top: 8px;
+            margin-right: 3px;
+            font-size: 22px;
+            cursor: pointer;
+          }
+        }
       }
-
-      .send-button {
-        display: inline-flex;
-        align-items: flex-end;
-        padding: 5px 20px;
-        margin: 0 20px;
-        border-radius: 10px;
-        border: none;
-
-        background-color: pink;
+      .chat-box__footer-typing {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 50px;
+        input {
+          flex: 1;
+          border: none;
+          outline: none;
+          margin: 20px;
+          font-size: 17px;
+        }
 
         i {
+          display: flex;
           font-size: 1.4rem;
+          margin: 0 5px;
+          cursor: pointer;
+        }
+
+        .send-button {
+          display: inline-flex;
+          align-items: flex-end;
+          padding: 5px 20px;
+          margin: 0 20px;
+          border-radius: 10px;
+          border: none;
+
+          background-color: pink;
+
+          i {
+            font-size: 1.4rem;
+          }
         }
       }
     }

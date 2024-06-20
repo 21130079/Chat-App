@@ -36,7 +36,29 @@ function OwnMessage({message}: MessageProps) {
             timeRef.current.style.display = 'none';
         }
     }
-
+    const mes = (() => {
+        try {
+            if (message?.mes) {
+                const parsedMessage = JSON.parse(message.mes);
+                return parsedMessage.message;
+            }
+            return message?.mes;
+        } catch (error) {
+            return message?.mes;
+        }
+    })();
+    const image = (() => {
+        try {
+            if (message?.mes) {
+                const parsedMessage = JSON.parse(message.mes);
+                console.log(parsedMessage)
+                return parsedMessage.image;
+            }
+            return null;
+        } catch (error) {
+            return null;
+        }
+    })();
     return (
         <div className="own-message-container">
             <div className="message-author">
@@ -48,13 +70,15 @@ function OwnMessage({message}: MessageProps) {
                     <p>
                         {message?.createAt}
                     </p>
+
                 </div>
 
                 <div className="main-message" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    <p>
+                    <div>
                         <img src={typing} alt=""/>
-                        {message?.mes}
-                    </p>
+                        {mes}
+                    </div>
+                    <img className="send-image" src={image} alt=""/>
                 </div>
             </div>
         </div>

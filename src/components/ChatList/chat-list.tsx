@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
 import {checkUser, getUserList,createRoom, joinRoom, logout, ws} from "../../api/websocket-api";
-import {current} from "@reduxjs/toolkit";
 
 interface User {
     name: string;
