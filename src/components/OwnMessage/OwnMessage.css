@@ -31,7 +31,7 @@
   height: 30px;
   margin-left: 10px;
 }
-.own-message-container .message-content .main-message .send-image {
+.own-message-container .message-content .main-message .send-image, .own-message-container .message-content .main-message .send-video {
   max-height: 100px;
   box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
