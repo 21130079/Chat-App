@@ -51,8 +51,6 @@
   cursor: pointer;
 }
 .chat-list .chat-list__header .chat-list__header-icons .dropdown-menu {
-  left: 500px;
-  top: 70px;
   display: block;
   position: absolute;
   background-color: #f9f9f9;
@@ -101,6 +99,38 @@
   font-size: 1.4rem;
   cursor: pointer;
 }
+.chat-list .chat-list__add {
+  display: flex;
+  align-items: center;
+  padding: 10px 30px;
+  border-radius: 0 0 0 0;
+  background-color: #ffffff;
+}
+.chat-list .chat-list__add input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  height: 6vh;
+  outline: none;
+}
+.chat-list .chat-list__add i {
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.chat-list .chat-list__add .add {
+  margin: 5px;
+  width: 50px;
+  height: 30px;
+}
+.chat-list .chat-list__add .join {
+  width: 50px;
+  height: 30px;
+}
+.chat-list .chat-list__add .cancel {
+  margin: 5px;
+  width: 50px;
+  height: 30px;
+}
 .chat-list .chat-list__content {
   align-items: center;
   overflow: auto;
@@ -145,17 +175,6 @@
   background-color: #535353;
   color: white;
   cursor: pointer;
-}
-
-.menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  z-index: 1;
 }
 
 /*# sourceMappingURL=chat-list.css.map */
