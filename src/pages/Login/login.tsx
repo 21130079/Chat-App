@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, createContext, useContext, useState} from 'react';
 import './login.css';
 import typing from '../../assets/images/typing.gif';
 import {login} from '../../redux/action';
@@ -11,7 +11,6 @@ function Login() {
     const handleFormSwitch = (isLogin: boolean) => {
         setIsLogin(isLogin);
     };
-
     return (
         <div className="container">
             <div className="box-1">

@@ -35,6 +35,18 @@ function Message({ message }: MessageProps) {
             timeRef.current.style.display = 'none';
         }
     }
+    const video = (() => {
+        try {
+            if (message?.mes) {
+                const parsedMessage = JSON.parse(message.mes);
+                console.log(parsedMessage)
+                return parsedMessage.video;
+            }
+            return null;
+        } catch (error) {
+            return null;
+        }
+    })();
     const mes = (() => {
         try {
             if (message?.mes) {
@@ -65,11 +77,12 @@ function Message({ message }: MessageProps) {
 
             <div className="message-content">
                 <div className="main-message" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    <div>
+                    <div className="words">
                         <img src={typing} alt=""/>
                         {mes}
                     </div>
                     <img className="send-image" src={image} alt=""/>
+                    {video && <video className="send-video" src={video} controls/>}
                 </div>
 
                 <div className="time-message" ref={timeRef}>

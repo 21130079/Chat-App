@@ -23,17 +23,19 @@
   -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
   background-color: white;
+  width: fit-content;
+  max-width: 100px;
 }
 .message-container .message-content .main-message div img {
   width: 30px;
   height: 30px;
   margin-right: 10px;
 }
-.message-container .message-content .main-message .send-image {
+.message-container .message-content .main-message .send-image, .message-container .message-content .main-message .send-video {
   max-height: 100px;
-  box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
-  -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
   margin-top: 2px;
   margin-bottom: 20px;
 }

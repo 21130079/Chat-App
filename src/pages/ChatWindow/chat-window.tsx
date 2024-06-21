@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import ChatList from "../../components/ChatList/chat-list";
 import ChatBox from "../../components/ChatBox/chat-box";
 import "./chat-window.scss";
@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {getUserList, reLogin, ws} from "../../api/websocket-api";
 import {useNavigate} from "react-router-dom";
+import {ReLoginContext} from "../Login/ReLoginContext";
 
 interface User {
     name: string;
@@ -15,14 +16,13 @@ interface User {
 
 
 function ChatWindow() {
-    const username: string = localStorage.getItem("username") ?? '';
     const reLoginCode: string = localStorage.getItem("reLoginCode") ?? '';
+    const username: string = localStorage.getItem("username") ?? '';
+    // const reLoginCode: string = localStorage.getItem("reLoginCode") ?? '';
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
     const navigate = useNavigate();
-
-    console.log(ws.readyState)
 
     useEffect(() => {
         if (ws.readyState === WebSocket.OPEN) {

@@ -145,12 +145,12 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                     mes: JSON.stringify(messageObject)
                 });
             } else {
-               if(user){
-                   sendPeopleChat({
-                       to: user.name,
-                       mes: JSON.stringify(messageObject)
-                   });
-               }
+                if(user){
+                    sendPeopleChat({
+                        to: user.name,
+                        mes: JSON.stringify(messageObject)
+                    });
+                }
             }
             setIsSend(!isSend);
             setMessage("");
@@ -173,9 +173,13 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                 if (file.type.startsWith('image/')) {
                     seturlImageFooter(reader.result as string);
                     setSelectedImage(file);
+                    setUrlVideoFooter("");
+                    setSelectedVideo(null);
                 } else if (file.type.startsWith('video/')) {
                     setUrlVideoFooter(reader.result as string);
                     setSelectedVideo(file);
+                    seturlImageFooter("");
+                    setSelectedImage(null);
                 }
             };
         }
@@ -183,6 +187,12 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const handleCloseMedia =() => {
         seturlImageFooter("");
         setUrlVideoFooter("");
+        setSelectedImage(null);
+        setSelectedVideo(null);
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = ''; // Đặt lại giá trị của input type file để kích hoạt lại sự kiện onChange
+        }
     };
 
     return (

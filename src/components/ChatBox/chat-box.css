@@ -82,6 +82,7 @@
   margin: 5px 20px;
   display: flex;
   align-items: start;
+  column-gap: 10px;
 }
 .chat-box .chat-box__footer .chat-box__footer-container .chat-box__footer-file div {
   display: grid;
@@ -98,6 +99,7 @@
   margin-right: 3px;
   font-size: 22px;
   cursor: pointer;
+  z-index: 2;
 }
 .chat-box .chat-box__footer .chat-box__footer-container .chat-box__footer-typing {
   display: flex;
