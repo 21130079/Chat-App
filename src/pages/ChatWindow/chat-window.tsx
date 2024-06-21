@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {getUserList, reLogin, ws} from "../../api/websocket-api";
 import {useNavigate} from "react-router-dom";
-import {ReLoginContext} from "../Login/ReLoginContext";
 
 interface User {
     name: string;

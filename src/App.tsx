@@ -3,12 +3,10 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { publicRoutes } from './routes/routes';
-import {ReLoginProvider} from "./pages/Login/ReLoginContext";
 
 function App() {
     return (
         <Router>
-            <ReLoginProvider>
                 <div className="App">
                     <Routes>
                         {publicRoutes.map((route, index) => {
@@ -17,7 +15,6 @@ function App() {
                         })}
                     </Routes>
                 </div>
-            </ReLoginProvider>
         </Router>
     );
 }
