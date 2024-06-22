@@ -25,13 +25,16 @@
   -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
   background-color: #d0fee1;
+  word-wrap: break-word;
+  word-break: break-all;
+  max-width: 500px;
 }
 .own-message-container .message-content .main-message div img {
   width: 30px;
   height: 30px;
   margin-left: 10px;
 }
-.own-message-container .message-content .main-message .send-image {
+.own-message-container .message-content .main-message .send-image, .own-message-container .message-content .main-message .send-video {
   max-height: 100px;
   box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);

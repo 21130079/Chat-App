@@ -38,6 +38,9 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const [urlImage, setUrlImage] = useState<string>("");
     const [urlImageFooter, seturlImageFooter] = useState<string>("");
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [urlVideo, setUrlVideo] = useState<string>("");
+    const [urlVideoFooter, setUrlVideoFooter] = useState<string>("");
+    const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
     useEffect(() => {
         scrollToBottom();
     }, [boxChatData]);
@@ -101,13 +104,15 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
 
     const handleSendMessage = async () => {
         let imageUrl = "";
+        let videoUrl = "";
+
         if (selectedImage) {
             const imageRef = ref(storage, `images/${uuidv4()}`);
             try {
                 await uploadBytes(imageRef, selectedImage);
                 imageUrl = await getDownloadURL(imageRef);
                 setUrlImage(imageUrl);
-                seturlImageFooter("")
+                seturlImageFooter("");
                 setSelectedImage(null);
             } catch (error) {
                 console.error("Error uploading image: ", error);
@@ -115,9 +120,23 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             }
         }
 
+        if (selectedVideo) {
+            const videoRef = ref(storage, `videos/${uuidv4()}`);
+            try {
+                await uploadBytes(videoRef, selectedVideo);
+                videoUrl = await getDownloadURL(videoRef);
+                setUrlVideo(videoUrl);
+                setUrlVideoFooter("");
+                setSelectedVideo(null);
+            } catch (error) {
+                console.error("Error uploading video: ", error);
+                return;
+            }
+        }
         if ((message && user && message.trim().length > 0) || urlImageFooter.trim().length > 0) {
             const messageObject = {
                 image: imageUrl,
+                video: videoUrl,
                 message: message
             };
             if (isRoom && user) {
@@ -126,12 +145,12 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                     mes: JSON.stringify(messageObject)
                 });
             } else {
-               if(user){
-                   sendPeopleChat({
-                       to: user.name,
-                       mes: JSON.stringify(messageObject)
-                   });
-               }
+                if(user){
+                    sendPeopleChat({
+                        to: user.name,
+                        mes: JSON.stringify(messageObject)
+                    });
+                }
             }
             setIsSend(!isSend);
             setMessage("");
@@ -145,21 +164,35 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         }
     }
 
-    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
-                seturlImageFooter(reader.result as string);
+                if (file.type.startsWith('image/')) {
+                    seturlImageFooter(reader.result as string);
+                    setSelectedImage(file);
+                    setUrlVideoFooter("");
+                    setSelectedVideo(null);
+                } else if (file.type.startsWith('video/')) {
+                    setUrlVideoFooter(reader.result as string);
+                    setSelectedVideo(file);
+                    seturlImageFooter("");
+                    setSelectedImage(null);
+                }
             };
-
-            setSelectedImage(file);
-
         }
     };
-    const handleCloseImage =() => {
+    const handleCloseMedia =() => {
         seturlImageFooter("");
+        setUrlVideoFooter("");
+        setSelectedImage(null);
+        setSelectedVideo(null);
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = ''; // Đặt lại giá trị của input type file để kích hoạt lại sự kiện onChange
+        }
     };
 
     return (
@@ -195,9 +228,13 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             <div className="chat-box__footer">
                 <div className="chat-box__footer-container">
                     <div className="chat-box__footer-file">
-                        {urlImageFooter && <div>
-                            <i className="bi bi-x-circle" onClick={handleCloseImage}></i>
-                            <img src={urlImageFooter}/></div>}
+                        {(urlImageFooter || urlVideoFooter) && (
+                            <div>
+                                <i className="bi bi-x-circle" onClick={handleCloseMedia}></i>
+                                {urlImageFooter && <img src={urlImageFooter} alt="Selected Image"/>}
+                                {urlVideoFooter && <video src={urlVideoFooter} controls/>}
+                            </div>
+                        )}
                     </div>
                     <div className="chat-box__footer-typing">
                         <input
@@ -209,8 +246,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                         />
                         <input
                             type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
+                            accept="image/*,video/*"
+                            onChange={handleFileChange}
                             id="fileInput"
                             style={{display: 'none'}}
                         />

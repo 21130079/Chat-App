@@ -103,10 +103,10 @@ $mainBoxChatColor: #f1f1f1;
         margin: 5px 20px;
         display: flex;
         align-items: start;
-
+        column-gap: 10px;
         div{
           display: grid;
-          img{
+          img,video{
             margin-top: 10px;
             max-height: 100px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
@@ -118,6 +118,7 @@ $mainBoxChatColor: #f1f1f1;
             margin-right: 3px;
             font-size: 22px;
             cursor: pointer;
+            z-index: 2;
           }
         }
       }

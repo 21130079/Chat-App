@@ -32,22 +32,25 @@ body {
   font-weight: lighter;
   letter-spacing: 2px;
   margin-top: 15%;
-}
-.content-holder h2 {
-  font-size: 34px;
-  margin: 20px auto;
-}
-.content-holder p {
-  margin: 30px auto;
-}
-.content-holder button {
-  border: none;
-  font-size: 15px;
-  padding: 10px;
-  border-radius: 6px;
-  background-color: white;
-  width: 150px;
-  margin: 20px auto;
+
+  h2 {
+    font-size: 34px;
+    margin: 20px auto;
+  }
+
+  p {
+    margin: 30px auto;
+  }
+
+  button {
+    border: none;
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: white;
+    width: 150px;
+    margin: 20px auto;
+  }
 }
 
 button {
@@ -64,11 +67,12 @@ button {
 .login-form-container {
   text-align: center;
   margin-top: 10%;
-}
-.login-form-container h1 {
-  color: #11438a;
-  font-size: 24px;
-  padding: 20px;
+
+  h1 {
+    color: #11438a;
+    font-size: 24px;
+    padding: 20px;
+  }
 }
 
 .input-field {
@@ -104,11 +108,12 @@ button {
   transform: translate(-50%, -60%);
   text-align: center;
   display: block;
-}
-.signup-form-container h1 {
-  color: #08817b;
-  font-size: 24px;
-  padding: 20px;
+
+  h1 {
+    color: #08817b;
+    font-size: 24px;
+    padding: 20px;
+  }
 }
 
 .signup-button {
@@ -127,5 +132,3 @@ button {
   margin-top: 10px;
   width: 200px;
 }
-
-/*# sourceMappingURL=login.css.map */

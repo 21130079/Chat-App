@@ -29,14 +29,16 @@ $ownMessageColor: #d0fee1;
         -webkit-box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
         -moz-box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
         background-color: $ownMessageColor;
-
+        word-wrap: break-word;
+        word-break: break-all;
+        max-width: 500px;
         img {
           width: 30px;
           height: 30px;
           margin-left: 10px;
         }
       }
-      .send-image{
+      .send-image,.send-video{
         max-height: 100px;
         box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
         -webkit-box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);

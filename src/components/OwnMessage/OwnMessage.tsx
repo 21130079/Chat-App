@@ -59,6 +59,18 @@ function OwnMessage({message}: MessageProps) {
             return null;
         }
     })();
+    const video = (() => {
+        try {
+            if (message?.mes) {
+                const parsedMessage = JSON.parse(message.mes);
+                console.log(parsedMessage)
+                return parsedMessage.video;
+            }
+            return null;
+        } catch (error) {
+            return null;
+        }
+    })();
     return (
         <div className="own-message-container">
             <div className="message-author">
@@ -78,7 +90,8 @@ function OwnMessage({message}: MessageProps) {
                         <img src={typing} alt=""/>
                         {mes}
                     </div>
-                    <img className="send-image" src={image} alt=""/>
+                    {image && <img className="send-image" src={image} alt="sent image"/>}
+                    {video && <video className="send-video" src={video} controls/>}
                 </div>
             </div>
         </div>
