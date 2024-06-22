@@ -19,9 +19,10 @@ $ownMessageColor: #d0fee1;
     align-items: center;
 
     .main-message {
+      display: grid;
       div {
         display: flex;
-        align-items: center;
+        justify-self: right;
         flex-direction: row-reverse;
         border-radius: 10px;
         padding: 5px 5px 5px 20px;
@@ -31,19 +32,34 @@ $ownMessageColor: #d0fee1;
         background-color: $ownMessageColor;
         word-wrap: break-word;
         word-break: break-all;
+        width: fit-content;
         max-width: 500px;
-        img {
+        .avatar {
           width: 30px;
           height: 30px;
           margin-left: 10px;
         }
       }
-      .send-image,.send-video{
-        max-height: 100px;
-        box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
-        -webkit-box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
-        -moz-box-shadow: -4px 4px 5px 0px rgba(0,0,0,0.4);
-        margin-top: 2px;
+      .media {
+        background-color: transparent;
+        box-shadow: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-width: 300px;
+        min-height: 100px;
+        width: 300px;
+        direction: rtl;
+        .send-image,.send-video{
+          width: 100%;
+          height:100%;
+          transition: all 0.3s ease;
+          object-fit: contain;
+          box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
+          -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
+          -moz-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
+          margin-top: 2px;
+          aspect-ratio: 1 / 1;
+        }
         margin-bottom: 20px;
       }
     }

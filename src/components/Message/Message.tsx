@@ -10,7 +10,10 @@ interface Message {
     to: string;
     type: number;
 }
-
+interface Media {
+    type: number;
+    url: string;
+}
 interface MessageProps {
     message: Message | null;
 }
@@ -35,18 +38,7 @@ function Message({ message }: MessageProps) {
             timeRef.current.style.display = 'none';
         }
     }
-    const video = (() => {
-        try {
-            if (message?.mes) {
-                const parsedMessage = JSON.parse(message.mes);
-                console.log(parsedMessage)
-                return parsedMessage.video;
-            }
-            return null;
-        } catch (error) {
-            return null;
-        }
-    })();
+
     const mes = (() => {
         try {
             if (message?.mes) {
@@ -58,17 +50,18 @@ function Message({ message }: MessageProps) {
             return message?.mes;
         }
     })();
-    const image = (() => {
+    const medias: Media[] | null = (() => {
         try {
             if (message?.mes) {
                 const parsedMessage = JSON.parse(message.mes);
-                return parsedMessage.image;
+                return parsedMessage.medias || null;
             }
             return null;
         } catch (error) {
             return null;
         }
     })();
+
     return (
         <div className="message-container">
             <div className="message-author">
@@ -77,12 +70,19 @@ function Message({ message }: MessageProps) {
 
             <div className="message-content">
                 <div className="main-message" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    <div className="words">
-                        <img src={typing} alt=""/>
+                    {mes && <div>
+                        <img className="avatar" src={typing} alt=""/>
                         {mes}
+                    </div>}
+                    <div className="media">
+                        {medias && medias.map((media, index) => (
+                            media.type === 0 ? (
+                                <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                            ) : (
+                                <video key={index} className="send-video" src={media.url} controls/>
+                            )
+                        ))}
                     </div>
-                    <img className="send-image" src={image} alt=""/>
-                    {video && <video className="send-video" src={video} controls/>}
                 </div>
 
                 <div className="time-message" ref={timeRef}>

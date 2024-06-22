@@ -12,20 +12,25 @@ interface User {
     type: number;
     actionTime: string;
 }
-
+const intialUser =() =>{
+    return {
+        name: '',
+        type: 0,
+        actionTime: ''
+    }
+}
 
 function ChatWindow() {
     const reLoginCode: string = localStorage.getItem("reLoginCode") ?? '';
     const username: string = localStorage.getItem("username") ?? '';
-    // const reLoginCode: string = localStorage.getItem("reLoginCode") ?? '';
     const [users, setUsers] = useState<User[]>([]);
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [selectedUser, setSelectedUser] = useState<User>(intialUser);
     const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (ws.readyState === WebSocket.OPEN) {
-            getUserList();
+             getUserList();
         }
 
         ws.onopen = () => {
