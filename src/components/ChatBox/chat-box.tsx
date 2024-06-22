@@ -12,7 +12,6 @@ import {
 } from "../../api/websocket-api";
 import Message from "../Message/Message";
 import OwnMessage from "../OwnMessage/OwnMessage";
-import firebase from "firebase/compat";
 import {storage} from "../firebase";
 
 interface User {
@@ -20,27 +19,26 @@ interface User {
     type: number;
     actionTime: string;
 }
-
 interface ChatBoxProps {
-    user: User | null,
+    user: User,
     setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     isMessageChange?: boolean
+}
+interface Media{
+    url: string;
+    file: File;
+    type: number; // 0 la image, 1 la video
 }
 
 function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const username = localStorage.getItem("username");
     const [isRoom, setIsRoom] = useState(true);
-    const [boxChatData, setBoxChatData] = useState<any>(null);
+    const [boxChatData, setBoxChatData] = useState<Array<Message>>([]);
     const [message, setMessage] = useState<string>('');
-    const [isSend, setIsSend] = useState<boolean>();
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
-    const [urlImage, setUrlImage] = useState<string>("");
-    const [urlImageFooter, seturlImageFooter] = useState<string>("");
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const [urlVideo, setUrlVideo] = useState<string>("");
-    const [urlVideoFooter, setUrlVideoFooter] = useState<string>("");
-    const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
+    const [base64Medias, setBase64Medias] = useState<Array<Media>>([]);
+
     useEffect(() => {
         scrollToBottom();
     }, [boxChatData]);
@@ -60,9 +58,10 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
 
         ws.onmessage = (event) => {
             const response = JSON.parse(event.data as string);
+
             switch (response.event) {
                 case "GET_ROOM_CHAT_MES": {
-                    console.log(response.data.chatData)
+                    console.log(response)
                     setBoxChatData(response.data.chatData)
                     break;
                 }
@@ -90,7 +89,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                 }
             }
         }
-    }, [user, isSend]);
+    }, [user]);
 
     const scrollToBottom = () => {
         if (contentRef.current) {
@@ -103,41 +102,40 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     }
 
     const handleSendMessage = async () => {
-        let imageUrl = "";
-        let videoUrl = "";
 
-        if (selectedImage) {
-            const imageRef = ref(storage, `images/${uuidv4()}`);
-            try {
-                await uploadBytes(imageRef, selectedImage);
-                imageUrl = await getDownloadURL(imageRef);
-                setUrlImage(imageUrl);
-                seturlImageFooter("");
-                setSelectedImage(null);
-            } catch (error) {
-                console.error("Error uploading image: ", error);
-                return;
-            }
-        }
+        // setdata
+        let newChatMessage: Message = {
+            createAt: new Date().toISOString(),
+            id: boxChatData.length + 1,
+            name: localStorage.getItem("username") || '',
+            mes: JSON.stringify({ medias : base64Medias,
+                message: message}),
+            to: user.name,
+            type: user.type
+        };
+        setBoxChatData(prev => [newChatMessage, ...prev]);
+        // thuc hien xoa trong o nhap tin nhan de co trai nghiem tot hon
+        let  selectedFiles = base64Medias;
+        let  msgClone = message;
+        setBase64Medias([]);
+        setMessage("");
+        clearInputFile();
 
-        if (selectedVideo) {
-            const videoRef = ref(storage, `videos/${uuidv4()}`);
-            try {
-                await uploadBytes(videoRef, selectedVideo);
-                videoUrl = await getDownloadURL(videoRef);
-                setUrlVideo(videoUrl);
-                setUrlVideoFooter("");
-                setSelectedVideo(null);
-            } catch (error) {
-                console.error("Error uploading video: ", error);
-                return;
-            }
+        // load danh sach file len firebase va truyen link file ve
+        let uploadedMediaUrls: Media[] = [];
+        if (selectedFiles.length>0) {
+            const uploadPromises = selectedFiles.map(media => uploadMedia(media.file, media.type ));
+            const urls = await Promise.all(uploadPromises);
+            uploadedMediaUrls = selectedFiles.map((media, i) => ({
+                ...media,
+                url: urls[i]
+            }));
         }
-        if ((message && user && message.trim().length > 0) || urlImageFooter.trim().length > 0) {
+        // gửi tin nhắn
+        if ((message && user && message.trim().length > 0) || uploadedMediaUrls.length > 0 ) {
             const messageObject = {
-                image: imageUrl,
-                video: videoUrl,
-                message: message
+                medias : uploadedMediaUrls,
+                message: msgClone
             };
             if (isRoom && user) {
                 sendRoomChat({
@@ -152,11 +150,25 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                     });
                 }
             }
-            setIsSend(!isSend);
-            setMessage("");
-            setUrlImage("");
+
+            // reset
         }
+
+        setBase64Medias([])
     }
+
+    // upload len database
+    const uploadMedia = async (file: File, type:number) => {
+        const fileRef = type === 0 ? ref(storage, `images/IMAGE_${uuidv4()}`)
+            : ref(storage, `videos/VIDEO_${uuidv4()}`);
+        try {
+            await uploadBytes(fileRef, file);
+            return await getDownloadURL(fileRef);
+        } catch (error) {
+            console.error("Error uploading media: ", error);
+            return "";
+        }
+    };
 
     const handleEnterMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
@@ -170,31 +182,25 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
-                if (file.type.startsWith('image/')) {
-                    seturlImageFooter(reader.result as string);
-                    setSelectedImage(file);
-                    setUrlVideoFooter("");
-                    setSelectedVideo(null);
-                } else if (file.type.startsWith('video/')) {
-                    setUrlVideoFooter(reader.result as string);
-                    setSelectedVideo(file);
-                    seturlImageFooter("");
-                    setSelectedImage(null);
-                }
+                setBase64Medias(prev => [...prev, { type: file.type.startsWith('image/') ? 0 : 1, url: reader.result as string, file }]);
             };
+            clearInputFile();
         }
     };
-    const handleCloseMedia =() => {
-        seturlImageFooter("");
-        setUrlVideoFooter("");
-        setSelectedImage(null);
-        setSelectedVideo(null);
+    const handleCloseMedia =(index:number) => {
+        setBase64Medias((prevArray) => {
+            const newArray = [...prevArray];
+            newArray.splice(index, 1);
+            return newArray;
+        });
+        clearInputFile()
+    };
+    const clearInputFile = () => {
         const fileInput = document.getElementById('fileInput') as HTMLInputElement;
         if (fileInput) {
             fileInput.value = ''; // Đặt lại giá trị của input type file để kích hoạt lại sự kiện onChange
         }
-    };
-
+    }
     return (
         <div className="chat-box">
             <div className="chat-box__header">
@@ -213,8 +219,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             <div className="chat-box__content" ref={contentRef}>
                 {
                     boxChatData && boxChatData.slice().reverse()
-                        .filter((chatData: any) => chatData.mes.trim().length > 0)
-                        .map((chatData: any) => {
+                        .filter((chatData) => chatData.mes.trim().length > 0)
+                        .map((chatData) => {
                             return (username === chatData.name
                                 ?
                                 <OwnMessage key={chatData.id} message={chatData}/>
@@ -228,13 +234,18 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             <div className="chat-box__footer">
                 <div className="chat-box__footer-container">
                     <div className="chat-box__footer-file">
-                        {(urlImageFooter || urlVideoFooter) && (
-                            <div>
-                                <i className="bi bi-x-circle" onClick={handleCloseMedia}></i>
-                                {urlImageFooter && <img src={urlImageFooter} alt="Selected Image"/>}
-                                {urlVideoFooter && <video src={urlVideoFooter} controls/>}
+                        {base64Medias.map((media, index) => (
+                            <div key={index}>
+                                <i className="bi bi-x-circle" onClick={()=>handleCloseMedia(index)}></i>
+                                {
+                                    media.type === 0
+                                       ?
+                                        <img src={media.url} alt=""/>
+                                        :
+                                        <video src={media.url} controls/>
+                                }
                             </div>
-                        )}
+                        ))}
                     </div>
                     <div className="chat-box__footer-typing">
                         <input

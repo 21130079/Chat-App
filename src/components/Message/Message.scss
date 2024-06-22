@@ -1,5 +1,4 @@
 $messageColor: white;
-
 .message-container {
   max-width: 70%;
   display: flex;
@@ -15,11 +14,11 @@ $messageColor: white;
   .message-content {
     display: flex;
     align-items: center;
-
     .main-message {
+      display: grid;
       div {
         display: flex;
-        align-items: center;
+        justify-self: left;
         flex-direction: row;
         border-radius: 10px;
         padding: 5px 20px 5px 5px;
@@ -27,23 +26,35 @@ $messageColor: white;
         -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
         -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
         background-color: $messageColor;
-          width: fit-content;
-        max-width: 100px;
-
-        img {
+        word-wrap: break-word;
+        word-break: break-all;
+        max-width: 500px;
+        .avatar {
           width: 30px;
           height: 30px;
           margin-right: 10px;
         }
       }
-      .send-image,.send-video{
-        max-height: 100px;
-        box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        margin-top: 2px;
-        margin-bottom: 20px;
-      }
+      .media {
+        background-color: transparent;
+        box-shadow: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-width: 300px;
+        min-height: 100px;
+        width: 300px;
+
+        .send-image,.send-video{
+          width: 100%;
+          height:100%;
+          aspect-ratio: 1 / 1;
+          transition: all 0.3s ease;
+          object-fit: contain;
+          box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+          -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+          -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+        }}
+      margin-bottom: 20px;
     }
 
     .time-message {

@@ -1,7 +1,6 @@
 import typing from "../../assets/images/typing.gif";
-import React, {useRef} from "react";
-import './OwnMessage.scss'
-import {log} from "node:util";
+import React, { useRef } from "react";
+import './OwnMessage.scss';
 
 interface Message {
     createAt: string;
@@ -12,21 +11,26 @@ interface Message {
     type: number;
 }
 
+interface Media {
+    type: number;
+    url: string;
+}
+
 interface MessageProps {
     message: Message | null;
 }
 
-function OwnMessage({message}: MessageProps) {
+const OwnMessage: React.FC<MessageProps> = ({ message }) => {
     const timeRef = useRef<HTMLDivElement>(null);
-    let hoverTimer: any;
+    let hoverTimer: NodeJS.Timeout;
 
     const handleMouseEnter = () => {
         hoverTimer = setTimeout(() => {
             if (timeRef.current) {
                 timeRef.current.style.display = 'flex';
             }
-        }, 500)
-    }
+        }, 500);
+    };
 
     const handleMouseLeave = () => {
         if (hoverTimer) {
@@ -35,7 +39,8 @@ function OwnMessage({message}: MessageProps) {
         if (timeRef.current) {
             timeRef.current.style.display = 'none';
         }
-    }
+    };
+
     const mes = (() => {
         try {
             if (message?.mes) {
@@ -47,30 +52,19 @@ function OwnMessage({message}: MessageProps) {
             return message?.mes;
         }
     })();
-    const image = (() => {
+
+    const medias: Media[] | null = (() => {
         try {
             if (message?.mes) {
                 const parsedMessage = JSON.parse(message.mes);
-                console.log(parsedMessage)
-                return parsedMessage.image;
+                return parsedMessage.medias || null;
             }
             return null;
         } catch (error) {
             return null;
         }
     })();
-    const video = (() => {
-        try {
-            if (message?.mes) {
-                const parsedMessage = JSON.parse(message.mes);
-                console.log(parsedMessage)
-                return parsedMessage.video;
-            }
-            return null;
-        } catch (error) {
-            return null;
-        }
-    })();
+
     return (
         <div className="own-message-container">
             <div className="message-author">
@@ -79,23 +73,29 @@ function OwnMessage({message}: MessageProps) {
 
             <div className="message-content">
                 <div className="time-message" ref={timeRef}>
-                    <p>
-                        {message?.createAt}
-                    </p>
-
+                    <p>{message?.createAt}</p>
                 </div>
 
                 <div className="main-message" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    <div>
-                        <img src={typing} alt=""/>
-                        {mes}
-                    </div>
-                    {image && <img className="send-image" src={image} alt="sent image"/>}
-                    {video && <video className="send-video" src={video} controls/>}
+                    {mes && (
+                        <div>
+                            <img className="avatar" src={typing} alt="typing" />
+                            {mes}
+                        </div>
+                    )}
+                   <div className="media">
+                       {medias && medias.map((media, index) => (
+                           media.type === 0 ? (
+                               <img key={index} className="send-image" src={media.url} alt="sent image" />
+                           ) : (
+                               <video key={index} className="send-video" src={media.url} controls />
+                           )
+                       ))}
+                   </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default OwnMessage;
