@@ -3,16 +3,18 @@ import "./chat-box-dark-theme.scss";
 import "./chat-box-light-theme.scss";
 import typing from '../../assets/images/typing.gif';
 import {
-    checkUser,
+    checkUser, connectWebSocket,
     getPeopleChatMessages,
     getRoomChatMessages,
     sendPeopleChat,
-    sendRoomChat, ws,
+    sendRoomChat,
+    ws
 } from "../../api/websocket-api";
 import Message from "../Message/Message";
 import OwnMessage from "../OwnMessage/OwnMessage";
 import EmojiPicker, {EmojiClickData} from "emoji-picker-react";
-import {MouseDownEvent} from "emoji-picker-react/dist/config/config";
+import {updateDoc, doc} from "firebase/firestore"
+import {db} from "../../libs/firebase";
 
 interface User {
     name: string;
@@ -23,10 +25,12 @@ interface User {
 interface ChatBoxProps {
     user: User | null,
     setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    isMessageChange?: boolean
+    isMessageChange?: boolean,
+    theme?: string | null,
+    setTheme?: (value: (((prevState: (string | null)) => (string | null)) | string | null)) => void
 }
 
-function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
+function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: ChatBoxProps) {
     const username = localStorage.getItem("username");
     const [isRoom, setIsRoom] = useState(true);
     const [boxChatData, setBoxChatData] = useState<any>(null);
@@ -35,12 +39,15 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
     const [emojiOpened, setEmojiOpened] = useState<boolean>(false);
+    const modeIcon = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         scrollToBottom();
     }, [boxChatData]);
 
     useEffect(() => {
+        connectWebSocket();
+
         if (user) {
             if (user.type === 1) {
                 setIsRoom(true);
@@ -127,8 +134,30 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         setMessage(prev => prev + e.emoji);
     }
 
+    const toggleTheme = () => {
+        if (theme === 'light-theme') {
+            document.body.style.backgroundColor = "#1e1f22";
+            if (setTheme) {
+                setTheme('dark-theme');
+            }
+            if (modeIcon) {
+                modeIcon.current?.classList.remove(modeIcon.current?.classList[1]);
+                modeIcon.current?.classList.add('bi-moon-stars-fill');
+            }
+        } else {
+            document.body.style.backgroundColor = "#ebeaf0";
+            if (setTheme) {
+                setTheme('light-theme');
+            }
+            if (modeIcon) {
+                modeIcon.current?.classList.remove(modeIcon.current?.classList[1]);
+                modeIcon.current?.classList.add('bi-sun-fill');
+            }
+        }
+    }
+
     return (
-        <div className="chat-box dark-theme">
+        <div className={`chat-box ${theme}`}>
             <div className="chat-box__header">
                 <div className="chat-box__header-user">
                     <img src={typing} alt="avatar"/>
@@ -138,7 +167,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                     </div>
                 </div>
                 <div className="chat-box__header-icons">
-                    <i className="bi bi-gear-fill"></i>
+                    <i className="bi bi-sun-fill" onClick={toggleTheme} ref={modeIcon}></i>
                 </div>
             </div>
 
@@ -149,9 +178,17 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                         .map((chatData: any) => {
                             return username === chatData.name
                                 ?
-                                <OwnMessage key={chatData.id} message={chatData}/>
+                                <OwnMessage
+                                    key={chatData.id}
+                                    message={chatData}
+                                    theme={theme}
+                                />
                                 :
-                                <Message key={chatData.id} message={chatData}/>
+                                <Message
+                                    key={chatData.id}
+                                    message={chatData}
+                                    theme={theme}
+                                />
                         })
                 }
             </div>

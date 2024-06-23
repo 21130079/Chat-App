@@ -1,7 +1,9 @@
-$mainBodyColor: #2b2d30;
+$mainBackgroundColor: #1e1f22;
+$mainBodyColor: #3f4148;
 $mainHeaderColor: #2b2d30;
 $mainListChatColor: #2b2d30;
-$mainTextColor: #bababa;
+$mainTextColor: #e0e0e0;
+$hoverColor: #60636e;
 
 .chat-list.dark-theme {
   flex: 1;
@@ -10,7 +12,7 @@ $mainTextColor: #bababa;
   height: 100%;
   border-radius: 10px 0 0 0;
   color: $mainTextColor;
-  background-color: $mainBodyColor;
+  border-right: 1px solid $mainBackgroundColor;
 
   .chat-list__header {
     display: flex;
@@ -18,7 +20,6 @@ $mainTextColor: #bababa;
     padding: 5px 30px;
     border-radius: 10px 0 0 0;
     background-color: $mainHeaderColor;
-
 
     .chat-list__header-user {
       flex: 1;
@@ -57,12 +58,12 @@ $mainTextColor: #bababa;
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      border: 2px solid #000;
+      border: 2px solid $mainTextColor;
 
       i {
-        color: #000;
         font-size: 20px;
         cursor: pointer;
+        color: $mainTextColor;
       }
 
       .dropdown-menu {
@@ -70,13 +71,10 @@ $mainTextColor: #bababa;
         top: 70px;
         display: block;
         position: absolute;
-        background-color: #f9f9f9;
+        background-color: $mainListChatColor;
         min-width: 160px;
-        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-        z-index: 1;
 
         .dropdown-item {
-          color: black;
           padding: 12px 16px;
           text-decoration: none;
           display: block;
@@ -88,27 +86,20 @@ $mainTextColor: #bababa;
           white-space: nowrap;
           background: none;
           border: 0;
+          color: $mainTextColor;
 
           &:hover {
-            background-color: #f1f1f1;
+            background-color: $hoverColor;
           }
-        }
-
-        .dropdown-divider {
-          height: 1px;
-          margin: 9px 0;
-          overflow: hidden;
-          background-color: #e5e5e5;
         }
       }
     }
   }
 
-  .chat-list__search{
+  .chat-list__search {
     display: flex;
     align-items: center;
     padding: 10px 30px;
-    border-radius: 0 0 0 0;
     background-color: $mainHeaderColor;
 
     input {
@@ -124,14 +115,15 @@ $mainTextColor: #bababa;
       cursor: pointer;
     }
   }
-  .chat-list__content{
+
+  .chat-list__content {
     align-items: center;
     overflow: auto;
     border-radius: 0 0 0 10px;
     padding: 20px 20px;
     height: 80vh;
 
-    background-color: #c5c5c5;
+    background-color: $mainBodyColor;
 
     .chat-list__content-user {
       display: flex;
@@ -140,7 +132,7 @@ $mainTextColor: #bababa;
       margin-bottom: 5px;
       padding: 0 20px;
 
-      background-color: $mainBodyColor;
+      background-color: $mainListChatColor;
 
       .avatar {
         font-weight: bold;
@@ -148,8 +140,8 @@ $mainTextColor: #bababa;
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        background-color: #282c34;
-        color: $mainTextColor;
+        background-color: $mainTextColor;
+        color: $mainListChatColor;
         align-content: center;
         object-fit: cover;
       }
@@ -174,21 +166,11 @@ $mainTextColor: #bababa;
         }
       }
     }
-    .chat-list__content-user:hover{
-      background-color: #535353;
-      color: white;
+
+    .chat-list__content-user:hover {
+      background-color: $hoverColor;
+      color: $mainTextColor;
       cursor: pointer;
     }
   }
-}
-
-.menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  z-index: 1;
 }

@@ -1,0 +1,40 @@
+.own-message-container.dark-theme {
+  max-width: 70%;
+  display: flex;
+  align-self: flex-end;
+  flex-direction: column;
+}
+.own-message-container.dark-theme .message-author {
+  display: flex;
+  align-self: flex-end;
+  font-size: 13px;
+  margin-right: 10px;
+  height: 20px;
+}
+.own-message-container.dark-theme .message-content {
+  display: flex;
+  align-items: center;
+}
+.own-message-container.dark-theme .message-content .main-message p {
+  display: flex;
+  align-items: center;
+  text-align: justify;
+  word-break: break-word;
+  flex-direction: row-reverse;
+  border-radius: 10px;
+  padding: 5px 5px 5px 20px;
+  background-color: #7796c5;
+}
+.own-message-container.dark-theme .message-content .main-message p img {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+}
+.own-message-container.dark-theme .message-content .time-message {
+  display: none;
+}
+.own-message-container.dark-theme .message-content .time-message p {
+  font-size: 13px;
+}
+
+/*# sourceMappingURL=own-message-dark-theme.css.map */

@@ -19,7 +19,8 @@
   flex-direction: column;
   height: 100%;
   border-radius: 0 10px 10px 0;
-  color: #bababa;
+  color: #e0e0e0;
+  border-left: 1px solid #1e1f22;
 }
 .chat-box.dark-theme .chat-box__header {
   display: flex;
@@ -68,11 +69,11 @@
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  background-color: #2b2d30;
+  background-color: #3f4148;
 }
 .chat-box.dark-theme .chat-box__footer {
   border-radius: 0 0 10px 0;
-  background-color: #2b2d30;
+  background-color: #3f4148;
 }
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container {
   display: flex;
@@ -89,6 +90,8 @@
   outline: none;
   margin: 20px;
   font-size: 17px;
+  color: #e0e0e0;
+  background-color: #2b2d30;
 }
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container i {
   display: flex;
@@ -111,7 +114,8 @@
   margin: 0 20px;
   border-radius: 10px;
   border: none;
-  background-color: pink;
+  color: #e0e0e0;
+  background-color: #3f4148;
 }
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .send-button i {
   font-size: 1.4rem;

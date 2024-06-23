@@ -5,7 +5,8 @@ import "./chat-window-light-theme.scss";
 import "./chat-window-dark-theme.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import {getUserList, reLogin, ws} from "../../api/websocket-api";
+import {connectWebSocket, ws} from "../../api/websocket-api";
+import {checkUser, getUserList, reLogin} from "../../api/api";
 import {useNavigate} from "react-router-dom";
 
 interface User {
@@ -14,7 +15,6 @@ interface User {
     actionTime: string;
 }
 
-
 function ChatWindow() {
     const username: string = localStorage.getItem("username") ?? '';
     const reLoginCode: string = localStorage.getItem("reLoginCode") ?? '';
@@ -22,21 +22,24 @@ function ChatWindow() {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
     const navigate = useNavigate();
-
-    console.log(ws.readyState)
+    const [theme, setTheme] = useState<string | null>("light-theme");
 
     useEffect(() => {
-        if (ws.readyState === WebSocket.OPEN) {
-            getUserList();
-        }
+        // if (ws.readyState === WebSocket.OPEN) {
+        //     console.log(1)
+        //     getUserList();
+        // } else {
+        //     console.log(2)
+        //     getUserList();
+        // }
+        checkUser({
+            user: '21130079'
+        })
 
-        ws.onopen = () => {
-            getUserList();
-        }
+        connectWebSocket();
 
         ws.onmessage = (event) => {
             const response = JSON.parse(event.data as string);
-            console.log(response)
             switch (response.event) {
                 case "GET_USER_LIST": {
                     setUsers(response.data);
@@ -54,7 +57,6 @@ function ChatWindow() {
                             user: username,
                             code: reLoginCode
                         })
-                        getUserList();
                     }
                 }
             }
@@ -66,12 +68,15 @@ function ChatWindow() {
     };
 
     return (
-        <div className="chat-window-container dark-theme">
+        <div className={`chat-window-container ${theme}`}>
             <ChatList users={users}
+                      theme={theme}
                       onUserSelect={handleUserSelect}
                       isMessageChange={isMessageChange}
                       setIsMessageChange={setIsMessageChange}/>
             <ChatBox user={selectedUser}
+                     theme={theme}
+                     setTheme={setTheme}
                      isMessageChange={isMessageChange}
                      setIsMessageChange={setIsMessageChange}/>
         </div>

@@ -1,6 +1,7 @@
 import typing from "../../assets/images/typing.gif";
 import React, {useRef} from "react";
-import './Message.scss'
+import './message-light-theme.scss'
+import './message-dark-theme.scss'
 
 interface Message {
     createAt: string;
@@ -13,9 +14,10 @@ interface Message {
 
 interface MessageProps {
     message: Message | null;
+    theme?: string | null | undefined;
 }
 
-function Message({ message }: MessageProps) {
+function Message({ message, theme }: MessageProps) {
     const timeRef = useRef<HTMLDivElement>(null);
     let hoverTimer: any;
 
@@ -37,7 +39,7 @@ function Message({ message }: MessageProps) {
     }
 
     return (
-        <div className="message-container">
+        <div className={`message-container ${theme}`}>
             <div className="message-author">
                 <p>{message?.name}</p>
             </div>

@@ -6,11 +6,11 @@ body {
   justify-content: center;
   height: 100vh;
   width: 100vw;
-
-  background: linear-gradient(145deg, #a9a9a9, $mainColor, #a9a9a9);
+  transition: 0.5s;
 }
 
 .chat-window-container.dark-theme {
+  border-radius: 10px;
   display: flex;
   width: 90vw;
   height: 90vh;

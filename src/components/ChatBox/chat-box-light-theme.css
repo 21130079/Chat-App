@@ -19,6 +19,8 @@
   flex-direction: column;
   height: 100%;
   border-radius: 0 10px 10px 0;
+  color: black;
+  border-left: 1px solid #eaebee;
 }
 .chat-box.light-theme .chat-box__header {
   display: flex;
@@ -67,11 +69,11 @@
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  background-color: #f1f1f1;
+  background-color: #eaebee;
 }
 .chat-box.light-theme .chat-box__footer {
   border-radius: 0 0 10px 0;
-  background-color: #f1f1f1;
+  background-color: #eaebee;
 }
 .chat-box.light-theme .chat-box__footer .chat-box__footer-container {
   display: flex;
@@ -88,6 +90,8 @@
   outline: none;
   margin: 20px;
   font-size: 17px;
+  color: black;
+  background-color: white;
 }
 .chat-box.light-theme .chat-box__footer .chat-box__footer-container i {
   display: flex;
@@ -110,7 +114,8 @@
   margin: 0 20px;
   border-radius: 10px;
   border: none;
-  background-color: pink;
+  color: black;
+  background-color: #eaebee;
 }
 .chat-box.light-theme .chat-box__footer .chat-box__footer-container .send-button i {
   font-size: 1.4rem;

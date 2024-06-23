@@ -1,21 +1,23 @@
-.message-container {
+.message-container.light-theme {
   max-width: 70%;
   display: flex;
   flex-direction: column;
 }
-.message-container .message-author {
+.message-container.light-theme .message-author {
   display: flex;
   font-size: 13px;
   margin-left: 10px;
   height: 20px;
 }
-.message-container .message-content {
+.message-container.light-theme .message-content {
   display: flex;
   align-items: center;
 }
-.message-container .message-content .main-message p {
+.message-container.light-theme .message-content .main-message p {
   display: flex;
   align-items: center;
+  text-align: justify;
+  word-break: break-word;
   flex-direction: row;
   border-radius: 10px;
   padding: 5px 20px 5px 5px;
@@ -24,16 +26,16 @@
   -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
   background-color: white;
 }
-.message-container .message-content .main-message p img {
+.message-container.light-theme .message-content .main-message p img {
   width: 30px;
   height: 30px;
   margin-right: 10px;
 }
-.message-container .message-content .time-message {
+.message-container.light-theme .message-content .time-message {
   display: none;
 }
-.message-container .message-content .time-message p {
+.message-container.light-theme .message-content .time-message p {
   font-size: 13px;
 }
 
-/*# sourceMappingURL=Message.css.map */
+/*# sourceMappingURL=message-light-theme.css.map */

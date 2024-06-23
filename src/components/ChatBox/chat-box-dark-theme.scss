@@ -1,8 +1,8 @@
-$mainBodyColor: #2b2d30;
+$mainBackgroundColor: #1e1f22;
 $mainHeaderColor: #2b2d30;
 $mainFooterColor: #2b2d30;
-$mainBoxChatColor: #2b2d30;
-$mainTextColor: #bababa;
+$mainBoxChatColor: #3f4148;
+$mainTextColor: #e0e0e0;
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -26,6 +26,7 @@ $mainTextColor: #bababa;
   height: 100%;
   border-radius: 0 10px 10px 0;
   color: $mainTextColor;
+  border-left: 1px solid $mainBackgroundColor;
 
   .chat-box__header {
     display: flex;
@@ -113,6 +114,8 @@ $mainTextColor: #bababa;
         outline: none;
         margin: 20px;
         font-size: 17px;
+        color: $mainTextColor;
+        background-color: $mainFooterColor;
       }
 
       i {
@@ -139,8 +142,8 @@ $mainTextColor: #bababa;
         margin: 0 20px;
         border-radius: 10px;
         border: none;
-
-        background-color: pink;
+        color: $mainTextColor;
+        background-color: $mainBoxChatColor;
 
         i {
           font-size: 1.4rem;

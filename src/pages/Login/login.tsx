@@ -1,16 +1,24 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, FormEvent, useState} from 'react';
 import './login.css';
 import typing from '../../assets/images/typing.gif';
 import {login} from '../../redux/action';
 import {useDispatch} from "react-redux";
-import {register, ws} from "../../api/websocket-api";
+import {connectWebSocket, register, ws} from "../../api/websocket-api";
 import {useNavigate} from 'react-router-dom';
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+} from "firebase/auth";
+import {auth, db} from "../../libs/firebase";
+import {doc, setDoc} from "firebase/firestore";
 
 function Login() {
     const [isLogin, setIsLogin] = useState(true);
     const handleFormSwitch = (isLogin: boolean) => {
         setIsLogin(isLogin);
     };
+
+    connectWebSocket();
 
     return (
         <div className="container">
@@ -42,6 +50,13 @@ function LoginForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
+
+    const handleRegister = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+
+        const {username, email, password} = Object.fromEntries(formData)
+    }
 
     ws.onmessage = (event) => {
         const response = JSON.parse(event.data as string);
@@ -81,20 +96,57 @@ function LoginForm() {
         }
     }
 
+    // const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     const formData = new FormData(e.target as HTMLFormElement);
+    //
+    //     const entries = Object.fromEntries(formData);
+    //     const username = entries.username.toString();
+    //     const password = entries.password.toString();
+    //
+    //     try {
+    //
+    //         await signInWithEmailAndPassword(auth, username, password);
+    //
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // }
+
     return (
+        // <form
+        //     onSubmit={handleSignIn}
+        // >
         <div className="login-form-container">
             <h1>Login Form</h1>
-            <input type="text" value={username} required={true} onChange={handleChangeUsername} placeholder="Username"
-                   className="input-field"/>
+            <input
+                type="text"
+                value={username}
+                required={true}
+                onChange={handleChangeUsername}
+                placeholder="Username"
+                className="input-field"
+                name="username"
+            />
             <br/><br/>
-            <input type="password" required={true} onKeyPress={handleEnterPass}
+            <input type="password"
+                   required={true}
+                   onKeyPress={handleEnterPass}
                    onChange={(e) => setPassword(e.target.value)}
                    placeholder="Password"
-                   className="input-field"/>
+                   className="input-field"
+                   name="password"
+            />
             <br/><br/>
             {errorMsg !== '' ? <p className="Text-danger">{errorMsg}</p> : <br/>}
-            <button className="login-button" onClick={handleLogin} type="button">Login</button>
+            <button
+                className="login-button"
+                onClick={handleLogin}
+                type="button"
+            >Login
+            </button>
         </div>
+        //</form>
     );
 }
 
@@ -103,6 +155,7 @@ function SignupForm() {
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
+
     const handleSignUp = () => {
         if (rePassword !== password) {
             setErrorMsg("RePassword and Password are not matched");
@@ -113,6 +166,7 @@ function SignupForm() {
             })
         }
     }
+
     const handleEnterPass = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleSignUp();
@@ -134,21 +188,83 @@ function SignupForm() {
         }
     };
 
+    // const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     const formData = new FormData(e.target as HTMLFormElement);
+    //
+    //     const entries = Object.fromEntries(formData);
+    //     const username = entries.username.toString();
+    //     const email = entries.email.toString();
+    //     const password = entries.password.toString();
+    //
+    //     try {
+    //         const res = await createUserWithEmailAndPassword(auth, email, password);
+    //
+    //         await setDoc(doc(db, "users", res.user.uid), {
+    //             username,
+    //             email,
+    //             id: res.user.uid
+    //         });
+    //
+    //         await setDoc(doc(db, "userchats", res.user.uid), {
+    //             chats: []
+    //         });
+    //
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // }
+
     return (
-        <div className="signup-form-container">
-            <h1>Sign Up Form</h1>
-            <input type="text" placeholder="Username" required={true} onChange={(e) => setUsername(e.target.value)}
-                   className="input-field"/>
-            <br/><br/>
-            <input type="password" placeholder="Password" required={true} onChange={(e) => setPassword(e.target.value)}
-                   className="input-field"/>
-            <br/><br/>
-            <input type="password" required={true} placeholder="RePassword" onKeyPress={handleEnterPass}
-                   onChange={(e) => setRePassword(e.target.value)} className="input-field"/>
-            <br/><br/>
-            {errorMsg !== '' ? <p className="Text-danger">{errorMsg}</p> : <br/>}
-            <button className="signup-button" onClick={handleSignUp} type="button">Sign Up</button>
-        </div>
+        <form
+            // onSubmit={handleRegister}
+        >
+            <div className="signup-form-container">
+                <h1>Sign Up Form</h1>
+                <input
+                    type="text"
+                    placeholder="Username"
+                    required={true}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="input-field"
+                    name="username"
+                />
+                <br/><br/>
+                <input
+                    type="email"
+                    required={true}
+                    placeholder="Email"
+                    className="input-field"
+                    name="email"
+                />
+                <br/><br/>
+                <input
+                    type="password"
+                    placeholder="Password"
+                    required={true}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input-field"
+                    name="password"
+                />
+                <br/><br/>
+                <input
+                    type="password"
+                    required={true}
+                    placeholder="RePassword"
+                    onKeyPress={handleEnterPass}
+                    onChange={(e) => setRePassword(e.target.value)}
+                    className="input-field"
+                    name="rePassword"
+                />
+                <br/>
+                {errorMsg !== '' ? <p className="Text-danger">{errorMsg}</p> : <br/>}
+                <button
+                    className="signup-button"
+                    onClick={handleSignUp}
+                    type="submit">Sign Up
+                </button>
+            </div>
+        </form>
     );
 }
 

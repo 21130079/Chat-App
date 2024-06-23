@@ -1,35 +1,6 @@
-import {w3cwebsocket} from 'websocket';
-
-const wsUrl: string = 'ws://140.238.54.136:8080/chat/chat';
-
-export let ws: w3cwebsocket;
-
-export function connectWebSocket() {
-    ws = new w3cwebsocket(wsUrl);
-
-    ws.onopen = function (event) {
-        console.log('WebSocket is open now.');
-    };
-
-    ws.onmessage = function (event) {
-        console.log('Received data from server:', event.data);
-    };
-
-    ws.onclose = function (event) {
-        console.log('WebSocket is closed now.');
-        setTimeout(connectWebSocket, 1000);
-    };
-
-    ws.onerror = function (error) {
-        console.log('WebSocket error:', error);
-    };
-}
-
-// window.onload = function() {
-//     connectWebSocket();
-// };
-
 // Function to send login data
+import {ws} from "./websocket-api";
+
 export const sendLogin = (data: { user: string; pass: string }) => {
     const action = {
         action: 'onchat',
