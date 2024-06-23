@@ -3,13 +3,13 @@ import "./chat-box-dark-theme.scss";
 import "./chat-box-light-theme.scss";
 import typing from '../../assets/images/typing.gif';
 import {
-    checkUser, connectWebSocket,
+    checkUser,
     getPeopleChatMessages,
-    getRoomChatMessages,
+    getRoomChatMessages, getUserList,
     sendPeopleChat,
-    sendRoomChat,
-    ws
-} from "../../api/websocket-api";
+    sendRoomChat
+} from "../../api/api";
+import {websocket} from "../../api/web-socket";
 import Message from "../Message/Message";
 import OwnMessage from "../OwnMessage/OwnMessage";
 import EmojiPicker, {EmojiClickData} from "emoji-picker-react";
@@ -46,7 +46,12 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: C
     }, [boxChatData]);
 
     useEffect(() => {
-        connectWebSocket();
+        if (websocket.readyState === WebSocket.OPEN) {
+            getUserList();
+            console.log(1);
+        } else {
+            console.log(2)
+        }
 
         if (user) {
             if (user.type === 1) {
@@ -60,7 +65,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: C
             }
         }
 
-        ws.onmessage = (event) => {
+        websocket.onmessage = (event) => {
             const response = JSON.parse(event.data as string);
             switch (response.event) {
                 case "GET_ROOM_CHAT_MES": {

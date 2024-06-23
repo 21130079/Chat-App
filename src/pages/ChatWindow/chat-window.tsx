@@ -5,8 +5,8 @@ import "./chat-window-light-theme.scss";
 import "./chat-window-dark-theme.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import {connectWebSocket, ws} from "../../api/websocket-api";
-import {checkUser, getUserList, reLogin} from "../../api/api";
+import {websocket} from "../../api/web-socket";
+import {getUserList, reLogin} from "../../api/api";
 import {useNavigate} from "react-router-dom";
 
 interface User {
@@ -25,20 +25,15 @@ function ChatWindow() {
     const [theme, setTheme] = useState<string | null>("light-theme");
 
     useEffect(() => {
-        // if (ws.readyState === WebSocket.OPEN) {
-        //     console.log(1)
-        //     getUserList();
-        // } else {
-        //     console.log(2)
-        //     getUserList();
-        // }
-        checkUser({
-            user: '21130079'
-        })
+        if (websocket.readyState === WebSocket.OPEN) {
+            console.log(1)
+            getUserList();
+        } else {
+            console.log(2)
+            getUserList();
+        }
 
-        connectWebSocket();
-
-        ws.onmessage = (event) => {
+        websocket.onmessage = (event) => {
             const response = JSON.parse(event.data as string);
             switch (response.event) {
                 case "GET_USER_LIST": {

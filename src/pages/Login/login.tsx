@@ -3,7 +3,8 @@ import './login.css';
 import typing from '../../assets/images/typing.gif';
 import {login} from '../../redux/action';
 import {useDispatch} from "react-redux";
-import {connectWebSocket, register, ws} from "../../api/websocket-api";
+import {connectWebsocket, websocket} from "../../api/web-socket";
+import {register} from "../../api/api";
 import {useNavigate} from 'react-router-dom';
 import {
     createUserWithEmailAndPassword,
@@ -18,7 +19,7 @@ function Login() {
         setIsLogin(isLogin);
     };
 
-    connectWebSocket();
+    connectWebsocket();
 
     return (
         <div className="container">
@@ -58,7 +59,7 @@ function LoginForm() {
         const {username, email, password} = Object.fromEntries(formData)
     }
 
-    ws.onmessage = (event) => {
+    websocket.onmessage = (event) => {
         const response = JSON.parse(event.data as string);
         switch (response.event) {
             case "LOGIN": {
@@ -173,7 +174,7 @@ function SignupForm() {
         }
     }
 
-    ws.onmessage = (event) => {
+    websocket.onmessage = (event) => {
         const response = JSON.parse(event.data as string);
         console.log('Nhận dữ liệu từ máy chủ:', response);
         switch (response.event) {
