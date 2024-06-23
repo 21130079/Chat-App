@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
+import userImg from '../../assets/images/user.png';
+import groupImg from '../../assets/images/group.png';
+
 import {
     checkUser,
     getUserList,
@@ -109,7 +112,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         <div className="chat-list">
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
-                    <img src={typing} alt="avatar"/>
+                    <img src={userImg} alt="avatar"/>
                     <div className="info">
                         <h4>{username}</h4>
                         <p className="status">Online</p>
@@ -147,12 +150,12 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
                     filteredUsers.map((user, index) => (
                         <div key={index} className="chat-list__content-user" onClick={() => onUserSelect(user)}>
                             <div className="avatar">
-                                {user.name.charAt(0).toUpperCase()}
+                                {user.type === 1 ? <img src={groupImg} alt="avatar"/> : <img src={userImg} alt="avatar"/>}
                             </div>
-                            <div className="info-message">
-                                <div className="info">
+                                    <div className="info-message">
+                                    <div className="info">
                                     <h4>{user.name}</h4>
-                                </div>
+                        </div>
                                 <div className="chat-list-message">
                                     <p>{user.type===1?'Group':'User'} {user.actionTime}</p>
                                 </div>
