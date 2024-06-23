@@ -30,6 +30,12 @@ interface Media{
     type: number; // 0 la image, 1 la video
 }
 
+interface FileInput{
+    url: string;
+    file: File;
+    type: string;
+}
+
 function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const username = localStorage.getItem("username");
     const [isRoom, setIsRoom] = useState(true);
@@ -38,6 +44,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
     const [base64Medias, setBase64Medias] = useState<Array<Media>>([]);
+    const[fileIn, setFileIn]= useState<Array<FileInput>>([]);
+
 
     useEffect(() => {
         scrollToBottom();
@@ -66,7 +74,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                     break;
                 }
                 case "GET_PEOPLE_CHAT_MES": {
-
                     setBoxChatData(response.data)
                     break;
                 }
@@ -109,32 +116,45 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             id: boxChatData.length + 1,
             name: localStorage.getItem("username") || '',
             mes: JSON.stringify({ medias : base64Medias,
+                files: fileIn,
                 message: message}),
             to: user.name,
             type: user.type
         };
         setBoxChatData(prev => [newChatMessage, ...prev]);
         // thuc hien xoa trong o nhap tin nhan de co trai nghiem tot hon
-        let  selectedFiles = base64Medias;
+        let  selectedMedias = base64Medias;
+        let selectedFiles = fileIn;
         let  msgClone = message;
         setBase64Medias([]);
+        setFileIn([]);
         setMessage("");
         clearInputFile();
 
         // load danh sach file len firebase va truyen link file ve
         let uploadedMediaUrls: Media[] = [];
-        if (selectedFiles.length>0) {
-            const uploadPromises = selectedFiles.map(media => uploadMedia(media.file, media.type ));
+        let uploadedFileUrls: FileInput[] = [];
+        if (selectedMedias.length>0) {
+            const uploadPromises = selectedMedias.map(media => uploadMedia(media.file, media.type ));
             const urls = await Promise.all(uploadPromises);
-            uploadedMediaUrls = selectedFiles.map((media, i) => ({
+            uploadedMediaUrls = selectedMedias.map((media, i) => ({
                 ...media,
                 url: urls[i]
             }));
         }
+        if(selectedFiles.length > 0){
+            const uploadPromises = selectedFiles.map(file => uploadFile(file.file, file.type));
+            const urls = await Promise.all(uploadPromises);
+            uploadedFileUrls = selectedFiles.map((file, i) => ({
+                ...file,
+                url: urls[i]
+            }));
+        }
         // gửi tin nhắn
-        if ((message && user && message.trim().length > 0) || uploadedMediaUrls.length > 0 ) {
+        if ((message && user && message.trim().length > 0) || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
             const messageObject = {
                 medias : uploadedMediaUrls,
+                files: uploadedFileUrls,
                 message: msgClone
             };
             if (isRoom && user) {
@@ -155,6 +175,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         }
 
         setBase64Medias([])
+        setFileIn([])
     }
 
     // upload len database
@@ -169,6 +190,17 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             return "";
         }
     };
+    const uploadFile = async (file: File, type: string) => {
+        const fileRef = ref(storage, `files/FILE_${uuidv4()}`);
+        try {
+            await uploadBytes(fileRef, file);
+            return await getDownloadURL(fileRef);
+        } catch (error) {
+            console.error("Error uploading file: ", error);
+            return "";
+        }
+
+    }
 
     const handleEnterMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
@@ -176,7 +208,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         }
     }
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMediaChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -187,6 +219,18 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             clearInputFile();
         }
     };
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>)=>{
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                setFileIn(prev => [...prev, { type: file.type.endsWith('.rar')?'rar':'zip', url: reader.result as string, file }]);
+            };
+            clearInputFile();
+        }
+    }
+
     const handleCloseMedia =(index:number) => {
         setBase64Medias((prevArray) => {
             const newArray = [...prevArray];
@@ -195,6 +239,14 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         });
         clearInputFile()
     };
+    const handleCloseFile = (index:number)=>{
+        setFileIn((prevArray) => {
+            const newArray = [...prevArray];
+            newArray.splice(index, 1);
+            return newArray;
+        });
+        clearInputFile()
+    }
     const clearInputFile = () => {
         const fileInput = document.getElementById('fileInput') as HTMLInputElement;
         if (fileInput) {
@@ -246,6 +298,14 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                                 }
                             </div>
                         ))}
+                        {fileIn.map((file, index) => (
+                            <div key={index}>
+                                <i className="bi bi-x-circle" onClick={() => handleCloseFile(index)}></i>
+                                {
+                                    <span>{file.file.name}</span>
+                                }
+                            </div>
+                        ))}
                     </div>
                     <div className="chat-box__footer-typing">
                         <input
@@ -258,14 +318,23 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                         <input
                             type="file"
                             accept="image/*,video/*"
-                            onChange={handleFileChange}
-                            id="fileInput"
+                            onChange={handleMediaChange}
+                            id="mediaInput"
                             style={{display: 'none'}}
                         />
-                        <label htmlFor="fileInput">
+                        <input
+                            type="file"
+                            accept=".zip,.rar,.docx,.txt"
+                            onChange={handleFileChange}
+                            id="fileIn"
+                            style={{display: 'none'}}
+                        />
+                        <label htmlFor="mediaInput">
                             <i className="bi bi-image"></i>
                         </label>
-                        <i className="bi bi-paperclip"></i>
+                        <label htmlFor="fileIn">
+                            <i className="bi bi-paperclip"></i>
+                        </label>
                         <i className="bi bi-emoji-smile"></i>
                         <button className="send-button" onClick={handleSendMessage}>
                             Send

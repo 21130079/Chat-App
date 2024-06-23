@@ -1,7 +1,16 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
-import {checkUser, getUserList,createRoom, joinRoom, logout, ws} from "../../api/websocket-api";
+import {
+    checkUser,
+    getUserList,
+    createRoom,
+    joinRoom,
+    logout,
+    ws,
+    getRoomChatMessages,
+    getPeopleChatMessages
+} from "../../api/websocket-api";
 
 interface User {
     name: string;
@@ -25,7 +34,6 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
     const [menuPosition, setMenuPosition] = useState<{left: number, top: number}>({left: 0, top: 0});
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [isAddingFriend, setIsAddingFriend] = useState(true);
-    
     const username = localStorage.getItem('username') as string;
 
     const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,6 +101,8 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         window.location.href = '/';
     };
 
+
+
     let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
 
     return (
@@ -144,7 +154,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
                                     <h4>{user.name}</h4>
                                 </div>
                                 <div className="chat-list-message">
-                                    <p>{user.actionTime}</p>
+                                    <p>{user.type===1?'Group':'User'} {user.actionTime}</p>
                                 </div>
                             </div>
                         </div>

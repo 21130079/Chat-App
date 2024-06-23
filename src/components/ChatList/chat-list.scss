@@ -171,7 +171,8 @@ $mainListChatColor: #f1f1f1;
       border-radius: 10px;
       margin-bottom: 5px;
       padding: 0 20px;
-
+      min-width: 240px;
+      min-height: 76px;
       background-color: #ffffff;
 
       .avatar {
