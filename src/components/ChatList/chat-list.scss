@@ -1,5 +1,5 @@
 $mainBodyColor: #f1f1f1;
-$mainHeaderColor: #ffffff;
+$mainHeaderColor: #edeef4;
 $mainListChatColor: #f1f1f1;
 
 .chat-list {
@@ -23,8 +23,8 @@ $mainListChatColor: #f1f1f1;
       background-color: $mainHeaderColor;
 
       img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         object-fit: cover;
       }
@@ -51,8 +51,8 @@ $mainListChatColor: #f1f1f1;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 30px;
-      height: 30px;
+      width: 25px;
+      height: 25px;
       border-radius: 50%;
       border: 2px solid #000;
 
@@ -102,13 +102,13 @@ $mainListChatColor: #f1f1f1;
   .chat-list__search{
     display: flex;
     align-items: center;
-    padding: 10px 30px;
+    padding: 10px 20px;
     border-radius: 0 0 0 0;
     background-color: $mainHeaderColor;
 
     input {
       flex: 1;
-      padding: 10px;
+      padding: 15px;
       border-radius: 10px;
       height: 6vh;
       outline: none;
@@ -157,28 +157,34 @@ $mainListChatColor: #f1f1f1;
 
   }
   .chat-list__content{
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    overflow: auto;
     border-radius: 0 0 0 10px;
     padding: 20px 20px;
     height: 80vh;
-
-    background-color: #c5c5c5;
-
+    overflow-y: scroll;
+    row-gap: 10px;
+    background-color: #edeef4;
+    //max-width: 320px;
     .chat-list__content-user {
       display: flex;
       align-items: center;
       border-radius: 10px;
       margin-bottom: 5px;
       padding: 0 20px;
-
       background-color: #ffffff;
-
+      min-width: 270px;
+      min-height: 70px;
+      height: 70px;
       .avatar {
+
         font-weight: bold;
-        font-size: x-large;
-        width: 50px;
-        height: 50px;
+        font-size: 16px;
+        width: 35px;
+        height: 35px;
+        justify-content: center;
+        display: grid;
         border-radius: 50%;
         background-color: #282c34;
         color: white;
@@ -189,7 +195,7 @@ $mainListChatColor: #f1f1f1;
       .info-message {
         display: flex;
         flex-direction: column;
-        padding: 10px 10px;
+        padding: 5px 15px;
         align-items: flex-start;
 
         .info {
@@ -207,8 +213,8 @@ $mainListChatColor: #f1f1f1;
       }
     }
     .chat-list__content-user:hover{
-      background-color: #535353;
-      color: white;
+      background-color: rgba(255, 255, 252, 0.6);
+      //color: white;
       cursor: pointer;
     }
   }

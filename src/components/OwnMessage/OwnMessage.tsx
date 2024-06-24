@@ -83,15 +83,17 @@ const OwnMessage: React.FC<MessageProps> = ({ message }) => {
                             {mes}
                         </div>
                     )}
-                   <div className="media">
-                       {medias && medias.map((media, index) => (
-                           media.type === 0 ? (
-                               <img key={index} className="send-image" src={media.url} alt="sent image" />
-                           ) : (
-                               <video key={index} className="send-video" src={media.url} controls />
-                           )
-                       ))}
-                   </div>
+                    {medias && medias.length > 0 ?
+                        <div className="media">
+                            {medias && medias.map((media, index) => (
+                                media.type === 0 ? (
+                                    <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                                ) : (
+                                    <video key={index} className="send-video" src={media.url} controls/>
+                                )
+                            ))}
+                        </div>
+                   : ""}
                 </div>
             </div>
         </div>

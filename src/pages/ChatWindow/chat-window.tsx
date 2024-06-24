@@ -11,12 +11,14 @@ interface User {
     name: string;
     type: number;
     actionTime: string;
+    firstMess: string;
 }
 const intialUser =() =>{
     return {
         name: '',
         type: 0,
-        actionTime: ''
+        actionTime: '',
+        firstMess :''
     }
 }
 
@@ -42,6 +44,7 @@ function ChatWindow() {
 
             switch (response.event) {
                 case "GET_USER_LIST": {
+                    console.log(response)
                     setUsers(response.data);
                     break;
                 }

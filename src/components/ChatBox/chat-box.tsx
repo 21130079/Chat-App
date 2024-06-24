@@ -66,12 +66,12 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                     break;
                 }
                 case "GET_PEOPLE_CHAT_MES": {
-
                     setBoxChatData(response.data)
                     break;
                 }
                 case "CHECK_USER": {
                     setUserStatus(response.data.status ? 'Online' : 'Offline')
+                    
                     break;
                 }
                 case "SEND_CHAT": {

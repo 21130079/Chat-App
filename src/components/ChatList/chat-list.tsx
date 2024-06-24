@@ -7,6 +7,7 @@ interface User {
     name: string;
     type: number;
     actionTime: string;
+    firstMess: string;
 }
 
 interface ChatListProps {
@@ -25,7 +26,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
     const [menuPosition, setMenuPosition] = useState<{left: number, top: number}>({left: 0, top: 0});
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [isAddingFriend, setIsAddingFriend] = useState(true);
-    
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const username = localStorage.getItem('username') as string;
 
     const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,12 +66,12 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         const name = { name: addText };
         if (isAddingFriend) {
             if (onUsersChange) {
-                onUsersChange([{name: name.name, type: 0, actionTime: new Date(Date.now()).toLocaleString()}, ...users]);
+                onUsersChange([{name: name.name, type: 0, actionTime: new Date(Date.now()).toLocaleString(), firstMess:""}, ...users]);
             }
         } else {
             createRoom(name);
             if (onUsersChange) {
-                onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString()}, ...users]);
+                onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString(),firstMess:""}, ...users]);
             }
         }
     };
@@ -79,7 +80,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         const name = { name: addText };
         joinRoom(name);
         if (onUsersChange) {
-            onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString()}, ...users]);
+            onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString() ,firstMess : ""}, ...users]);
         }
     };
 
@@ -92,16 +93,25 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         logout();
         window.location.href = '/';
     };
+    const handleSelectUser = (user:User) => {
+        onUserSelect(user);
+        setSelectedUser(user);
+    };
 
     let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
 
+    const getHoursAndMinutes = (dateTimeString: string) => {
+        const timePart = dateTimeString.split(' ')[1];
+        const [hours, minutes] = timePart.split(':');
+        return  hours+":" +minutes ;
+    };
     return (
         <div className="chat-list">
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
                     <img src={typing} alt="avatar"/>
                     <div className="info">
-                        <h4>{username}</h4>
+                        <h6>{username}</h6>
                         <p className="status">Online</p>
                     </div>
                 </div>
@@ -133,23 +143,30 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
 
 
             <div className="chat-list__content">
-                {
-                    filteredUsers.map((user, index) => (
-                        <div key={index} className="chat-list__content-user" onClick={() => onUserSelect(user)}>
-                            <div className="avatar">
-                                {user.name.charAt(0).toUpperCase()}
+                {filteredUsers.map((user, index) => (
+                    <div
+                        key={index}
+                        className="chat-list__content-user"
+                        id={user.name}
+                        onClick={() => handleSelectUser(user)}
+                        style={{backgroundColor: selectedUser?.name === user.name ? '#FFC0CB' : 'white'}}
+                    >
+                        <div className="avatar">
+                            {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="info-message">
+                            <div className="info">
+                                <h5>{user.name}</h5>
                             </div>
-                            <div className="info-message">
-                                <div className="info">
-                                    <h4>{user.name}</h4>
-                                </div>
-                                <div className="chat-list-message">
-                                    <p>{user.actionTime}</p>
-                                </div>
+                            <div className="chat-list-message">
+                                <p>{user.actionTime}</p>
                             </div>
                         </div>
-                    ))
-                }
+                        <div className="time-message">
+                            <p>{getHoursAndMinutes(user.actionTime)}</p>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
