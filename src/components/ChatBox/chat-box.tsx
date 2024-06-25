@@ -30,10 +30,11 @@ interface Media{
     type: number; // 0 la image, 1 la video
 }
 
-interface FileInput{
+interface Document{
     url: string;
     file: File;
     type: string;
+    name:string;
 }
 
 function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
@@ -44,7 +45,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
     const [base64Medias, setBase64Medias] = useState<Array<Media>>([]);
-    const[fileIn, setFileIn]= useState<Array<FileInput>>([]);
+    const[fileIn, setFileIn]= useState<Array<Document>>([]);
 
 
     useEffect(() => {
@@ -133,49 +134,58 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
 
         // load danh sach file len firebase va truyen link file ve
         let uploadedMediaUrls: Media[] = [];
-        let uploadedFileUrls: FileInput[] = [];
+        let uploadedFileUrls: Document[] = [];
+        const uploadPromises = [];
+
         if (selectedMedias.length>0) {
-            const uploadPromises = selectedMedias.map(media => uploadMedia(media.file, media.type ));
-            const urls = await Promise.all(uploadPromises);
+            uploadPromises.push(...selectedMedias.map(media => uploadMedia(media.file, media.type )));
+        }
+
+        if(selectedFiles.length > 0){
+            uploadPromises.push(...selectedFiles.map(file => uploadFile(file.file, file.name)));
+        }
+
+        Promise.all(uploadPromises).then(urls => {
             uploadedMediaUrls = selectedMedias.map((media, i) => ({
                 ...media,
                 url: urls[i]
             }));
-        }
-        if(selectedFiles.length > 0){
-            const uploadPromises = selectedFiles.map(file => uploadFile(file.file, file.type));
-            const urls = await Promise.all(uploadPromises);
+
             uploadedFileUrls = selectedFiles.map((file, i) => ({
                 ...file,
-                url: urls[i]
+                url: urls[i + selectedMedias.length]
             }));
-        }
-        // gửi tin nhắn
-        if ((message && user && message.trim().length > 0) || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
-            const messageObject = {
-                medias : uploadedMediaUrls,
-                files: uploadedFileUrls,
-                message: msgClone
-            };
-            if (isRoom && user) {
-                sendRoomChat({
-                    to: user.name,
-                    mes: JSON.stringify(messageObject)
-                });
-            } else {
-                if(user){
-                    sendPeopleChat({
+
+            // gửi tin nhắn
+            if ((message && user && message.trim().length > 0) || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
+                const messageObject = {
+                    medias : uploadedMediaUrls,
+                    files: uploadedFileUrls,
+                    message: msgClone
+                };
+                console.log(messageObject)
+                if (isRoom && user) {
+                    sendRoomChat({
                         to: user.name,
                         mes: JSON.stringify(messageObject)
                     });
+                } else {
+                    if(user){
+                        sendPeopleChat({
+                            to: user.name,
+                            mes: JSON.stringify(messageObject)
+                        });
+                    }
                 }
+
+                // reset
             }
 
-            // reset
-        }
-
-        setBase64Medias([])
-        setFileIn([])
+            setBase64Medias([])
+            setFileIn([])
+        }).catch(error => {
+            console.error('Error uploading files:', error);
+        });
     }
 
     // upload len database
@@ -190,11 +200,11 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             return "";
         }
     };
-    const uploadFile = async (file: File, type: string) => {
+    const uploadFile = async (file: File, name:string) => {
         const fileRef = ref(storage, `files/FILE_${uuidv4()}`);
         try {
             await uploadBytes(fileRef, file);
-            return await getDownloadURL(fileRef);
+            return await getDownloadURL(fileRef)+'fileName='+name;
         } catch (error) {
             console.error("Error uploading file: ", error);
             return "";
@@ -225,7 +235,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
-                setFileIn(prev => [...prev, { type: file.type.endsWith('.rar')?'rar':'zip', url: reader.result as string, file }]);
+                setFileIn(prev => [...prev, { type: file.type.endsWith('.txt')?'txt':'zip', url: reader.result as string,name:file.name, file }]);
             };
             clearInputFile();
         }
@@ -324,7 +334,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                         />
                         <input
                             type="file"
-                            accept=".zip,.rar,.docx,.txt"
+                            accept=".txt"
                             onChange={handleFileChange}
                             id="fileIn"
                             style={{display: 'none'}}
