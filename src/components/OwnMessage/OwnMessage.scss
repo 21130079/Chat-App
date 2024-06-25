@@ -69,11 +69,18 @@ $ownMessageColor: #d0fee1;
         justify-content: center;
         padding: 10px;
         border-radius: 10px;
-        margin: 10px 0;
+        margin: 10px;
         text-decoration: none;
         box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
         -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
         -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+        a{
+          margin-bottom: 10px;
+        }
+        img{
+          max-width: 30px;
+          max-height: 30px;
+        }
       }
 
     }

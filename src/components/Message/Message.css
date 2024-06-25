@@ -68,6 +68,13 @@
   -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
   text-decoration: none;
 }
+.message-container .message-content .main-message .file a {
+  margin-bottom: 10px;
+}
+.message-container .message-content .main-message .file img {
+  max-width: 30px;
+  max-height: 30px;
+}
 .message-container .message-content .time-message {
   display: none;
 }

@@ -157,7 +157,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
                                     <h4>{user.name}</h4>
                         </div>
                                 <div className="chat-list-message">
-                                    <p>{user.type===1?'Group':'User'} {user.actionTime}</p>
+                                    <p>{user.actionTime}</p>
                                 </div>
                             </div>
                         </div>

@@ -135,57 +135,49 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         // load danh sach file len firebase va truyen link file ve
         let uploadedMediaUrls: Media[] = [];
         let uploadedFileUrls: Document[] = [];
-        const uploadPromises = [];
-
         if (selectedMedias.length>0) {
-            uploadPromises.push(...selectedMedias.map(media => uploadMedia(media.file, media.type )));
-        }
-
-        if(selectedFiles.length > 0){
-            uploadPromises.push(...selectedFiles.map(file => uploadFile(file.file, file.name)));
-        }
-
-        Promise.all(uploadPromises).then(urls => {
+            const uploadPromises = selectedMedias.map(media => uploadMedia(media.file, media.type ));
+            const urls = await Promise.all(uploadPromises);
             uploadedMediaUrls = selectedMedias.map((media, i) => ({
                 ...media,
                 url: urls[i]
             }));
-
+        }
+        if(selectedFiles.length > 0){
+            const uploadPromises = selectedFiles.map(file => uploadFile(file.file, file.name));
+            const urls = await Promise.all(uploadPromises);
             uploadedFileUrls = selectedFiles.map((file, i) => ({
                 ...file,
-                url: urls[i + selectedMedias.length]
+                url: urls[i]
             }));
-
-            // gửi tin nhắn
-            if ((message && user && message.trim().length > 0) || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
-                const messageObject = {
-                    medias : uploadedMediaUrls,
-                    files: uploadedFileUrls,
-                    message: msgClone
-                };
-                console.log(messageObject)
-                if (isRoom && user) {
-                    sendRoomChat({
+        }
+        // gửi tin nhắn
+        if ((message && user && message.trim().length > 0) || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
+            const messageObject = {
+                medias : uploadedMediaUrls,
+                files: uploadedFileUrls,
+                message: msgClone
+            };
+            console.log(messageObject)
+            if (isRoom && user) {
+                sendRoomChat({
+                    to: user.name,
+                    mes: JSON.stringify(messageObject)
+                });
+            } else {
+                if(user){
+                    sendPeopleChat({
                         to: user.name,
                         mes: JSON.stringify(messageObject)
                     });
-                } else {
-                    if(user){
-                        sendPeopleChat({
-                            to: user.name,
-                            mes: JSON.stringify(messageObject)
-                        });
-                    }
                 }
-
-                // reset
             }
 
-            setBase64Medias([])
-            setFileIn([])
-        }).catch(error => {
-            console.error('Error uploading files:', error);
-        });
+            // reset
+        }
+
+        setBase64Medias([])
+        setFileIn([])
     }
 
     // upload len database
@@ -204,7 +196,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
         const fileRef = ref(storage, `files/FILE_${uuidv4()}`);
         try {
             await uploadBytes(fileRef, file);
-            return await getDownloadURL(fileRef)+'fileName='+name;
+            return await getDownloadURL(fileRef);
         } catch (error) {
             console.error("Error uploading file: ", error);
             return "";
@@ -235,7 +227,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
-                setFileIn(prev => [...prev, { type: file.type.endsWith('.txt')?'txt':'zip', url: reader.result as string,name:file.name, file }]);
+                setFileIn(prev => [...prev, { type:  file.name, name: file.name, url: reader.result as string, file }]);
             };
             clearInputFile();
         }
@@ -334,7 +326,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange}: ChatBoxProps) {
                         />
                         <input
                             type="file"
-                            accept=".txt"
+                            accept=".txt,.bat"
                             onChange={handleFileChange}
                             id="fileIn"
                             style={{display: 'none'}}

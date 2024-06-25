@@ -1,7 +1,8 @@
 import typing from "../../assets/images/typing.gif";
 import React, { useRef } from "react";
 import './OwnMessage.scss';
-
+import textImg from '../../assets/images/FileImg/text.png';
+import other from '../../assets/images/FileImg/other.png';
 interface Message {
     createAt: string;
     id: number;
@@ -18,6 +19,7 @@ interface Media {
 interface Document {
     type: string;
     url: string;
+    name:string;
 }
 
 interface MessageProps {
@@ -133,8 +135,25 @@ const OwnMessage: React.FC<MessageProps> = ({ message }) => {
                     {files && files.length > 0 && (
                         <div className="file">
                             {files.map((file, index) => (
-                                <a key={index} href={file.url.split('fileName=')[0]}
-                                   className="send-file">{file.url.split('fileName=')[1]} </a>
+                                <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
+                                   download={file.name}
+                                   className="send-file">
+                                    <img src={
+                                        (() => {
+                                            try {
+                                                switch (file.name.split('.').pop()) {
+                                                    case 'txt':
+                                                        return textImg;
+                                                    default:
+                                                        return other;
+                                                }
+                                            } catch (error) {
+                                                return other;
+                                            }
+                                        })()
+                                    }/>
+                                    {file.name}
+                                </a>
                             ))}
                         </div>
                     )}
