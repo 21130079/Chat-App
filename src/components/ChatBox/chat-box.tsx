@@ -5,16 +5,14 @@ import typing from '../../assets/images/typing.gif';
 import {
     checkUser,
     getPeopleChatMessages,
-    getRoomChatMessages, getUserList,
+    getRoomChatMessages,
     sendPeopleChat,
     sendRoomChat
 } from "../../api/api";
-import {websocket} from "../../api/web-socket";
+import {ws} from "../../api/web-socket";
 import Message from "../Message/Message";
 import OwnMessage from "../OwnMessage/OwnMessage";
 import EmojiPicker, {EmojiClickData} from "emoji-picker-react";
-import {updateDoc, doc} from "firebase/firestore"
-import {db} from "../../libs/firebase";
 
 interface User {
     name: string;
@@ -31,7 +29,6 @@ interface ChatBoxProps {
 }
 
 function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: ChatBoxProps) {
-    const username = localStorage.getItem("username");
     const [isRoom, setIsRoom] = useState(true);
     const [boxChatData, setBoxChatData] = useState<any>(null);
     const [message, setMessage] = useState<string>('');
@@ -40,19 +37,16 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: C
     const contentRef = useRef<HTMLDivElement>(null);
     const [emojiOpened, setEmojiOpened] = useState<boolean>(false);
     const modeIcon = useRef<HTMLDivElement>(null);
+    const base64LoginInfo: string = localStorage.getItem("user") ?? '';
+    const decodedLoginInfo: string = atob(base64LoginInfo);
+    const userInfo = JSON.parse(decodedLoginInfo);
+    const username = userInfo.username;
 
     useEffect(() => {
         scrollToBottom();
     }, [boxChatData]);
 
-    useEffect(() => {
-        if (websocket.readyState === WebSocket.OPEN) {
-            getUserList();
-            console.log(1);
-        } else {
-            console.log(2)
-        }
-
+    useEffect(()=> {
         if (user) {
             if (user.type === 1) {
                 setIsRoom(true);
@@ -65,33 +59,35 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: C
             }
         }
 
-        websocket.onmessage = (event) => {
-            const response = JSON.parse(event.data as string);
-            switch (response.event) {
-                case "GET_ROOM_CHAT_MES": {
-                    setBoxChatData(response.data.chatData)
-                    break;
-                }
-                case "GET_PEOPLE_CHAT_MES": {
-                    setBoxChatData(response.data)
-                    break;
-                }
-                case "CHECK_USER": {
-                    setUserStatus(response.data.status ? 'Online' : 'Offline')
-                    break;
-                }
-                case "SEND_CHAT": {
-                    if (response.data.to === user?.name) {
-                        if (user?.type === 1) {
-                            getRoomChatMessages({name: user?.name, page: 1})
-                        }
+        if (ws) {
+            ws.onmessage = (event) => {
+                const response = JSON.parse(event.data as string);
+                switch (response.event) {
+                    case "GET_ROOM_CHAT_MES": {
+                        setBoxChatData(response.data.chatData)
+                        break;
                     }
-                    if (response.data.to === localStorage.getItem("username") as string) {
-                        if (user?.type === 0) {
-                            getPeopleChatMessages({name: user?.name, page: 1})
-                        }
+                    case "GET_PEOPLE_CHAT_MES": {
+                        setBoxChatData(response.data)
+                        break;
                     }
+                    case "CHECK_USER": {
+                        setUserStatus(response.data.status ? 'Online' : 'Offline')
+                        break;
+                    }
+                    case "SEND_CHAT": {
+                        if (response.data.to === user?.name) {
+                            if (user?.type === 1) {
+                                getRoomChatMessages({name: user?.name, page: 1})
+                            }
+                        }
+                        if (response.data.to === localStorage.getItem("username") as string) {
+                            if (user?.type === 0) {
+                                getPeopleChatMessages({name: user?.name, page: 1})
+                            }
+                        }
 
+                    }
                 }
             }
         }

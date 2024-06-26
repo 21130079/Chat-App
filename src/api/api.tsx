@@ -1,6 +1,6 @@
-// Function to send login data
-import {websocket} from "./web-socket";
+import {sendRequest} from "./web-socket";
 
+// Function to send login data
 export const sendLogin = (data: { user: string; pass: string }) => {
     const action = {
         action: 'onchat',
@@ -12,7 +12,7 @@ export const sendLogin = (data: { user: string; pass: string }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }
 
 // kiểm tra tình trạng online (test thử không hoạt động)
@@ -26,7 +26,7 @@ export const checkUser = (data: { user: string }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }
 
 export const register = (data: { user: string, pass: string }) => {
@@ -40,7 +40,7 @@ export const register = (data: { user: string, pass: string }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }
 
 // Function to re-login a user
@@ -55,7 +55,7 @@ export const reLogin = (data: { user: string, code: string }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }
 
 // Function to logout
@@ -66,7 +66,8 @@ export const logout = () => {
             event: 'LOGOUT'
         }
     };
-    websocket.send(JSON.stringify(action));
+    localStorage.clear();
+    sendRequest(action);
 }
 
 // Function to create a new room
@@ -80,7 +81,7 @@ export const createRoom = (data: { name: string }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }
 
 // Function to join an existing room
@@ -94,7 +95,7 @@ export const joinRoom = (data: { name: string }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }
 
 // Function to get room chat messages
@@ -109,7 +110,7 @@ export const getRoomChatMessages = (data: { name: string, page: number }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }
 
 // Function to get people chat messages
@@ -124,7 +125,7 @@ export const getPeopleChatMessages = (data: { name: string, page: number }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
     return 1;
 }
 // Function to send chat message to room
@@ -140,7 +141,7 @@ export const sendRoomChat = (data: { to: string, mes: string }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }
 
 // Function to send chat message to a person
@@ -156,7 +157,7 @@ export const sendPeopleChat = (data: { to: string, mes: string }) => {
             }
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }
 
 // Function to get the user list
@@ -167,5 +168,5 @@ export const getUserList = () => {
             event: 'GET_USER_LIST'
         }
     };
-    websocket.send(JSON.stringify(action));
+    sendRequest(action);
 }

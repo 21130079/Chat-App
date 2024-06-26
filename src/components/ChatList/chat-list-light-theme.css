@@ -5,7 +5,7 @@
   height: 100%;
   border-radius: 10px 0 0 0;
   color: black;
-  border-right: 1px solid #eaebee;
+  border-right: 1px solid #ebeaf0;
 }
 .chat-list.light-theme .chat-list__header {
   display: flex;

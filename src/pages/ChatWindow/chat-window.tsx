@@ -5,9 +5,10 @@ import "./chat-window-light-theme.scss";
 import "./chat-window-dark-theme.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import {websocket} from "../../api/web-socket";
-import {getUserList, reLogin} from "../../api/api";
+import {ws} from "../../api/web-socket";
+import {getUserList, reLogin, sendLogin} from "../../api/api";
 import {useNavigate} from "react-router-dom";
+import Cookies from "js-cookie";
 
 interface User {
     name: string;
@@ -16,46 +17,64 @@ interface User {
 }
 
 function ChatWindow() {
-    const username: string = localStorage.getItem("username") ?? '';
-    const reLoginCode: string = localStorage.getItem("reLoginCode") ?? '';
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
-    const navigate = useNavigate();
     const [theme, setTheme] = useState<string | null>("light-theme");
+    const base64LoginInfo: string = localStorage.getItem("user") ?? '';
+    const decodedLoginInfo: string = atob(base64LoginInfo);
+    const userInfo = JSON.parse(decodedLoginInfo);
 
     useEffect(() => {
-        if (websocket.readyState === WebSocket.OPEN) {
-            console.log(1)
-            getUserList();
-        } else {
-            console.log(2)
-            getUserList();
-        }
+        setTimeout(() => {
+            if (ws) {
+                getUserList();
 
-        websocket.onmessage = (event) => {
-            const response = JSON.parse(event.data as string);
-            switch (response.event) {
-                case "GET_USER_LIST": {
-                    setUsers(response.data);
-                    break;
-                }
-                case "RE_LOGIN": {
-                    if (response.status === 'error') {
-                        navigate('/');
+                ws.onmessage = (event) => {
+                    const response = JSON.parse(event.data as string);
+                    switch (response.event) {
+                        case "LOGIN": {
+                            if (response.status === "success") {
+                                const loginInfo = {
+                                    username: userInfo.username,
+                                    password: userInfo.password,
+                                    reLoginCode: response.data.RE_LOGIN_CODE
+                                };
+                                const jsonLoginInfoString = JSON.stringify(loginInfo);
+                                const base64LoginInfoString = btoa(jsonLoginInfoString);
+
+                                localStorage.setItem("user", base64LoginInfoString)
+                            }
+                            break;
+                        }
+                        case "GET_USER_LIST": {
+                            setUsers(response.data);
+                            break;
+                        }
+                        // case "RE_LOGIN": {
+                        //     if (response.status === 'error') {
+                        //         sendLogin({
+                        //             user: username,
+                        //             pass: "21130079"
+                        //         })
+                        //         getUserList();
+                        //     }
+                        //     break;
+                        // }
+                        case "AUTH": {
+                            if (response.status === 'error') {
+                                sendLogin({
+                                    user: userInfo.username,
+                                    pass: userInfo.password
+                                })
+                                getUserList();
+                            }
+                            break;
+                        }
                     }
-                    break;
-                }
-                case "AUTH": {
-                    if (response.status === 'error') {
-                        reLogin({
-                            user: username,
-                            code: reLoginCode
-                        })
-                    }
-                }
+                };
             }
-        };
+        }, 200);
     }, []);
 
     const handleUserSelect = (user: User) => {

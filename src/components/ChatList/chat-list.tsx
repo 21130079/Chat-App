@@ -1,14 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import "./chat-list-light-theme.scss";
 import "./chat-list-dark-theme.scss";
 import typing from '../../assets/images/typing.gif';
-import group from '../../assets/images/group.png';
-import {websocket} from "../../api/web-socket";
-import {checkUser, getUserList, logout} from "../../api/api";
-import firebase from "firebase/compat";
-import {auth, db} from "../../libs/firebase";
-import {doc, getDoc, onSnapshot} from "firebase/firestore";
-import {useUserStore} from "../../libs/userStore";
+import {logout} from "../../api/api";
 
 interface User {
     name: string;
@@ -27,31 +21,10 @@ interface ChatListProps {
 function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, theme}: ChatListProps) {
     const [searchText, setSearchText] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const username = localStorage.getItem('username') as string;
-
-    const {currentUser} = useUserStore();
-    const [chats, setChats] = useState([]);
-
-    // useEffect(() => {
-    //     const unSub = onSnapshot(doc(db, "userchats", currentUser.id), async (res: any) => {
-    //         const items = res.data().chats;
-    //         const promises = items.map(async (item: any) => {
-    //             const userDocRef = doc(db, "users", item.receiverId);
-    //             const userDocSnap = await getDoc(userDocRef)
-    //             const user = userDocSnap.data();
-    //             return {...item, user}
-    //         });
-    //         const chatData = await Promise.all(promises);
-    //
-    //         setChats(chatData)
-    //     });
-    //
-    //     return () => {
-    //         unSub();
-    //     }
-    // }, [currentUser.id]);
-    //
-    // console.log(chats)
+    const base64LoginInfo: string = localStorage.getItem("user") ?? '';
+    const decodedLoginInfo: string = atob(base64LoginInfo);
+    const userInfo = JSON.parse(decodedLoginInfo);
+    const username = userInfo.username;
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
@@ -97,22 +70,6 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, the
 
             <div className="chat-list__content">
                 {
-                    // chats.map((chat: string) => (
-                    //     <div key={chat.chatId} className="chat-list__content-user" onClick={() => onUserSelect(user)}>
-                    //         {/*<div className="avatar">*/}
-                    //         {/*    {user.name.charAt(0).toUpperCase()}*/}
-                    //         {/*</div>*/}
-                    //         <div className="info-message">
-                    //             <div className="info">
-                    //                 <h4>{user.name}</h4>
-                    //             </div>
-                    //             <div className="chat-list-message">
-                    //                 <p>{user.actionTime}</p>
-                    //             </div>
-                    //         </div>
-                    //     </div>
-                    // ))
-
                     filteredUsers.map((user, index) => (
                         <div key={index} className="chat-list__content-user" onClick={() => onUserSelect(user)}>
                             <div className="avatar">
