@@ -1,7 +1,19 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
-import {checkUser, getUserList,createRoom, joinRoom, logout, ws} from "../../api/websocket-api";
+import userImg from '../../assets/images/user.png';
+import groupImg from '../../assets/images/group.png';
+
+import {
+    checkUser,
+    getUserList,
+    createRoom,
+    joinRoom,
+    logout,
+    ws,
+    getRoomChatMessages,
+    getPeopleChatMessages
+} from "../../api/websocket-api";
 
 interface User {
     name: string;
@@ -25,7 +37,6 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
     const [menuPosition, setMenuPosition] = useState<{left: number, top: number}>({left: 0, top: 0});
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [isAddingFriend, setIsAddingFriend] = useState(true);
-    
     const username = localStorage.getItem('username') as string;
 
     const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,13 +104,15 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         window.location.href = '/';
     };
 
+
+
     let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
 
     return (
         <div className="chat-list">
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
-                    <img src={typing} alt="avatar"/>
+                    <img src={userImg} alt="avatar"/>
                     <div className="info">
                         <h4>{username}</h4>
                         <p className="status">Online</p>
@@ -137,12 +150,12 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
                     filteredUsers.map((user, index) => (
                         <div key={index} className="chat-list__content-user" onClick={() => onUserSelect(user)}>
                             <div className="avatar">
-                                {user.name.charAt(0).toUpperCase()}
+                                {user.type === 1 ? <img src={groupImg} alt="avatar"/> : <img src={userImg} alt="avatar"/>}
                             </div>
-                            <div className="info-message">
-                                <div className="info">
+                                    <div className="info-message">
+                                    <div className="info">
                                     <h4>{user.name}</h4>
-                                </div>
+                        </div>
                                 <div className="chat-list-message">
                                     <p>{user.actionTime}</p>
                                 </div>

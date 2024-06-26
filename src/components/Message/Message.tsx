@@ -1,6 +1,8 @@
 import typing from "../../assets/images/typing.gif";
 import React, {useRef} from "react";
 import './Message.scss'
+import textImg from '../../assets/images/FileImg/text.png';
+import other from '../../assets/images/FileImg/other.png';
 
 interface Message {
     createAt: string;
@@ -14,6 +16,13 @@ interface Media {
     type: number;
     url: string;
 }
+interface Document{
+    url: string;
+    file: File;
+    type: string;
+    name:string;
+}
+
 interface MessageProps {
     message: Message | null;
 }
@@ -62,6 +71,19 @@ function Message({ message }: MessageProps) {
         }
     })();
 
+    const files: Document[] | null = (() => {
+        try {
+            if (message?.mes) {
+                const parsedMessage = JSON.parse(message.mes);
+                return parsedMessage.files || null;
+            }
+            return null;
+        } catch (error) {
+            return null;
+        }
+    })();
+
+
     return (
         <div className="message-container">
             <div className="message-author">
@@ -74,15 +96,42 @@ function Message({ message }: MessageProps) {
                         <img className="avatar" src={typing} alt=""/>
                         {mes}
                     </div>}
-                    <div className="media">
-                        {medias && medias.map((media, index) => (
-                            media.type === 0 ? (
-                                <img key={index} className="send-image" src={media.url} alt="sent image"/>
-                            ) : (
-                                <video key={index} className="send-video" src={media.url} controls/>
-                            )
-                        ))}
-                    </div>
+                    {medias && medias.length > 0 && (
+                        <div className="media">
+                            {medias.map((media, index) => (
+                                media.type === 0 ? (
+                                    <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                                ) : (
+                                    <video key={index} className="send-video" src={media.url} controls/>
+                                )
+                            ))}
+                        </div>
+                    )}
+                    {files && files.length > 0 && (
+                        <div className="file">
+                            {files.map((file, index) => (
+                                <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
+                                   download={file.name}
+                                   className="send-file">
+                                    <img src={
+                                        (() => {
+                                            try {
+                                                switch (file.name.split('.').pop()) {
+                                                    case 'txt':
+                                                        return textImg;
+                                                    default:
+                                                        return other;
+                                                }
+                                            } catch (error) {
+                                                return other;
+                                            }
+                                        })()
+                                    }/>
+                                    {file.name}
+                                </a>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div className="time-message" ref={timeRef}>

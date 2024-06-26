@@ -21,6 +21,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  border: black 1px solid;
   object-fit: cover;
 }
 .chat-list .chat-list__header .chat-list__header-user .info {
@@ -145,6 +146,8 @@
   border-radius: 10px;
   margin-bottom: 5px;
   padding: 0 20px;
+  min-width: 240px;
+  min-height: 76px;
   background-color: #ffffff;
 }
 .chat-list .chat-list__content .chat-list__content-user .avatar {
@@ -153,10 +156,16 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #282c34;
   color: white;
   align-content: center;
   object-fit: cover;
+}
+.chat-list .chat-list__content .chat-list__content-user .avatar img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: black 1px solid;
 }
 .chat-list .chat-list__content .chat-list__content-user .info-message {
   display: flex;
