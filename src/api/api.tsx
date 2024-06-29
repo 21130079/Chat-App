@@ -126,6 +126,7 @@ export const getPeopleChatMessages = (data: { name: string, page: number }) => {
         }
     };
     sendRequest(action);
+
     return 1;
 }
 // Function to send chat message to room

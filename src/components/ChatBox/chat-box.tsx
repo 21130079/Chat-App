@@ -13,6 +13,9 @@ import {ws} from "../../api/web-socket";
 import Message from "../Message/Message";
 import OwnMessage from "../OwnMessage/OwnMessage";
 import EmojiPicker, {EmojiClickData} from "emoji-picker-react";
+import { v4 as uuidv4 } from 'uuid';
+import {db} from "../firebase";
+import {setDoc, collection, getDocs, doc} from "firebase/firestore";
 
 interface User {
     name: string;
@@ -29,10 +32,11 @@ interface ChatBoxProps {
 }
 
 function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: ChatBoxProps) {
+    const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2B50}\u{2B55}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
     const [isRoom, setIsRoom] = useState(true);
     const [boxChatData, setBoxChatData] = useState<any>(null);
     const [message, setMessage] = useState<string>('');
-    const [isSend, setIsSend] = useState<string>();
+    const [isSend, setIsSend] = useState<boolean>();
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
     const [emojiOpened, setEmojiOpened] = useState<boolean>(false);
@@ -46,7 +50,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: C
         scrollToBottom();
     }, [boxChatData]);
 
-    useEffect(()=> {
+    useEffect(() => {
         if (user) {
             if (user.type === 1) {
                 setIsRoom(true);
@@ -103,20 +107,43 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: C
         setMessage(e.target.value);
     }
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (message && user && message.trim().length > 0) {
-            if (isRoom) {
-                sendRoomChat({
-                    to: user.name,
+            if (emojiRegex.test(message)) {
+                const uuid = uuidv4();
+                const messageRef = doc(db, 'messages', uuid);
+                await setDoc(messageRef, {
                     mes: message
                 });
+
+                const formatMessage =  "{\"idMes\":\"" + uuid + "\"}"
+
+                if (isRoom) {
+                    sendRoomChat({
+                        to: user.name,
+                        mes: formatMessage
+                    });
+                } else {
+                    sendPeopleChat({
+                        to: user.name,
+                        mes: formatMessage
+                    });
+                }
             } else {
-                sendPeopleChat({
-                    to: user.name,
-                    mes: message
-                });
+                if (isRoom) {
+                    sendRoomChat({
+                        to: user.name,
+                        mes: message
+                    });
+                } else {
+                    sendPeopleChat({
+                        to: user.name,
+                        mes: message
+                    });
+                }
             }
-            setIsSend(Date.now() + "");
+
+            setIsSend(!isSend);
             setMessage("");
         }
     }
@@ -140,6 +167,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: C
             document.body.style.backgroundColor = "#1e1f22";
             if (setTheme) {
                 setTheme('dark-theme');
+                localStorage.setItem('theme', 'dark-theme');
             }
             if (modeIcon) {
                 modeIcon.current?.classList.remove(modeIcon.current?.classList[1]);
@@ -149,6 +177,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme}: C
             document.body.style.backgroundColor = "#ebeaf0";
             if (setTheme) {
                 setTheme('light-theme');
+                localStorage.setItem('theme', 'light-theme');
             }
             if (modeIcon) {
                 modeIcon.current?.classList.remove(modeIcon.current?.classList[1]);

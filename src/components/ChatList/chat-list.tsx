@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import "./chat-list-light-theme.scss";
 import "./chat-list-dark-theme.scss";
 import typing from '../../assets/images/typing.gif';
 import {logout} from "../../api/api";
+import {addDoc, collection} from "firebase/firestore";
+import {db} from "../firebase";
 
 interface User {
     name: string;

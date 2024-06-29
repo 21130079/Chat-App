@@ -7,13 +7,33 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {ws} from "../../api/web-socket";
 import {getUserList, reLogin, sendLogin} from "../../api/api";
-import {useNavigate} from "react-router-dom";
-import Cookies from "js-cookie";
 
 interface User {
     name: string;
     type: number;
     actionTime: string;
+}
+
+interface BoxChat {
+    name: string;
+    type: string;
+}
+
+interface BoxChatData {
+    id: string;
+    owner: string;
+    name: string;
+    type: string;
+    actionTime: string;
+}
+
+interface ChatData {
+    id: string;
+    name: string;
+    to: string;
+    type: string;
+    mes: string;
+    createAt: string;
 }
 
 function ChatWindow() {
@@ -24,6 +44,11 @@ function ChatWindow() {
     const base64LoginInfo: string = localStorage.getItem("user") ?? '';
     const decodedLoginInfo: string = atob(base64LoginInfo);
     const userInfo = JSON.parse(decodedLoginInfo);
+
+    let userTheme = localStorage.getItem('theme') ?? 'light-theme';
+    if (userTheme !== theme) {
+        setTheme(userTheme)
+    }
 
     useEffect(() => {
         setTimeout(() => {
@@ -51,16 +76,16 @@ function ChatWindow() {
                             setUsers(response.data);
                             break;
                         }
-                        // case "RE_LOGIN": {
-                        //     if (response.status === 'error') {
-                        //         sendLogin({
-                        //             user: username,
-                        //             pass: "21130079"
-                        //         })
-                        //         getUserList();
-                        //     }
-                        //     break;
-                        // }
+                        case "RE_LOGIN": {
+                            if (response.status === 'error') {
+                                sendLogin({
+                                    user: userInfo.username,
+                                    pass: userInfo.password
+                                })
+                                getUserList();
+                            }
+                            break;
+                        }
                         case "AUTH": {
                             if (response.status === 'error') {
                                 sendLogin({
