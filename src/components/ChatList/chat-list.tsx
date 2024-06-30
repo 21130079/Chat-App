@@ -1,24 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import "./chat-list.scss";
-import typing from '../../assets/images/typing.gif';
+import React, {useState} from 'react';
+import "./chat-list-light-theme.scss";
+import "./chat-list-dark-theme.scss";
 import userImg from '../../assets/images/user.png';
 import groupImg from '../../assets/images/group.png';
-
 import {
-    checkUser,
-    getUserList,
+    logout,
     createRoom,
     joinRoom,
-    logout,
-    ws,
-    getRoomChatMessages,
-    getPeopleChatMessages
-} from "../../api/websocket-api";
+} from "../../api/api";
 
 interface User {
     name: string;
     type: number;
     actionTime: string;
+    firstMess: string;
 }
 
 interface ChatListProps {
@@ -26,18 +21,33 @@ interface ChatListProps {
     onUserSelect: (user: User) => void,
     setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     isMessageChange?: boolean,
+    theme?: string | null
     onUsersChange?: (users: User[]) => void
+    newMessages: string[];
+    setNewMessages?: (value: (((prevState: Array<string>) => Array<string>) | Array<string>)) => void;
 }
 
-
-function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onUsersChange}: ChatListProps) {
+function ChatList({
+                      users,
+                      onUserSelect,
+                      setIsMessageChange,
+                      isMessageChange,
+                      onUsersChange,
+                      theme,
+                      newMessages,
+                      setNewMessages
+                  }: ChatListProps) {
     const [searchText, setSearchText] = useState('');
     const [addText, setAddText] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [menuPosition, setMenuPosition] = useState<{left: number, top: number}>({left: 0, top: 0});
+    const base64LoginInfo: string = localStorage.getItem("user") ?? '';
+    const decodedLoginInfo: string = atob(base64LoginInfo);
+    const userInfo = JSON.parse(decodedLoginInfo);
+    const username = userInfo.username;
+    const [menuPosition, setMenuPosition] = useState<{ left: number, top: number }>({left: 0, top: 0});
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [isAddingFriend, setIsAddingFriend] = useState(true);
-    const username = localStorage.getItem('username') as string;
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
@@ -49,53 +59,68 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         setIsMenuOpen(!isMenuOpen);
     };
 
-    const handleOpenAddFriend = ()=>{
-        if(isAddOpen){
+    const handleOpenAddFriend = () => {
+        if (isAddOpen) {
             setIsAddingFriend(true)
-        } else{
+        } else {
             setIsAddOpen(!isAddOpen);
             setIsAddingFriend(true)
         }
 
     }
 
-    const handleOpenAddGroup = ()=>{
-        if(isAddOpen){
+    const handleOpenAddGroup = () => {
+        if (isAddOpen) {
             setIsAddingFriend(false)
-        } else{
+        } else {
             setIsAddOpen(!isAddOpen);
             setIsAddingFriend(false)
         }
 
     }
 
-    const handleCloseAdd=()=>{
+    const handleCloseAdd = () => {
         setIsAddOpen(!isAddOpen)
     }
     const handleAddClick = () => {
-        const name = { name: addText };
+        const name = {name: addText};
         if (isAddingFriend) {
             if (onUsersChange) {
-                onUsersChange([{name: name.name, type: 0, actionTime: new Date(Date.now()).toLocaleString()}, ...users]);
+                onUsersChange([{
+                    name: name.name,
+                    type: 0,
+                    actionTime: new Date(Date.now()).toLocaleString(),
+                    firstMess: ""
+                }, ...users]);
             }
         } else {
             createRoom(name);
             if (onUsersChange) {
-                onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString()}, ...users]);
+                onUsersChange([{
+                    name: name.name,
+                    type: 1,
+                    actionTime: new Date(Date.now()).toLocaleString(),
+                    firstMess: ""
+                }, ...users]);
             }
         }
     };
 
     const handleJoinClick = () => {
-        const name = { name: addText };
+        const name = {name: addText};
         joinRoom(name);
         if (onUsersChange) {
-            onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString()}, ...users]);
+            onUsersChange([{
+                name: name.name,
+                type: 1,
+                actionTime: new Date(Date.now()).toLocaleString(),
+                firstMess: ""
+            }, ...users]);
         }
     };
 
 
-    const handleAddInput=(e: React.ChangeEvent<HTMLInputElement>)=>{
+    const handleAddInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAddText(e.target.value)
     }
 
@@ -104,17 +129,29 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         window.location.href = '/';
     };
 
+    const handleSelectUser = (user: User) => {
+        onUserSelect(user);
+        setSelectedUser(user);
+        if (setNewMessages) {
+            setNewMessages(prev => prev.filter(message => message !== user.name));
+        }
+    };
 
+    const getHoursAndMinutes = (dateTimeString: string) => {
+        const timePart = dateTimeString.split(' ')[1];
+        const [hours, minutes] = timePart.split(':');
+        return hours + ":" + minutes;
+    };
 
     let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
 
     return (
-        <div className="chat-list">
+        <div className={`chat-list ${theme}`}>
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
                     <img src={userImg} alt="avatar"/>
                     <div className="info">
-                        <h4>{username}</h4>
+                        <h6>{username}</h6>
                         <p className="status">Online</p>
                     </div>
                 </div>
@@ -146,23 +183,31 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
 
 
             <div className="chat-list__content">
-                {
-                    filteredUsers.map((user, index) => (
-                        <div key={index} className="chat-list__content-user" onClick={() => onUserSelect(user)}>
-                            <div className="avatar">
-                                {user.type === 1 ? <img src={groupImg} alt="avatar"/> : <img src={userImg} alt="avatar"/>}
-                            </div>
-                                    <div className="info-message">
-                                    <div className="info">
-                                    <h4>{user.name}</h4>
+                {filteredUsers.map((user, index) => (
+                    <div
+                        key={index}
+                        className="chat-list__content-user"
+                        id={user.name}
+                        onClick={() => handleSelectUser(user)}
+                        style={{backgroundColor: selectedUser?.name === user.name ? '#FFC0CB' : 'white'}}
+                    >
+                        <div className="avatar">
+                            {user.type === 1 ? <img src={groupImg} alt="avatar"/> :
+                                <img src={userImg} alt="avatar"/>}
                         </div>
-                                <div className="chat-list-message">
-                                    <p>{user.actionTime}</p>
-                                </div>
+                        <div className="info-message">
+                            <div className="info">
+                                <h5 style={{marginBottom: 0}}>{user.name}</h5>
+                            </div>
+                            <div className="chat-list-message" style={{fontSize: 14}}>
+                                {newMessages.includes(user.name as never) ? "has sent message" : ""}
                             </div>
                         </div>
-                    ))
-                }
+                        <div className="time-message">
+                            <p>{getHoursAndMinutes(user.actionTime)}</p>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

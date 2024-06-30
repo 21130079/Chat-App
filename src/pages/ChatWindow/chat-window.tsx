@@ -1,67 +1,116 @@
 import React, {useState, useEffect, useContext} from 'react';
 import ChatList from "../../components/ChatList/chat-list";
 import ChatBox from "../../components/ChatBox/chat-box";
-import "./chat-window.scss";
+import "./chat-window-light-theme.scss";
+import "./chat-window-dark-theme.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import {getUserList, reLogin, ws} from "../../api/websocket-api";
-import {useNavigate} from "react-router-dom";
+import {ws} from "../../api/web-socket";
+import {getUserList, reLogin, sendLogin} from "../../api/api";
 
 interface User {
     name: string;
     type: number;
     actionTime: string;
+    firstMess: string;
 }
+
+interface BoxChat {
+    name: string;
+    type: string;
+}
+
+interface BoxChatData {
+    id: string;
+    owner: string;
+    name: string;
+    type: string;
+    actionTime: string;
+}
+
+interface ChatData {
+    id: string;
+    name: string;
+    to: string;
+    type: string;
+    mes: string;
+    createAt: string;
+}
+
 const intialUser =() =>{
     return {
         name: '',
         type: 0,
-        actionTime: ''
+        actionTime: '',
+        firstMess :''
     }
 }
 
 function ChatWindow() {
-    const reLoginCode: string = localStorage.getItem("reLoginCode") ?? '';
-    const username: string = localStorage.getItem("username") ?? '';
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User>(intialUser);
     const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
-    const navigate = useNavigate();
+    const [theme, setTheme] = useState<string | null>("light-theme");
+    const base64LoginInfo: string = localStorage.getItem("user") ?? '';
+    const decodedLoginInfo: string = atob(base64LoginInfo);
+    const userInfo = JSON.parse(decodedLoginInfo);
+    const [ newMessages, setNewMessages] = useState<Array<string>>([]);
+
+    let userTheme = localStorage.getItem('theme') ?? 'light-theme';
+    if (userTheme !== theme) {
+        setTheme(userTheme)
+    }
 
     useEffect(() => {
-        if (ws.readyState === WebSocket.OPEN) {
-             getUserList();
-        }
+        setTimeout(() => {
+            if (ws) {
+                getUserList();
 
-        ws.onopen = () => {
-            getUserList();
-        }
+                ws.onmessage = (event) => {
+                    const response = JSON.parse(event.data as string);
+                    switch (response.event) {
+                        case "LOGIN": {
+                            if (response.status === "success") {
+                                const loginInfo = {
+                                    username: userInfo.username,
+                                    password: userInfo.password,
+                                    reLoginCode: response.data.RE_LOGIN_CODE
+                                };
+                                const jsonLoginInfoString = JSON.stringify(loginInfo);
+                                const base64LoginInfoString = btoa(jsonLoginInfoString);
 
-        ws.onmessage = (event) => {
-            const response = JSON.parse(event.data as string);
-
-            switch (response.event) {
-                case "GET_USER_LIST": {
-                    setUsers(response.data);
-                    break;
-                }
-                case "RE_LOGIN": {
-                    if (response.status === 'error') {
-                        navigate('/');
+                                localStorage.setItem("user", base64LoginInfoString)
+                            }
+                            break;
+                        }
+                        case "GET_USER_LIST": {
+                            setUsers(response.data);
+                            break;
+                        }
+                        case "RE_LOGIN": {
+                            if (response.status === 'error') {
+                                reLogin({
+                                    user: userInfo.username,
+                                    code: userInfo.reLoginCode
+                                })
+                                getUserList();
+                            }
+                            break;
+                        }
+                        case "AUTH": {
+                            if (response.status === 'error') {
+                                sendLogin({
+                                    user: userInfo.username,
+                                    pass: userInfo.password
+                                })
+                                getUserList();
+                            }
+                            break;
+                        }
                     }
-                    break;
-                }
-                case "AUTH": {
-                    if (response.status === 'error') {
-                        reLogin({
-                            user: username,
-                            code: reLoginCode
-                        })
-                        getUserList();
-                    }
-                }
+                };
             }
-        };
+        }, 200);
     }, []);
 
     const handleUserSelect = (user: User) => {
@@ -69,15 +118,21 @@ function ChatWindow() {
     };
 
     return (
-        <div className="chat-window-container">
-            <ChatList
-                users={users}
-                onUserSelect={handleUserSelect}
-                setIsMessageChange={setIsMessageChange}
-                isMessageChange={isMessageChange}
-                onUsersChange={setUsers}
-            />
+        <div className={`chat-window-container ${theme}`}>
+            <ChatList users={users}
+                      theme={theme}
+                      onUserSelect={handleUserSelect}
+                      isMessageChange={isMessageChange}
+                      setIsMessageChange={setIsMessageChange}
+                      newMessages={newMessages}
+                      setNewMessages={setNewMessages}
+                      onUsersChange={setUsers}/>
+
             <ChatBox user={selectedUser}
+                     newMessages={newMessages}
+                     setNewMessages={setNewMessages}
+                     theme={theme}
+                     setTheme={setTheme}
                      isMessageChange={isMessageChange}
                      setIsMessageChange={setIsMessageChange}/>
         </div>

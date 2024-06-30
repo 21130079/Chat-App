@@ -1,13 +1,18 @@
-$mainBodyColor: #f1f1f1;
-$mainHeaderColor: #ffffff;
-$mainListChatColor: #f1f1f1;
+$mainBackgroundColor: #1e1f22;
+$mainBodyColor: #3f4148;
+$mainHeaderColor: #2b2d30;
+$mainListChatColor: #2b2d30;
+$mainTextColor: #e0e0e0;
+$hoverColor: #60636e;
 
-.chat-list {
+.chat-list.dark-theme {
   flex: 1;
   display: flex;
   flex-direction: column;
   height: 100%;
   border-radius: 10px 0 0 0;
+  color: $mainTextColor;
+  border-right: 1px solid $mainBackgroundColor;
 
   .chat-list__header {
     display: flex;
@@ -16,15 +21,14 @@ $mainListChatColor: #f1f1f1;
     border-radius: 10px 0 0 0;
     background-color: $mainHeaderColor;
 
-
     .chat-list__header-user {
       flex: 1;
       display: flex;
       background-color: $mainHeaderColor;
 
       img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         border: black 1px solid;
         object-fit: cover;
@@ -52,27 +56,26 @@ $mainListChatColor: #f1f1f1;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 30px;
-      height: 30px;
+      width: 25px;
+      height: 25px;
       border-radius: 50%;
-      border: 2px solid #000;
+      border: 2px solid $mainTextColor;
 
       i {
-        color: #000;
         font-size: 20px;
         cursor: pointer;
+        color: $mainTextColor;
       }
 
       .dropdown-menu {
+        left: 500px;
+        top: 70px;
         display: block;
         position: absolute;
-        background-color: #f9f9f9;
+        background-color: $mainListChatColor;
         min-width: 160px;
-        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-        z-index: 1;
 
         .dropdown-item {
-          color: black;
           padding: 12px 16px;
           text-decoration: none;
           display: block;
@@ -84,9 +87,10 @@ $mainListChatColor: #f1f1f1;
           white-space: nowrap;
           background: none;
           border: 0;
+          color: $mainTextColor;
 
           &:hover {
-            background-color: #f1f1f1;
+            background-color: $hoverColor;
           }
         }
 
@@ -100,11 +104,10 @@ $mainListChatColor: #f1f1f1;
     }
   }
 
-  .chat-list__search{
+  .chat-list__search {
     display: flex;
     align-items: center;
-    padding: 10px 30px;
-    border-radius: 0 0 0 0;
+    padding: 10px 20px;
     background-color: $mainHeaderColor;
 
     input {
@@ -123,13 +126,14 @@ $mainListChatColor: #f1f1f1;
   .chat-list__add{
     display: flex;
     align-items: center;
-    padding: 10px 30px;
+    padding: 10px 20px;
     border-radius: 0 0 0 0;
     background-color: $mainHeaderColor;
 
     input {
+      max-width: 150px;
       flex: 1;
-      padding: 10px;
+      padding: 15px;
       border-radius: 10px;
       height: 6vh;
       outline: none;
@@ -157,48 +161,60 @@ $mainListChatColor: #f1f1f1;
 
 
   }
-  .chat-list__content{
+
+  .chat-list__content {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    overflow: auto;
     border-radius: 0 0 0 10px;
     padding: 20px 20px;
     height: 80vh;
+    overflow-y: scroll;
+    row-gap: 10px;
 
-    background-color: #c5c5c5;
+    background-color: $mainBodyColor;
 
     .chat-list__content-user {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 4fr 1fr;
       align-items: center;
       border-radius: 10px;
       margin-bottom: 5px;
       padding: 0 20px;
-      min-width: 240px;
-      min-height: 76px;
-      background-color: #ffffff;
+      min-width: 200px;
+      min-height: 70px;
+      height: 70px;
+      overflow: hidden;
+
+      background-color: $mainListChatColor;
 
       .avatar {
+        justify-self: self-start;
         font-weight: bold;
-        font-size: x-large;
-        width: 50px;
-        height: 50px;
+        font-size: 16px;
+        justify-content: center;
+        display: grid;
         border-radius: 50%;
-        color: white;
-        align-content: center;
-        object-fit: cover;
+
+        background-color: $mainTextColor;
 
         img{
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: black 1px solid;
+          width: 35px;
+          height: 35px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: black 1px solid;
         }
+      }
+
+      .time-message{
+        justify-self: right;
       }
 
       .info-message {
         display: flex;
         flex-direction: column;
-        padding: 10px 10px;
+        padding: 5px 15px;
         align-items: flex-start;
 
         .info {
@@ -214,10 +230,15 @@ $mainListChatColor: #f1f1f1;
           }
         }
       }
+
+      .time-message{
+        justify-self: right;
+      }
     }
-    .chat-list__content-user:hover{
-      background-color: #535353;
-      color: white;
+
+    .chat-list__content-user:hover {
+      background-color: $hoverColor;
+      color: $mainTextColor;
       cursor: pointer;
     }
   }
