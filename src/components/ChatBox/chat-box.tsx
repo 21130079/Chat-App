@@ -320,17 +320,21 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
     }, [matchingMessages, searchIndex]);
 
     const upDataSearch = () => {
-        setSearchIndex((prevIndex) => {
-            return prevIndex > 0 ? prevIndex - 1 : matchingMessages.length -1;
-        });
-        scrollToMessage(matchingMessages[searchIndex].id); // Đổi thành matchingMessages[searchIndex].id
+      if(matchingMessages.length>0){
+          setSearchIndex((prevIndex) => {
+              return prevIndex > 0 ? prevIndex - 1 : matchingMessages.length -1;
+          });
+          scrollToMessage(matchingMessages[searchIndex].id);
+      }
     };
 
     const downDataSearch = () => {
-        setSearchIndex((prevIndex) => {
-            return prevIndex < matchingMessages.length-1 ? prevIndex + 1 : 0;
-        });
-        scrollToMessage(matchingMessages[searchIndex].id); // Đổi thành matchingMessages[searchIndex].id
+        if(matchingMessages.length>0) {
+            setSearchIndex((prevIndex) => {
+                return prevIndex < matchingMessages.length - 1 ? prevIndex + 1 : 0;
+            });
+            scrollToMessage(matchingMessages[searchIndex].id); // Đổi thành matchingMessages[searchIndex].id
+        }
     };
 
 
