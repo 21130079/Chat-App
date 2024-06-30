@@ -7,12 +7,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {ws} from "../../api/web-socket";
 import {getUserList, reLogin, sendLogin} from "../../api/api";
-import {useNavigate} from "react-router-dom";
 
 interface User {
     name: string;
     type: number;
     actionTime: string;
+    firstMess: string;
 }
 
 interface BoxChat {
@@ -41,7 +41,8 @@ const intialUser =() =>{
     return {
         name: '',
         type: 0,
-        actionTime: ''
+        actionTime: '',
+        firstMess :''
     }
 }
 
@@ -53,6 +54,7 @@ function ChatWindow() {
     const base64LoginInfo: string = localStorage.getItem("user") ?? '';
     const decodedLoginInfo: string = atob(base64LoginInfo);
     const userInfo = JSON.parse(decodedLoginInfo);
+    const [ newMessages, setNewMessages] = useState<Array<string>>([]);
 
     let userTheme = localStorage.getItem('theme') ?? 'light-theme';
     if (userTheme !== theme) {
@@ -87,9 +89,9 @@ function ChatWindow() {
                         }
                         case "RE_LOGIN": {
                             if (response.status === 'error') {
-                                sendLogin({
+                                reLogin({
                                     user: userInfo.username,
-                                    pass: userInfo.password
+                                    code: userInfo.reLoginCode
                                 })
                                 getUserList();
                             }
@@ -122,9 +124,13 @@ function ChatWindow() {
                       onUserSelect={handleUserSelect}
                       isMessageChange={isMessageChange}
                       setIsMessageChange={setIsMessageChange}
+                      newMessages={newMessages}
+                      setNewMessages={setNewMessages}
                       onUsersChange={setUsers}/>
 
             <ChatBox user={selectedUser}
+                     newMessages={newMessages}
+                     setNewMessages={setNewMessages}
                      theme={theme}
                      setTheme={setTheme}
                      isMessageChange={isMessageChange}

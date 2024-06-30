@@ -1,6 +1,6 @@
 $mainBackgroundColor: #ebeaf0;
 $mainBodyColor: #eaebee;
-$mainHeaderColor: white;
+$mainHeaderColor: #edeef4;
 $mainListChatColor: white;
 $mainTextColor: black;
 $hoverColor: #dddddd;
@@ -27,8 +27,8 @@ $hoverColor: #dddddd;
       background-color: $mainHeaderColor;
 
       img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         object-fit: cover;
       }
@@ -55,10 +55,10 @@ $hoverColor: #dddddd;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 30px;
-      height: 30px;
+      width: 25px;
+      height: 25px;
       border-radius: 50%;
-      border: 2px solid $mainTextColor;
+      border: 1px solid $mainTextColor;
 
       i {
         font-size: 20px;
@@ -92,6 +92,13 @@ $hoverColor: #dddddd;
             background-color: $hoverColor;
           }
         }
+
+        .dropdown-divider {
+          height: 1px;
+          margin: 9px 0;
+          overflow: hidden;
+          background-color: #e5e5e5;
+        }
       }
     }
   }
@@ -99,7 +106,7 @@ $hoverColor: #dddddd;
   .chat-list__search {
     display: flex;
     align-items: center;
-    padding: 10px 30px;
+    padding: 10px 20px;
     background-color: $mainHeaderColor;
 
     input {
@@ -115,41 +122,98 @@ $hoverColor: #dddddd;
       cursor: pointer;
     }
   }
+  .chat-list__add{
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 0 0 0 0;
+    background-color: $mainHeaderColor;
+
+    input {
+      max-width: 150px;
+      flex: 1;
+      padding: 15px;
+      border-radius: 10px;
+      height: 6vh;
+      outline: none;
+    }
+
+    i {
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .add{
+      margin: 5px;
+      width: 50px;
+      height: 30px;
+    }
+    .join{
+      width: 50px;
+      height: 30px;
+    }
+    .cancel{
+      margin: 5px;
+      width: 50px;
+      height: 30px;
+    }
+
+
+  }
 
   .chat-list__content {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    overflow: auto;
     border-radius: 0 0 0 10px;
     padding: 20px 20px;
     height: 80vh;
+    overflow-y: scroll;
+    row-gap: 10px;
 
-    background-color: $mainBodyColor;
+    background-color: $mainHeaderColor;
 
     .chat-list__content-user {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 4fr 1fr;
       align-items: center;
       border-radius: 10px;
       margin-bottom: 5px;
       padding: 0 20px;
+      min-width: 200px;
+      min-height: 70px;
+      height: 70px;
+      overflow: hidden;
 
       background-color: $mainListChatColor;
 
       .avatar {
+        justify-self: self-start;
         font-weight: bold;
-        font-size: x-large;
-        width: 50px;
-        height: 50px;
+        font-size: 16px;
+        justify-content: center;
+        display: grid;
         border-radius: 50%;
+
         background-color: $mainTextColor;
-        color: $mainListChatColor;
-        align-content: center;
-        object-fit: cover;
+
+        img{
+          width: 35px;
+          height: 35px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: black 1px solid;
+        }
+      }
+
+      .time-message{
+        justify-self: right;
       }
 
       .info-message {
         display: flex;
         flex-direction: column;
-        padding: 10px 10px;
+        padding: 5px 15px;
         align-items: flex-start;
 
         .info {
@@ -165,10 +229,14 @@ $hoverColor: #dddddd;
           }
         }
       }
+
+      .time-message{
+        justify-self: right;
+      }
     }
 
     .chat-list__content-user:hover {
-      background-color: $hoverColor;
+      background-color: rgba(255, 255, 252, 0.6);
       color: $mainTextColor;
       cursor: pointer;
     }

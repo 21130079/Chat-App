@@ -26,6 +26,7 @@ $mainTextColor: black;
   height: 100%;
   border-radius: 0 10px 10px 0;
   color: $mainTextColor;
+  overflow-y: scroll;
   border-left: 1px solid $mainBackgroundColor;
 
   .chat-box__header {
@@ -33,6 +34,7 @@ $mainTextColor: black;
     align-items: center;
     padding: 5px 30px;
     border-radius: 0 10px 0 0;
+    position: relative;
 
     background-color: $mainHeaderColor;
 
@@ -46,7 +48,7 @@ $mainTextColor: black;
       img {
         width: 50px;
         height: 50px;
-        border-radius: 50%;
+        border-radius: 1%;
         object-fit: cover;
       }
 
@@ -56,9 +58,10 @@ $mainTextColor: black;
         padding: 0 10px;
         align-items: flex-start;
 
-        h4 {
+        h5 {
           display: flex;
           font-weight: bold;
+          margin-bottom: 0 !important;
         }
 
         .status {
@@ -71,11 +74,50 @@ $mainTextColor: black;
       flex: 1;
       display: flex;
       justify-content: flex-end;
+      align-items:center ;
+      column-gap: 10%;
 
       background-color: $mainHeaderColor;
 
       i {
         font-size: 1.4rem;
+        cursor: pointer;
+      }
+      .bi-search {
+        font-size: 1.2rem;
+
+      }
+    }
+
+    .chat-box__header-searchview{
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: $mainHeaderColor;
+      input[type="text"]{
+        margin-left: 5%;
+        width: 80%;
+        min-height: 60%;
+        border-radius: 10px;
+        background-color: white;
+      }
+      div{
+        margin: auto 10px;
+      }
+      i{
+        padding:  2px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+      i:hover{
+        background-color: lightgrey;
+        cursor: pointer;
       }
     }
   }
@@ -88,10 +130,6 @@ $mainTextColor: black;
     flex-direction: column;
 
     background-color: $mainBoxChatColor;
-
-
-
-
   }
 
   .chat-box__footer {
@@ -102,7 +140,6 @@ $mainTextColor: black;
       display: flex;
       align-items: center;
       margin: auto 20px 20px;
-      justify-content: space-between;
       height: 50px;
       border-radius: 7px;
       background-color: $mainFooterColor;
@@ -112,14 +149,17 @@ $mainTextColor: black;
         display: flex;
         align-items: start;
         column-gap: 10px;
-        div{
+
+        div {
           display: grid;
-          img,video{
+
+          img, video {
             margin-top: 10px;
             max-height: 100px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
           }
-          i{
+
+          i {
             justify-self: right;
             position: absolute;
             margin-top: 8px;
@@ -130,6 +170,7 @@ $mainTextColor: black;
           }
         }
       }
+
       .chat-box__footer-typing {
         display: flex;
         align-items: center;
@@ -140,7 +181,8 @@ $mainTextColor: black;
           flex: 1;
           border: none;
           outline: none;
-          margin: 20px;
+          margin: -15px;
+          width: 45vw;
           font-size: 17px;
           color: $mainTextColor;
           background-color: $mainFooterColor;
@@ -148,6 +190,7 @@ $mainTextColor: black;
 
         .emoji {
           position: relative;
+          margin-left: 20px;
 
           .emoji-picker {
             position: absolute;
@@ -178,5 +221,6 @@ $mainTextColor: black;
           }
         }
       }
+    }
   }
 }

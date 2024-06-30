@@ -15,30 +15,11 @@ $messageColor: white;
   .message-content {
     display: flex;
     align-items: center;
+    margin-bottom: -10px;
 
     .main-message {
-      display: grid;
-
-      p {
-        display: flex;
-        align-items: center;
-        text-align: justify;
-        word-break: break-word;
-        flex-direction: row;
-        border-radius: 10px;
-        padding: 5px 20px 5px 5px;
-        box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-
-        background-color: $messageColor;
-
-        img {
-          width: 30px;
-          height: 30px;
-          margin-right: 10px;
-        }
-      }
+      display: flex;
+      align-items: center;
 
       div {
         display: flex;
@@ -46,19 +27,29 @@ $messageColor: white;
         flex-direction: row;
         border-radius: 10px;
         padding: 5px 20px 5px 5px;
-        box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        background-color: $messageColor;
-        word-wrap: break-word;
-        word-break: break-all;
-        max-width: 500px;
+
         .avatar {
-          width: 30px;
-          height: 30px;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
           margin-right: 10px;
+          border: 1px black solid;
+        }
+
+        p {
+          display: flex;
+          align-items: center;
+          text-align: justify;
+          word-break: break-word;
+          flex-direction: row;
+          border-radius: 10px;
+          padding: 5px 10px 5px 10px;
+          -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+
+          background-color: $messageColor;
         }
       }
+
       .media {
         background-color: transparent;
         box-shadow: none;
@@ -97,11 +88,21 @@ $messageColor: white;
         }
 
         img{
-        max-width: 30px;
+          max-width: 30px;
           max-height: 30px;
         }
       }
       margin-bottom: 20px;
+    }
+
+    .mess {
+      box-shadow: none !important;
+      padding: 0 !important;
+      .highlight {
+        background-color: lightseagreen;
+        justify-self: left;
+        margin: 0 1px;
+      }
     }
 
     .time-message {

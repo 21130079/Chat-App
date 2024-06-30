@@ -21,41 +21,47 @@ interface Media {
     url: string;
 }
 
-interface Document{
+interface Document {
     url: string;
     file: File;
     type: string;
-    name:string;
+    name: string;
 }
 
 interface MessageProps {
     message: Message | null;
     theme?: string | null | undefined;
+    filterKeyword: string;
+    idMess:string
 }
 
-function Message({ message, theme }: MessageProps) {
-    const timeRef = useRef<HTMLDivElement>(null);
+function Message({message, theme, filterKeyword, idMess}: MessageProps) {
     const [mes, setMes] = useState<any>();
-    let hoverTimer: any;
+    const timeRef = useRef<HTMLDivElement>(null);
+    let hoverTimer: NodeJS.Timeout;
+    const [highlightedMessage, setHighlightedMessage] = useState<any>(null);
 
     useEffect(() => {
         const fetchData = async (idMes: string) => {
             const docSnap = await getDoc(doc(db, 'messages', idMes));
+
             if (docSnap.exists()) {
                 const iconMes = docSnap.data();
-
                 setMes(iconMes.mes);
+            } else {
+                setMes(message?.mes);
             }
         }
 
         if (message) {
             if (isJsonString(message.mes)) {
-                const mesData = JSON.parse(message?.mes);
-                if(typeof mesData.idMes === "undefined") {
-                    if (typeof mesData.message === "undefined") {
+                const mesData = JSON.parse(message.mes);
+
+                if (mesData.idMes === '' || typeof mesData.idMes === 'undefined') {
+                    if (mesData.message === '') {
                         setMes(message.mes);
                     } else {
-                        setMes(mesData.message);
+                        setMes(mesData.message)
                     }
                 } else {
                     fetchData(mesData.idMes);
@@ -64,8 +70,29 @@ function Message({ message, theme }: MessageProps) {
                 setMes(message.mes);
             }
         }
-
     }, [message]);
+
+    useEffect(() => {
+        const highlightText = (text: string, term: string) => {
+            if (!term) return text;
+            console.log(term);
+            const regex = new RegExp(`(${term})`, 'gi');
+            const parts = text.split(regex);
+            return parts.map((part, index) =>
+                part.toLowerCase() === term.toLowerCase() ? <span key={index} className="highlight">{part}</span> : part
+            );
+        };
+
+        try {
+            if (message?.mes) {
+                const highlighted = highlightText(mes+"", filterKeyword);
+                setHighlightedMessage(highlighted);
+            }
+        } catch (error) {
+            console.error('Error parsing or highlighting message:', error);
+            setHighlightedMessage(message?.mes || null);
+        }
+    }, [message, filterKeyword]);
 
     const handleMouseEnter = () => {
         hoverTimer = setTimeout(() => {
@@ -116,10 +143,14 @@ function Message({ message, theme }: MessageProps) {
             </div>
 
             <div className="message-content">
-                <div className="main-message" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                <div className="main-message"
+                     id={idMess}
+                     onMouseEnter={handleMouseEnter}
+                     onMouseLeave={handleMouseLeave}>
                     {mes && <div>
                         <img className="avatar" src={typing} alt=""/>
-                        {mes}
+                        <p>{mes}</p>
+                        {/*<div className="mess">{highlightedMessage}</div>*/}
                     </div>}
                     {medias && medias.length > 0 && (
                         <div className="media">
