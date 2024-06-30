@@ -34,12 +34,14 @@ $ownMessageColor: #d0fee1;
         word-break: break-all;
         width: fit-content;
         max-width: 500px;
+
         .avatar {
           width: 30px;
           height: 30px;
           margin-left: 10px;
         }
       }
+
       .media {
         background-color: transparent;
         box-shadow: none;
@@ -49,9 +51,10 @@ $ownMessageColor: #d0fee1;
         min-height: 100px;
         width: 300px;
         direction: rtl;
-        .send-image,.send-video{
+
+        .send-image, .send-video {
           width: 100%;
-          height:100%;
+          height: 100%;
           transition: all 0.3s ease;
           object-fit: contain;
           box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
@@ -60,10 +63,42 @@ $ownMessageColor: #d0fee1;
           margin-top: 2px;
           aspect-ratio: 1 / 1;
         }
+
         margin-bottom: 20px;
       }
-    }
 
+      .file {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+        text-decoration: none;
+        box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+        -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+
+        a {
+          margin-bottom: 10px;
+        }
+
+        img {
+          max-width: 30px;
+          max-height: 30px;
+        }
+      }
+    }
+    .mess {
+      box-shadow: none !important;
+      padding: 0 !important;
+      .highlight {
+        background-color: lightseagreen;
+        justify-self: left;
+        margin: 0 1px;
+      }
+    }
     .time-message {
       display: none;
 
@@ -73,3 +108,5 @@ $ownMessageColor: #d0fee1;
     }
   }
 }
+
+

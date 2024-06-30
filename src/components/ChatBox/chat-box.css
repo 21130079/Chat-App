@@ -26,6 +26,7 @@
   align-items: center;
   padding: 5px 30px;
   border-radius: 0 10px 0 0;
+  position: relative;
   background-color: white;
 }
 .chat-box .chat-box__header .chat-box__header-user {
@@ -46,9 +47,10 @@
   padding: 0 10px;
   align-items: flex-start;
 }
-.chat-box .chat-box__header .chat-box__header-user .info h4 {
+.chat-box .chat-box__header .chat-box__header-user .info h5 {
   display: flex;
   font-weight: bold;
+  margin-bottom: 0 !important;
 }
 .chat-box .chat-box__header .chat-box__header-user .info .status {
   line-height: 0;
@@ -56,11 +58,48 @@
 .chat-box .chat-box__header .chat-box__header-icons {
   flex: 1;
   display: flex;
+  align-items: center;
+  column-gap: 10%;
   justify-content: flex-end;
   background-color: white;
 }
 .chat-box .chat-box__header .chat-box__header-icons i {
   font-size: 1.4rem;
+  cursor: pointer;
+}
+.chat-box .chat-box__header .chat-box__header-icons .bi-search {
+  font-size: 1.2rem;
+}
+.chat-box .chat-box__header .chat-box__header-searchview {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+}
+.chat-box .chat-box__header .chat-box__header-searchview input[type=text] {
+  margin-left: 5%;
+  width: 80%;
+  min-height: 60%;
+  border-radius: 10px;
+  background-color: white;
+}
+.chat-box .chat-box__header .chat-box__header-searchview div {
+  margin: auto 10px;
+}
+.chat-box .chat-box__header .chat-box__header-searchview i {
+  padding: 2px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+.chat-box .chat-box__header .chat-box__header-searchview i:hover {
+  background-color: lightgrey;
+  cursor: pointer;
 }
 .chat-box .chat-box__content {
   padding: 20px;

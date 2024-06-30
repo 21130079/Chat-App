@@ -55,6 +55,35 @@
   -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
 }
+.message-container .message-content .main-message .file {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px 0;
+  box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+  text-decoration: none;
+}
+.message-container .message-content .main-message .file a {
+  margin-bottom: 10px;
+}
+.message-container .message-content .main-message .file img {
+  max-width: 30px;
+  max-height: 30px;
+}
+.message-container .message-content .mess {
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.message-container .message-content .mess .highlight {
+  background-color: lightseagreen;
+  justify-self: left;
+  margin: 0 1px;
+}
 .message-container .message-content .time-message {
   display: none;
 }
