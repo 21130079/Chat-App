@@ -96,7 +96,6 @@ $mainTextColor: black;
 
   .chat-box__footer {
     border-radius: 0 0 10px 0;
-
     background-color: $mainBoxChatColor;
 
     .chat-box__footer-container {
@@ -108,47 +107,76 @@ $mainTextColor: black;
       border-radius: 7px;
       background-color: $mainFooterColor;
 
-      input {
-        flex: 1;
-        border: none;
-        outline: none;
-        margin: 20px;
-        font-size: 17px;
-        color: $mainTextColor;
-        background-color: $mainFooterColor;
-      }
-
-      i {
+      .chat-box__footer-file {
+        margin: 5px 20px;
         display: flex;
-        font-size: 1.4rem;
-        margin: 0 5px;
-        cursor: pointer;
-      }
-
-      .emoji {
-        position: relative;
-
-        .emoji-picker {
-          position: absolute;
-          bottom: 40px;
-          right: 0;
+        align-items: start;
+        column-gap: 10px;
+        div{
+          display: grid;
+          img,video{
+            margin-top: 10px;
+            max-height: 100px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+          }
+          i{
+            justify-self: right;
+            position: absolute;
+            margin-top: 8px;
+            margin-right: 3px;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 2;
+          }
         }
       }
+      .chat-box__footer-typing {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 50px;
 
-      .send-button {
-        display: inline-flex;
-        align-items: flex-end;
-        padding: 5px 20px;
-        margin: 0 20px;
-        border-radius: 10px;
-        border: none;
-        color: $mainTextColor;
-        background-color: $mainBoxChatColor;
+        input {
+          flex: 1;
+          border: none;
+          outline: none;
+          margin: 20px;
+          font-size: 17px;
+          color: $mainTextColor;
+          background-color: $mainFooterColor;
+        }
+
+        .emoji {
+          position: relative;
+
+          .emoji-picker {
+            position: absolute;
+            bottom: 40px;
+            right: 0;
+          }
+        }
 
         i {
+          display: flex;
           font-size: 1.4rem;
+          margin: 0 5px;
+          cursor: pointer;
+        }
+
+        .send-button {
+          display: inline-flex;
+          align-items: flex-end;
+          padding: 5px 20px;
+          margin: 0 20px;
+          border-radius: 10px;
+          border: none;
+          color: $mainTextColor;
+          background-color: $mainBoxChatColor;
+
+          i {
+            font-size: 1.4rem;
+          }
         }
       }
-    }
   }
 }

@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FormEvent, useEffect, useState} from 'react';
+import React, {ChangeEvent, createContext, useState, useContext} from 'react';
 import './login.css';
 import typing from '../../assets/images/typing.gif';
 import {login} from '../../redux/action';
@@ -6,7 +6,6 @@ import {useDispatch} from "react-redux";
 import {useNavigate} from 'react-router-dom';
 import {register} from "../../api/api";
 import {ws} from "../../api/web-socket";
-import CryptoJS from "crypto-js";
 
 function Login() {
     const [isLogin, setIsLogin] = useState(true);

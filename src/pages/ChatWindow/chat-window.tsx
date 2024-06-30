@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import ChatList from "../../components/ChatList/chat-list";
 import ChatBox from "../../components/ChatBox/chat-box";
 import "./chat-window-light-theme.scss";
@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {ws} from "../../api/web-socket";
 import {getUserList, reLogin, sendLogin} from "../../api/api";
+import {useNavigate} from "react-router-dom";
 
 interface User {
     name: string;
@@ -36,9 +37,17 @@ interface ChatData {
     createAt: string;
 }
 
+const intialUser =() =>{
+    return {
+        name: '',
+        type: 0,
+        actionTime: ''
+    }
+}
+
 function ChatWindow() {
     const [users, setUsers] = useState<User[]>([]);
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [selectedUser, setSelectedUser] = useState<User>(intialUser);
     const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
     const [theme, setTheme] = useState<string | null>("light-theme");
     const base64LoginInfo: string = localStorage.getItem("user") ?? '';
@@ -112,7 +121,9 @@ function ChatWindow() {
                       theme={theme}
                       onUserSelect={handleUserSelect}
                       isMessageChange={isMessageChange}
-                      setIsMessageChange={setIsMessageChange}/>
+                      setIsMessageChange={setIsMessageChange}
+                      onUsersChange={setUsers}/>
+
             <ChatBox user={selectedUser}
                      theme={theme}
                      setTheme={setTheme}

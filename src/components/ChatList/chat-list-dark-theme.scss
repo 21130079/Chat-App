@@ -30,6 +30,7 @@ $hoverColor: #60636e;
         width: 50px;
         height: 50px;
         border-radius: 50%;
+        border: black 1px solid;
         object-fit: cover;
       }
 
@@ -92,6 +93,13 @@ $hoverColor: #60636e;
             background-color: $hoverColor;
           }
         }
+
+        .dropdown-divider {
+          height: 1px;
+          margin: 9px 0;
+          overflow: hidden;
+          background-color: #e5e5e5;
+        }
       }
     }
   }
@@ -115,6 +123,43 @@ $hoverColor: #60636e;
       cursor: pointer;
     }
   }
+  .chat-list__add{
+    display: flex;
+    align-items: center;
+    padding: 10px 30px;
+    border-radius: 0 0 0 0;
+    background-color: $mainHeaderColor;
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      height: 6vh;
+      outline: none;
+    }
+
+    i {
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .add{
+      margin: 5px;
+      width: 50px;
+      height: 30px;
+    }
+    .join{
+      width: 50px;
+      height: 30px;
+    }
+    .cancel{
+      margin: 5px;
+      width: 50px;
+      height: 30px;
+    }
+
+
+  }
 
   .chat-list__content {
     align-items: center;
@@ -131,6 +176,8 @@ $hoverColor: #60636e;
       border-radius: 10px;
       margin-bottom: 5px;
       padding: 0 20px;
+      min-width: 240px;
+      min-height: 76px;
 
       background-color: $mainListChatColor;
 
@@ -144,6 +191,14 @@ $hoverColor: #60636e;
         color: $mainListChatColor;
         align-content: center;
         object-fit: cover;
+
+        img{
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: black 1px solid;
+        }
       }
 
       .info-message {

@@ -2,6 +2,8 @@ import typing from "../../assets/images/typing.gif";
 import React, {useEffect, useRef, useState} from "react";
 import './message-light-theme.scss'
 import './message-dark-theme.scss'
+import textImg from '../../assets/images/FileImg/text.png';
+import other from '../../assets/images/FileImg/other.png';
 import {doc, getDoc} from "firebase/firestore";
 import {db} from "../firebase";
 
@@ -12,6 +14,18 @@ interface Message {
     mes: string;
     to: string;
     type: number;
+}
+
+interface Media {
+    type: number;
+    url: string;
+}
+
+interface Document{
+    url: string;
+    file: File;
+    type: string;
+    name:string;
 }
 
 interface MessageProps {
@@ -38,7 +52,11 @@ function Message({ message, theme }: MessageProps) {
             if (isJsonString(message.mes)) {
                 const mesData = JSON.parse(message?.mes);
                 if(typeof mesData.idMes === "undefined") {
-                    setMes(message.mes);
+                    if (typeof mesData.message === "undefined") {
+                        setMes(message.mes);
+                    } else {
+                        setMes(mesData.message);
+                    }
                 } else {
                     fetchData(mesData.idMes);
                 }
@@ -66,6 +84,31 @@ function Message({ message, theme }: MessageProps) {
         }
     }
 
+    const medias: Media[] | null = (() => {
+        try {
+            if (message?.mes) {
+                const parsedMessage = JSON.parse(message.mes);
+                return parsedMessage.medias || null;
+            }
+            return null;
+        } catch (error) {
+            return null;
+        }
+    })();
+
+    const files: Document[] | null = (() => {
+        try {
+            if (message?.mes) {
+                const parsedMessage = JSON.parse(message.mes);
+                return parsedMessage.files || null;
+            }
+            return null;
+        } catch (error) {
+            return null;
+        }
+    })();
+
+
     return (
         <div className={`message-container ${theme}`}>
             <div className="message-author">
@@ -74,10 +117,46 @@ function Message({ message, theme }: MessageProps) {
 
             <div className="message-content">
                 <div className="main-message" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    <p>
-                        <img src={typing} alt=""/>
+                    {mes && <div>
+                        <img className="avatar" src={typing} alt=""/>
                         {mes}
-                    </p>
+                    </div>}
+                    {medias && medias.length > 0 && (
+                        <div className="media">
+                            {medias.map((media, index) => (
+                                media.type === 0 ? (
+                                    <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                                ) : (
+                                    <video key={index} className="send-video" src={media.url} controls/>
+                                )
+                            ))}
+                        </div>
+                    )}
+                    {files && files.length > 0 && (
+                        <div className="file">
+                            {files.map((file, index) => (
+                                <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
+                                   download={file.name}
+                                   className="send-file">
+                                    <img src={
+                                        (() => {
+                                            try {
+                                                switch (file.name.split('.').pop()) {
+                                                    case 'txt':
+                                                        return textImg;
+                                                    default:
+                                                        return other;
+                                                }
+                                            } catch (error) {
+                                                return other;
+                                            }
+                                        })()
+                                    }/>
+                                    {file.name}
+                                </a>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div className="time-message" ref={timeRef}>
