@@ -21,6 +21,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  border: black 1px solid;
   object-fit: cover;
 }
 .chat-list .chat-list__header .chat-list__header-user .info {
@@ -43,7 +44,7 @@
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  border: 2px solid #000;
+  border: 1px solid #000;
 }
 .chat-list .chat-list__header .chat-list__header-icons i {
   color: #000;
@@ -90,7 +91,7 @@
 }
 .chat-list .chat-list__search input {
   flex: 1;
-  padding: 15px;
+  padding: 10px;
   border-radius: 10px;
   height: 6vh;
   outline: none;
@@ -102,13 +103,14 @@
 .chat-list .chat-list__add {
   display: flex;
   align-items: center;
-  padding: 10px 30px;
+  padding: 10px 20px;
   border-radius: 0 0 0 0;
   background-color: #edeef4;
 }
 .chat-list .chat-list__add input {
+  max-width: 150px;
   flex: 1;
-  padding: 10px;
+  padding: 15px;
   border-radius: 10px;
   height: 6vh;
   outline: none;
@@ -143,28 +145,35 @@
   background-color: #edeef4;
 }
 .chat-list .chat-list__content .chat-list__content-user {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
   align-items: center;
   border-radius: 10px;
   margin-bottom: 5px;
   padding: 0 20px;
-  background-color: #ffffff;
-  min-width: 270px;
+  min-width: 200px;
   min-height: 70px;
   height: 70px;
+  overflow: hidden;
+  background-color: #ffffff;
 }
 .chat-list .chat-list__content .chat-list__content-user .avatar {
+  justify-self: self-start;
   font-weight: bold;
   font-size: 16px;
-  width: 35px;
-  height: 35px;
   justify-content: center;
   display: grid;
   border-radius: 50%;
-  background-color: #282c34;
-  color: white;
-  align-content: center;
+}
+.chat-list .chat-list__content .chat-list__content-user .avatar img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
   object-fit: cover;
+  border: black 1px solid;
+}
+.chat-list .chat-list__content .chat-list__content-user .time-message {
+  justify-self: right;
 }
 .chat-list .chat-list__content .chat-list__content-user .info-message {
   display: flex;
@@ -178,6 +187,9 @@
 .chat-list .chat-list__content .chat-list__content-user .info-message .chat-list-message p {
   margin-top: 5px;
   line-height: 0;
+}
+.chat-list .chat-list__content .chat-list__content-user .time-message {
+  justify-self: right;
 }
 .chat-list .chat-list__content .chat-list__content-user:hover {
   background-color: rgba(255, 255, 252, 0.6);

@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import "./chat-list.scss";
 import typing from '../../assets/images/typing.gif';
-import {checkUser, getUserList,createRoom, joinRoom, logout, ws} from "../../api/websocket-api";
-
+import {createRoom, joinRoom, logout, ws} from "../../api/websocket-api";
+import groupImg from '../../assets/images/group.png';
+import userImg from '../../assets/images/user.png';
 interface User {
     name: string;
     type: number;
@@ -16,10 +17,12 @@ interface ChatListProps {
     setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     isMessageChange?: boolean,
     onUsersChange?: (users: User[]) => void
+    newMessages:string[];
+    setNewMessages?: (value: (((prevState: Array<string>) => Array<string>) | Array<string>)) => void,
 }
 
 
-function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onUsersChange}: ChatListProps) {
+function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onUsersChange,newMessages,setNewMessages}: ChatListProps) {
     const [searchText, setSearchText] = useState('');
     const [addText, setAddText] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -96,6 +99,9 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
     const handleSelectUser = (user:User) => {
         onUserSelect(user);
         setSelectedUser(user);
+        if(setNewMessages){
+            setNewMessages(prev => prev.filter(message => message !== user.name));
+        }
     };
 
     let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
@@ -109,7 +115,7 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         <div className="chat-list">
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
-                    <img src={typing} alt="avatar"/>
+                    <img src={userImg} alt="avatar"/>
                     <div className="info">
                         <h6>{username}</h6>
                         <p className="status">Online</p>
@@ -152,14 +158,15 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
                         style={{backgroundColor: selectedUser?.name === user.name ? '#FFC0CB' : 'white'}}
                     >
                         <div className="avatar">
-                            {user.name.charAt(0).toUpperCase()}
+                            {user.type === 1 ? <img src={groupImg} alt="avatar"/> :
+                                <img src={userImg} alt="avatar"/>}
                         </div>
                         <div className="info-message">
                             <div className="info">
-                                <h5>{user.name}</h5>
+                                <h5 style={{marginBottom: 0}}>{user.name}</h5>
                             </div>
-                            <div className="chat-list-message">
-                                <p>{user.actionTime}</p>
+                            <div className="chat-list-message" style={{fontSize: 14}}>
+                                {newMessages.includes(user.name as never) ? "has sent message" : ""}
                             </div>
                         </div>
                         <div className="time-message">

@@ -29,10 +29,10 @@ function ChatWindow() {
     const [selectedUser, setSelectedUser] = useState<User>(intialUser);
     const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
     const navigate = useNavigate();
-
+    const [ newMessages, setNewMessages] = useState<Array<string>>([]);
     useEffect(() => {
         if (ws.readyState === WebSocket.OPEN) {
-             getUserList();
+            getUserList();
         }
 
         ws.onopen = () => {
@@ -44,7 +44,6 @@ function ChatWindow() {
 
             switch (response.event) {
                 case "GET_USER_LIST": {
-                    console.log(response)
                     setUsers(response.data);
                     break;
                 }
@@ -66,11 +65,10 @@ function ChatWindow() {
             }
         };
     }, []);
-
+    console.log(newMessages)
     const handleUserSelect = (user: User) => {
         setSelectedUser(user);
     };
-
     return (
         <div className="chat-window-container">
             <ChatList
@@ -78,9 +76,13 @@ function ChatWindow() {
                 onUserSelect={handleUserSelect}
                 setIsMessageChange={setIsMessageChange}
                 isMessageChange={isMessageChange}
+                newMessages={newMessages}
+                setNewMessages={setNewMessages}
                 onUsersChange={setUsers}
             />
             <ChatBox user={selectedUser}
+                     newMessages={newMessages}
+                     setNewMessages={setNewMessages}
                      isMessageChange={isMessageChange}
                      setIsMessageChange={setIsMessageChange}/>
         </div>
