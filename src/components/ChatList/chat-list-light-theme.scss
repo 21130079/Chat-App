@@ -10,6 +10,7 @@ $hoverColor: #dddddd;
   display: flex;
   flex-direction: column;
   height: 100%;
+  max-width: 400px;
   border-radius: 10px 0 0 0;
   color: $mainTextColor;
   border-right: 1px solid $mainBackgroundColor;
@@ -113,7 +114,7 @@ $hoverColor: #dddddd;
       flex: 1;
       padding: 10px;
       border-radius: 10px;
-      height: 6vh;
+      height: 4vh;
       outline: none;
     }
 
@@ -130,11 +131,10 @@ $hoverColor: #dddddd;
     background-color: $mainHeaderColor;
 
     input {
-      max-width: 150px;
+      max-width: 350px;
       flex: 1;
-      padding: 15px;
       border-radius: 10px;
-      height: 6vh;
+      height: 4vh;
       outline: none;
     }
 
@@ -144,18 +144,24 @@ $hoverColor: #dddddd;
     }
 
     .add{
+      width: 40px;
+      height: 40px;
+      border: none;
+      background-color: #8bff38;
       margin: 5px;
-      width: 50px;
-      height: 30px;
     }
     .join{
-      width: 50px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background-color: #38a9ff;
+      margin-left: 5px;
     }
     .cancel{
-      margin: 5px;
-      width: 50px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background-color: #fa5353;
     }
 
 
@@ -170,7 +176,6 @@ $hoverColor: #dddddd;
     height: 80vh;
     overflow-y: scroll;
     row-gap: 10px;
-
     background-color: $mainHeaderColor;
 
     .chat-list__content-user {
@@ -183,6 +188,7 @@ $hoverColor: #dddddd;
       min-width: 200px;
       min-height: 70px;
       height: 70px;
+      width: 100%;
       overflow: hidden;
 
       background-color: $mainListChatColor;

@@ -176,9 +176,11 @@ function ChatList({
                 <div className="chat-list__add">
                     <input type="text" placeholder={isAddingFriend ? "Input People Name" : "Input Group Name"}
                            onChange={handleAddInput} value={addText}/>
-                    <button className="add" onClick={handleAddClick}>{isAddingFriend ? "Add" : "Create"}</button>
-                    {!isAddingFriend && <button className="join" onClick={handleJoinClick}>Join</button>}
-                    <button className="cancel" onClick={handleCloseAdd}>Cancel</button>
+                    {!isAddingFriend &&
+                        <button className="join" onClick={handleJoinClick}><i className="bi bi-arrow-right-circle"></i>
+                        </button>}
+                    <button className="add" onClick={handleAddClick}><i className="bi bi-plus-circle"></i></button>
+                    <button className="cancel" onClick={handleCloseAdd}><i className="bi bi-x-circle"></i></button>
                 </div>)}
 
 
