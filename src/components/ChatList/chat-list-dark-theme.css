@@ -75,6 +75,7 @@
   background: none;
   border: 0;
   color: #e0e0e0;
+  cursor: pointer;
 }
 .chat-list.dark-theme .chat-list__header .chat-list__header-icons .dropdown-menu .dropdown-item:hover {
   background-color: #60636e;
@@ -172,7 +173,6 @@
   justify-content: center;
   display: grid;
   border-radius: 50%;
-  background-color: #e0e0e0;
 }
 .chat-list.dark-theme .chat-list__content .chat-list__content-user .avatar img {
   width: 35px;

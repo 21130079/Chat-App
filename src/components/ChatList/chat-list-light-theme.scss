@@ -4,6 +4,9 @@ $mainHeaderColor: #edeef4;
 $mainListChatColor: white;
 $mainTextColor: black;
 $hoverColor: #dddddd;
+$addColor: #8bff38;
+$joinColor: #38a9ff;
+$cancelColor: #fa5353;
 
 .chat-list.light-theme {
   flex: 1;
@@ -88,6 +91,7 @@ $hoverColor: #dddddd;
           background: none;
           border: 0;
           color: $mainTextColor;
+          cursor: pointer;
 
           &:hover {
             background-color: $hoverColor;
@@ -147,21 +151,21 @@ $hoverColor: #dddddd;
       width: 40px;
       height: 40px;
       border: none;
-      background-color: #8bff38;
+      background-color: $addColor;
       margin: 5px;
     }
     .join{
       width: 40px;
       height: 40px;
       border: none;
-      background-color: #38a9ff;
+      background-color: $joinColor;
       margin-left: 5px;
     }
     .cancel{
       width: 40px;
       height: 40px;
       border: none;
-      background-color: #fa5353;
+      background-color: $cancelColor;
     }
 
 

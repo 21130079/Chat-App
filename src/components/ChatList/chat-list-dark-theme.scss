@@ -4,6 +4,9 @@ $mainHeaderColor: #2b2d30;
 $mainListChatColor: #2b2d30;
 $mainTextColor: #e0e0e0;
 $hoverColor: #60636e;
+$addColor: #8bff38;
+$joinColor: #38a9ff;
+$cancelColor: #fa5353;
 
 .chat-list.dark-theme {
   flex: 1;
@@ -89,6 +92,7 @@ $hoverColor: #60636e;
           background: none;
           border: 0;
           color: $mainTextColor;
+          cursor: pointer;
 
           &:hover {
             background-color: $hoverColor;
@@ -148,21 +152,21 @@ $hoverColor: #60636e;
       width: 40px;
       height: 40px;
       border: none;
-      background-color: #8bff38;
+      background-color: $addColor;
       margin: 5px;
     }
     .join{
       width: 40px;
       height: 40px;
       border: none;
-      background-color: #38a9ff;
+      background-color: $joinColor;
       margin-left: 5px;
     }
     .cancel{
       width: 40px;
       height: 40px;
       border: none;
-      background-color: #fa5353;
+      background-color: $cancelColor;
     }
 
 
@@ -192,7 +196,6 @@ $hoverColor: #60636e;
       height: 70px;
       width: 100%;
       overflow: hidden;
-
       background-color: $mainListChatColor;
 
       .avatar {
@@ -202,8 +205,6 @@ $hoverColor: #60636e;
         justify-content: center;
         display: grid;
         border-radius: 50%;
-
-        background-color: $mainTextColor;
 
         img{
           width: 35px;

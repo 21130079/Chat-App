@@ -74,6 +74,7 @@
   background: none;
   border: 0;
   color: black;
+  cursor: pointer;
 }
 .chat-list.light-theme .chat-list__header .chat-list__header-icons .dropdown-menu .dropdown-item:hover {
   background-color: #dddddd;
