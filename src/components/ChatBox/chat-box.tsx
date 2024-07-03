@@ -1,38 +1,44 @@
-import React, { useState, useEffect, useRef } from 'react';
-import "./chat-box.scss";
+import React, {useState, useEffect, useRef} from 'react';
+import "./chat-box-dark-theme.scss";
+import "./chat-box-light-theme.scss";
 import typing from '../../assets/images/typing.gif';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { v4 as uuidv4 } from 'uuid';
+import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
+import {v4 as uuidv4} from 'uuid';
+import {ws} from "../../api/web-socket";
+import Message from "../Message/Message";
+import OwnMessage from "../OwnMessage/OwnMessage";
+import EmojiPicker, {EmojiClickData} from "emoji-picker-react";
+import {db, storage} from "../firebase";
+import {doc, setDoc} from "firebase/firestore";
 import {
     checkUser,
     getPeopleChatMessages,
     getRoomChatMessages,
     sendPeopleChat,
-    sendRoomChat, ws,
-} from "../../api/websocket-api";
-import Message from "../Message/Message";
-import OwnMessage from "../OwnMessage/OwnMessage";
-import { storage } from "../firebase";
+    sendRoomChat
+} from "../../api/api";
 
 interface User {
     name: string;
     type: number;
     actionTime: string;
-    firstMess: string
+    firstMess: string;
 }
 
 interface ChatBoxProps {
-    user: User,
-    setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    isMessageChange?: boolean,
+    user: User;
+    setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void;
+    isMessageChange?: boolean;
+    theme?: string | null;
+    setTheme?: (value: (((prevState: (string | null)) => (string | null)) | string | null)) => void;
     newMessages: string[];
-    setNewMessages?: (value: (((prevState: Array<string>) => Array<string>) | Array<string>)) => void,
+    setNewMessages?: (value: (((prevState: Array<string>) => Array<string>) | Array<string>)) => void;
 }
 
 interface Media {
     url: string;
     file: File;
-    type: number; // 0 là hình ảnh, 1 là video
+    type: number; // 0 la image, 1 la video
 }
 
 interface Document {
@@ -40,16 +46,22 @@ interface Document {
     file: File;
     type: string;
     name: string;
-
 }
 
-function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNewMessages }: ChatBoxProps) {
-    const username = localStorage.getItem("username");
+function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, newMessages, setNewMessages}: ChatBoxProps) {
+    const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2B50}\u{2B55}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
     const [isRoom, setIsRoom] = useState(true);
     const [boxChatData, setBoxChatData] = useState<Array<Message>>([]);
     const [message, setMessage] = useState<string>('');
+    const [idMes, setIdMes] = useState<string>('');
     const [userStatus, setUserStatus] = useState<string>('');
     const contentRef = useRef<HTMLDivElement>(null);
+    const [emojiOpened, setEmojiOpened] = useState<boolean>(false);
+    const modeIcon = useRef<HTMLDivElement>(null);
+    const base64LoginInfo: string = localStorage.getItem("user") ?? '';
+    const decodedLoginInfo: string = atob(base64LoginInfo);
+    const userInfo = JSON.parse(decodedLoginInfo);
+    const username = userInfo.username;
     const [base64Medias, setBase64Medias] = useState<Array<Media>>([]);
     const [fileIn, setFileIn] = useState<Array<Document>>([]);
     const [isSearch, setIsSearch] = useState(false);
@@ -58,6 +70,8 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
     const [matchingMessages, setMatchingMessages] = useState<Message[]>([]);
     const [idMessSearch, setIdMessSearch] = useState<number>(0);
     const messageRefs = useRef<Map<number, HTMLDivElement | null>>(new Map());
+
+
     useEffect(() => {
         scrollToBottom();
     }, [boxChatData]);
@@ -67,45 +81,46 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
             if (user.type === 1) {
                 setIsRoom(true);
                 setUserStatus('Group')
-                getRoomChatMessages({ name: user.name, page: 1 })
+                getRoomChatMessages({name: user.name, page: 1})
             } else {
                 setIsRoom(false);
-                checkUser({ user: user.name })
-                getPeopleChatMessages({ name: user.name, page: 1 });
+                checkUser({user: user.name})
+                getPeopleChatMessages({name: user.name, page: 1});
             }
         }
 
-        ws.onmessage = (event) => {
-            const response = JSON.parse(event.data as string);
-
-            switch (response.event) {
-                case "GET_ROOM_CHAT_MES": {
-                    setBoxChatData(response.data.chatData)
-                    break;
-                }
-                case "GET_PEOPLE_CHAT_MES": {
-                    setBoxChatData(response.data)
-                    break;
-                }
-                case "CHECK_USER": {
-                    setUserStatus(response.data.status ? 'Online' : 'Offline')
-                    break;
-                }
-                case "SEND_CHAT": {
-                    if (response.data.to === user?.name) {
-                        if (user?.type === 1) {
-                            getRoomChatMessages({ name: user?.name, page: 1 })
-                        }
-                        if (setNewMessages) {
-                            setNewMessages(prev => [response.data.to, ...prev]);
-                        }
+        if (ws) {
+            ws.onmessage = (event) => {
+                const response = JSON.parse(event.data as string);
+                switch (response.event) {
+                    case "GET_ROOM_CHAT_MES": {
+                        setBoxChatData(response.data.chatData)
+                        break;
                     }
-                    if (response.data.to === localStorage.getItem("username") as string) {
-                        if (user?.type === 0) {
-                            getPeopleChatMessages({ name: user?.name, page: 1 })
+                    case "GET_PEOPLE_CHAT_MES": {
+                        setBoxChatData(response.data)
+                        break;
+                    }
+                    case "CHECK_USER": {
+                        setUserStatus(response.data.status ? 'Online' : 'Offline')
+                        break;
+                    }
+                    case "SEND_CHAT": {
+                        if (response.data.to === user?.name) {
+                            if (user?.type === 1) {
+                                getRoomChatMessages({name: user?.name, page: 1})
+                            }
+                            if (setNewMessages) {
+                                setNewMessages(prev => [response.data.to, ...prev]);
+                            }
                         }
-                        if (setNewMessages) {
-                            setNewMessages(prev => [response.data.name, ...prev]);
+                        if (response.data.to === localStorage.getItem("username") as string) {
+                            if (user?.type === 0) {
+                                getPeopleChatMessages({name: user?.name, page: 1})
+                            }
+                            if (setNewMessages) {
+                                setNewMessages(prev => [response.data.name, ...prev]);
+                            }
                         }
                     }
                 }
@@ -119,32 +134,52 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
         }
     };
 
-    const handleTypeMessage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleTypeMessage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessage(e.target.value);
+
+        if (emojiRegex.test(e.target.value)) {
+            const uuid = uuidv4();
+            const messageRef = doc(db, 'messages', uuid);
+
+            setIdMes(uuid);
+            await setDoc(messageRef, {
+                mes: message
+            });
+        } else {
+            setIdMes('');
+        }
     }
 
+
     const handleSendMessage = async () => {
+        // setdata
         let newChatMessage: Message = {
             createAt: new Date().toISOString(),
             id: boxChatData.length + 1,
-            name: localStorage.getItem("username") || '',
+            name: username,
             mes: JSON.stringify({
                 medias: base64Medias,
                 files: fileIn,
-                message: message
+                message: message,
+                idMes: idMes
             }),
             to: user.name,
             type: user.type
         };
-        setBoxChatData(prev => [newChatMessage, ...prev]);
+
+        // thuc hien xoa trong o nhap tin nhan de co trai nghiem tot hon
         let selectedMedias = base64Medias;
         let selectedFiles = fileIn;
         let msgClone = message;
+        let idMesClone = idMes;
+
         setBase64Medias([]);
         setFileIn([]);
-        setMessage("");
+        setMessage('');
+        setIdMes('');
         clearInputFile();
 
+        // load danh sach file len firebase va truyen link file ve
         let uploadedMediaUrls: Media[] = [];
         let uploadedFileUrls: Document[] = [];
         if (selectedMedias.length > 0) {
@@ -155,6 +190,7 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
                 url: urls[i]
             }));
         }
+
         if (selectedFiles.length > 0) {
             const uploadPromises = selectedFiles.map(file => uploadFile(file.file, file.name));
             const urls = await Promise.all(uploadPromises);
@@ -163,12 +199,19 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
                 url: urls[i]
             }));
         }
-        if ((message && user && message.trim().length > 0) || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
+
+        // gửi tin nhắn
+        if ((message && user && msgClone.trim().length > 0 && idMesClone.trim().length > 0) || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
+            setBoxChatData(prev => [newChatMessage, ...prev]);
+
             const messageObject = {
                 medias: uploadedMediaUrls,
                 files: uploadedFileUrls,
-                message: msgClone
+                message: msgClone,
+                idMes: idMesClone
             };
+
+            console.log(messageObject)
             if (isRoom && user) {
                 sendRoomChat({
                     to: user.name,
@@ -183,11 +226,9 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
                 }
             }
         }
-
-        setBase64Medias([]);
-        setFileIn([]);
     }
 
+    // upload len database
     const uploadMedia = async (file: File, type: number) => {
         const fileRef = type === 0 ? ref(storage, `images/IMAGE_${uuidv4()}`)
             : ref(storage, `videos/VIDEO_${uuidv4()}`);
@@ -199,6 +240,7 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
             return "";
         }
     };
+
     const uploadFile = async (file: File, name: string) => {
         const fileRef = ref(storage, `files/FILE_${uuidv4()}`);
         try {
@@ -208,11 +250,44 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
             console.error("Error uploading file: ", error);
             return "";
         }
+
     }
 
     const handleEnterMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleSendMessage();
+        }
+    }
+
+    const emojiOpenHandler = () => {
+        setEmojiOpened(!emojiOpened);
+    }
+
+    const emojiHandler = (e: EmojiClickData) => {
+        setMessage(prev => prev + e.emoji);
+    }
+
+    const toggleTheme = () => {
+        if (theme === 'light-theme') {
+            document.body.style.backgroundColor = "#1e1f22";
+            if (setTheme) {
+                setTheme('dark-theme');
+                localStorage.setItem('theme', 'dark-theme');
+            }
+            if (modeIcon) {
+                modeIcon.current?.classList.remove(modeIcon.current?.classList[1]);
+                modeIcon.current?.classList.add('bi-moon-stars-fill');
+            }
+        } else {
+            document.body.style.backgroundColor = "#ebeaf0";
+            if (setTheme) {
+                setTheme('light-theme');
+                localStorage.setItem('theme', 'light-theme');
+            }
+            if (modeIcon) {
+                modeIcon.current?.classList.remove(modeIcon.current?.classList[1]);
+                modeIcon.current?.classList.add('bi-sun-fill');
+            }
         }
     }
 
@@ -222,7 +297,11 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
-                setBase64Medias(prev => [...prev, { type: file.type.startsWith('image/') ? 0 : 1, url: reader.result as string, file }]);
+                setBase64Medias(prev => [...prev, {
+                    type: file.type.startsWith('image/') ? 0 : 1,
+                    url: reader.result as string,
+                    file
+                }]);
             };
             clearInputFile();
         }
@@ -234,7 +313,12 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
-                setFileIn(prev => [...prev, { type: file.name, name: file.name, url: reader.result as string, file }]);
+                setFileIn(prev => [...prev, {
+                    type: file.name,
+                    name: file.name,
+                    url: reader.result as string,
+                    file
+                }]);
             };
             clearInputFile();
         }
@@ -246,7 +330,7 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
             newArray.splice(index, 1);
             return newArray;
         });
-        clearInputFile();
+        clearInputFile()
     };
 
     const handleCloseFile = (index: number) => {
@@ -255,7 +339,7 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
             newArray.splice(index, 1);
             return newArray;
         });
-        clearInputFile();
+        clearInputFile()
     }
 
     const clearInputFile = () => {
@@ -320,12 +404,12 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
     }, [matchingMessages, searchIndex]);
 
     const upDataSearch = () => {
-      if(matchingMessages.length>0){
-          setSearchIndex((prevIndex) => {
-              return prevIndex > 0 ? prevIndex - 1 : matchingMessages.length -1;
-          });
-          scrollToMessage(matchingMessages[searchIndex].id);
-      }
+        if(matchingMessages.length>0){
+            setSearchIndex((prevIndex) => {
+                return prevIndex > 0 ? prevIndex - 1 : matchingMessages.length -1;
+            });
+            scrollToMessage(matchingMessages[searchIndex].id);
+        }
     };
 
     const downDataSearch = () => {
@@ -336,8 +420,6 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
             scrollToMessage(matchingMessages[searchIndex].id); // Đổi thành matchingMessages[searchIndex].id
         }
     };
-
-
 
     const scrollToMessage = (id: number) => {
         const messageElement = document.getElementById(id.toString());
@@ -351,11 +433,12 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
             messageElement.style.color = "red";
         }
     };
+
     return (
-        <div className="chat-box">
+        <div className={`chat-box ${theme}`}>
             <div className="chat-box__header">
                 <div className="chat-box__header-user">
-                    <img src={typing} alt="avatar" />
+                    <img src={typing} alt="avatar"/>
                     <div className="info">
                         <h4>{user ? user.name : 'Name'}</h4>
                         <p className="status">{user ? userStatus : ''}</p>
@@ -363,7 +446,7 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
                 </div>
                 <div className="chat-box__header-icons">
                     <i className="bi bi-search" onClick={changeSearchState}></i>
-                    <i className="bi bi-gear-fill"></i>
+                    <i className="bi bi-sun-fill" onClick={toggleTheme} ref={modeIcon}></i>
                 </div>
                 {isSearch ? <div className="chat-box__header-searchview">
                     <input type="text" onChange={handleSearchInputChange} placeholder="Search..." />
@@ -380,17 +463,23 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
                         .filter((chatData) => chatData.mes.trim().length > 0)
                         .map((chatData) => {
                             return (username === chatData.name
-                                ?
-                                <OwnMessage  key={chatData.id} message={chatData}
-                                             filterKeyword={messagesSearchKeyword}
-                                             idMess = {chatData.id+""}
-                                />
-                                :
-                                <Message key={chatData.id}
-                                         message={chatData}
-                                         filterKeyword={messagesSearchKeyword}
-                                         idMess = {chatData.id+""}/>)
-
+                                    ?
+                                    <OwnMessage
+                                        key={chatData.id}
+                                        message={chatData}
+                                        theme={theme}
+                                        filterKeyword={messagesSearchKeyword}
+                                        idMess = {chatData.id+""}
+                                    />
+                                    :
+                                    <Message
+                                        key={chatData.id}
+                                        message={chatData}
+                                        theme={theme}
+                                        filterKeyword={messagesSearchKeyword}
+                                        idMess = {chatData.id+""}
+                                    />
+                            )
                         })
                 }
             </div>
@@ -404,9 +493,9 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
                                 {
                                     media.type === 0
                                         ?
-                                        <img src={media.url} alt="" />
+                                        <img src={media.url} alt=""/>
                                         :
-                                        <video src={media.url} controls />
+                                        <video src={media.url} controls/>
                                 }
                             </div>
                         ))}
@@ -424,31 +513,41 @@ function ChatBox({ user, setIsMessageChange, isMessageChange, newMessages, setNe
                             type="text"
                             placeholder="Type a message..."
                             value={message}
-                            onClick={handleClickMessage}
                             onKeyPress={handleEnterMessage}
                             onChange={handleTypeMessage}
                         />
+
+                        <div className="emoji">
+                            <i className="bi bi-emoji-smile" onClick={emojiOpenHandler}></i>
+                            <div className="emoji-picker">
+                                <EmojiPicker open={emojiOpened} onEmojiClick={emojiHandler}/>
+                            </div>
+                        </div>
+
                         <input
                             type="file"
                             accept="image/*,video/*"
                             onChange={handleMediaChange}
                             id="mediaInput"
-                            style={{ display: 'none' }}
+                            style={{display: 'none'}}
                         />
+
                         <input
                             type="file"
                             accept=".txt,.bat"
                             onChange={handleFileChange}
                             id="fileIn"
-                            style={{ display: 'none' }}
+                            style={{display: 'none'}}
                         />
+
                         <label htmlFor="mediaInput">
                             <i className="bi bi-image"></i>
                         </label>
+
                         <label htmlFor="fileIn">
                             <i className="bi bi-paperclip"></i>
                         </label>
-                        <i className="bi bi-emoji-smile"></i>
+
                         <button className="send-button" onClick={handleSendMessage}>
                             Send
                             <i className="bi bi-arrow-right-circle-fill"></i>

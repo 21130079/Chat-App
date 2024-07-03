@@ -1,9 +1,14 @@
 import React, {useState} from 'react';
-import "./chat-list.scss";
-import typing from '../../assets/images/typing.gif';
-import {createRoom, joinRoom, logout, ws} from "../../api/websocket-api";
-import groupImg from '../../assets/images/group.png';
+import "./chat-list-light-theme.scss";
+import "./chat-list-dark-theme.scss";
 import userImg from '../../assets/images/user.png';
+import groupImg from '../../assets/images/group.png';
+import {
+    logout,
+    createRoom,
+    joinRoom,
+} from "../../api/api";
+
 interface User {
     name: string;
     type: number;
@@ -16,21 +21,33 @@ interface ChatListProps {
     onUserSelect: (user: User) => void,
     setIsMessageChange?: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     isMessageChange?: boolean,
+    theme?: string | null
     onUsersChange?: (users: User[]) => void
-    newMessages:string[];
-    setNewMessages?: (value: (((prevState: Array<string>) => Array<string>) | Array<string>)) => void,
+    newMessages: string[];
+    setNewMessages?: (value: (((prevState: Array<string>) => Array<string>) | Array<string>)) => void;
 }
 
-
-function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onUsersChange,newMessages,setNewMessages}: ChatListProps) {
+function ChatList({
+                      users,
+                      onUserSelect,
+                      setIsMessageChange,
+                      isMessageChange,
+                      onUsersChange,
+                      theme,
+                      newMessages,
+                      setNewMessages
+                  }: ChatListProps) {
     const [searchText, setSearchText] = useState('');
     const [addText, setAddText] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [menuPosition, setMenuPosition] = useState<{left: number, top: number}>({left: 0, top: 0});
+    const base64LoginInfo: string = localStorage.getItem("user") ?? '';
+    const decodedLoginInfo: string = atob(base64LoginInfo);
+    const userInfo = JSON.parse(decodedLoginInfo);
+    const username = userInfo.username;
+    const [menuPosition, setMenuPosition] = useState<{ left: number, top: number }>({left: 0, top: 0});
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [isAddingFriend, setIsAddingFriend] = useState(true);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const username = localStorage.getItem('username') as string;
 
     const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
@@ -42,53 +59,68 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         setIsMenuOpen(!isMenuOpen);
     };
 
-    const handleOpenAddFriend = ()=>{
-        if(isAddOpen){
+    const handleOpenAddFriend = () => {
+        if (isAddOpen) {
             setIsAddingFriend(true)
-        } else{
+        } else {
             setIsAddOpen(!isAddOpen);
             setIsAddingFriend(true)
         }
 
     }
 
-    const handleOpenAddGroup = ()=>{
-        if(isAddOpen){
+    const handleOpenAddGroup = () => {
+        if (isAddOpen) {
             setIsAddingFriend(false)
-        } else{
+        } else {
             setIsAddOpen(!isAddOpen);
             setIsAddingFriend(false)
         }
 
     }
 
-    const handleCloseAdd=()=>{
+    const handleCloseAdd = () => {
         setIsAddOpen(!isAddOpen)
     }
     const handleAddClick = () => {
-        const name = { name: addText };
+        const name = {name: addText};
         if (isAddingFriend) {
             if (onUsersChange) {
-                onUsersChange([{name: name.name, type: 0, actionTime: new Date(Date.now()).toLocaleString(), firstMess:""}, ...users]);
+                onUsersChange([{
+                    name: name.name,
+                    type: 0,
+                    actionTime: new Date(Date.now()).toLocaleString(),
+                    firstMess: ""
+                }, ...users]);
             }
         } else {
             createRoom(name);
             if (onUsersChange) {
-                onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString(),firstMess:""}, ...users]);
+                onUsersChange([{
+                    name: name.name,
+                    type: 1,
+                    actionTime: new Date(Date.now()).toLocaleString(),
+                    firstMess: ""
+                }, ...users]);
             }
         }
     };
 
     const handleJoinClick = () => {
-        const name = { name: addText };
+        const name = {name: addText};
         joinRoom(name);
         if (onUsersChange) {
-            onUsersChange([{name: name.name, type: 1, actionTime: new Date(Date.now()).toLocaleString() ,firstMess : ""}, ...users]);
+            onUsersChange([{
+                name: name.name,
+                type: 1,
+                actionTime: new Date(Date.now()).toLocaleString(),
+                firstMess: ""
+            }, ...users]);
         }
     };
 
 
-    const handleAddInput=(e: React.ChangeEvent<HTMLInputElement>)=>{
+    const handleAddInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAddText(e.target.value)
     }
 
@@ -96,23 +128,25 @@ function ChatList({users, onUserSelect, setIsMessageChange, isMessageChange, onU
         logout();
         window.location.href = '/';
     };
-    const handleSelectUser = (user:User) => {
+
+    const handleSelectUser = (user: User) => {
         onUserSelect(user);
         setSelectedUser(user);
-        if(setNewMessages){
+        if (setNewMessages) {
             setNewMessages(prev => prev.filter(message => message !== user.name));
         }
     };
 
-    let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
-
     const getHoursAndMinutes = (dateTimeString: string) => {
         const timePart = dateTimeString.split(' ')[1];
         const [hours, minutes] = timePart.split(':');
-        return  hours+":" +minutes ;
+        return hours + ":" + minutes;
     };
+
+    let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
+
     return (
-        <div className="chat-list">
+        <div className={`chat-list ${theme}`}>
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
                     <img src={userImg} alt="avatar"/>

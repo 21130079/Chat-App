@@ -1,0 +1,16 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  transition: 0.5s;
+}
+
+.chat-window-container.dark-theme {
+  border-radius: 10px;
+  display: flex;
+  width: 90vw;
+  height: 90vh;
+}
+

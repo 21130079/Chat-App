@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import './OwnMessage.scss';
+import React, {useEffect, useRef, useState} from "react";
+import './own-message-light-theme.scss'
+import './own-message-dark-theme.scss'
 import typing from "../../assets/images/typing.gif";
 import textImg from '../../assets/images/FileImg/text.png';
 import other from '../../assets/images/FileImg/other.png';
+import {db} from "../firebase";
+import {doc, getDoc} from "firebase/firestore";
 
 interface Message {
     createAt: string;
@@ -19,32 +22,63 @@ interface Media {
 }
 
 interface Document {
-    type: string;
     url: string;
+    file: File;
+    type: string;
     name: string;
 }
 
 interface MessageProps {
     message: Message | null;
+    theme?: string | null | undefined;
     filterKeyword: string;
     idMess: string;
 }
 
-const OwnMessage: React.FC<MessageProps> = ({
-                                                message,
-                                                filterKeyword,
-                                                idMess
-                                            }) => {
+function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
+    const [mes, setMes] = useState<any>();
     const timeRef = useRef<HTMLDivElement>(null);
     const [highlightedMessage, setHighlightedMessage] = useState<any>(null);
     const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        const fetchData = async (idMes: string) => {
+            const docSnap = await getDoc(doc(db, 'messages', idMes));
+
+            if (docSnap.exists()) {
+                const iconMes = docSnap.data();
+                setMes(iconMes.mes);
+            } else {
+                setMes(message?.mes);
+            }
+        }
+
+        if (message) {
+            if (isJsonString(message.mes)) {
+                const mesData = JSON.parse(message.mes);
+
+                if (mesData.idMes === '' || typeof mesData.idMes === 'undefined') {
+                    if (mesData.message === '') {
+                        setMes(message.mes);
+                    } else {
+                        setMes(mesData.message)
+                    }
+                } else {
+                    fetchData(mesData.idMes);
+                }
+            } else {
+                setMes(message.mes);
+            }
+        }
+    }, [message]);
+
     const handleMouseEnter = () => {
         setHoverTimer(setTimeout(() => {
             if (timeRef.current) {
                 timeRef.current.style.display = 'flex';
             }
         }, 500));
-    };
+    }
 
     const handleMouseLeave = () => {
         if (hoverTimer) {
@@ -54,19 +88,7 @@ const OwnMessage: React.FC<MessageProps> = ({
         if (timeRef.current) {
             timeRef.current.style.display = 'none';
         }
-    };
-
-    const mes = (() => {
-        try {
-            if (message?.mes) {
-                const parsedMessage = JSON.parse(message.mes);
-                return parsedMessage.message;
-            }
-            return message?.mes;
-        } catch (error) {
-            return message?.mes;
-        }
-    })();
+    }
 
     const medias: Media[] | null = (() => {
         try {
@@ -134,7 +156,6 @@ const OwnMessage: React.FC<MessageProps> = ({
         }
     }, [message, filterKeyword]);
 
-
     useEffect(() => {
         return () => {
             if (hoverTimer) {
@@ -142,40 +163,36 @@ const OwnMessage: React.FC<MessageProps> = ({
             }
         };
     }, [hoverTimer]);
-    // const scrollToMessage = (index: number) => {
-    //     if (contentRef.current) {
-    //         const messageElements = contentRef.current.querySelectorAll(".message");
-    //         if (messageElements[index]) {
-    //             messageElements[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
-    //         }
-    //     }
-    // };
-    // const isCurrentSearchResult = message?.id === idMessSearch;
+
     return (
-        <div className="own-message-container">
+        <div className={`own-message-container ${theme}`}>
             <div className="message-author">
                 <p>{message?.name}</p>
             </div>
 
             <div className="message-content">
                 <div className="time-message" ref={timeRef}>
-                    <p>{message?.createAt}</p>
+                    <p>
+                        {message?.createAt}
+                    </p>
                 </div>
 
-                <div className="main-message" id={idMess+""} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    {mes && (
-                        <div>
-                            <img className="avatar" src={typing} alt="typing" />
-                            <div className="mess">{highlightedMessage}</div>
-                        </div>
-                    )}
+                <div className="main-message"
+                     id={idMess + ""}
+                     onMouseEnter={handleMouseEnter}
+                     onMouseLeave={handleMouseLeave}>
+                    {mes && <div>
+                        <img className="avatar" src={typing} alt=""/>
+                        <p>{mes}</p>
+                        {/*<div className="mess">{highlightedMessage}</div>*/}
+                    </div>}
                     {medias && medias.length > 0 && (
                         <div className="media">
                             {medias.map((media, index) => (
                                 media.type === 0 ? (
-                                    <img key={index} className="send-image" src={media.url} alt="sent image" />
+                                    <img key={index} className="send-image" src={media.url} alt="sent image"/>
                                 ) : (
-                                    <video key={index} className="send-video" src={media.url} controls />
+                                    <video key={index} className="send-video" src={media.url} controls/>
                                 )
                             ))}
                         </div>
@@ -199,7 +216,7 @@ const OwnMessage: React.FC<MessageProps> = ({
                                                 return other;
                                             }
                                         })()
-                                    } alt={file.name} />
+                                    } alt={file.name}/>
                                     {file.name}
                                 </a>
                             ))}
@@ -208,7 +225,16 @@ const OwnMessage: React.FC<MessageProps> = ({
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
+
+function isJsonString(str: string): boolean {
+    try {
+        const parsed = JSON.parse(str);
+        return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
+    } catch (e) {
+        return false;
+    }
+}
 
 export default OwnMessage;

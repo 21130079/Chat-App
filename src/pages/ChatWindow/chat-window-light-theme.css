@@ -1,0 +1,18 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  transition: 0.5s;
+}
+
+.chat-window-container.light-theme {
+  border-radius: 10px;
+  display: flex;
+  width: 90vw;
+  height: 90vh;
+  -webkit-box-shadow: 10px 10px 50px 0 rgba(0, 0, 0, 0.3);
+}
+
+/*# sourceMappingURL=chat-window-light-theme.css.map */

@@ -1,16 +1,18 @@
-import React, {ChangeEvent, createContext, useContext, useState} from 'react';
+import React, {ChangeEvent, createContext, useState, useContext} from 'react';
 import './login.css';
 import typing from '../../assets/images/typing.gif';
 import {login} from '../../redux/action';
 import {useDispatch} from "react-redux";
-import {register, ws} from "../../api/websocket-api";
 import {useNavigate} from 'react-router-dom';
+import {register} from "../../api/api";
+import {ws} from "../../api/web-socket";
 
 function Login() {
     const [isLogin, setIsLogin] = useState(true);
     const handleFormSwitch = (isLogin: boolean) => {
         setIsLogin(isLogin);
     };
+
     return (
         <div className="container">
             <div className="box-1">
@@ -42,20 +44,31 @@ function LoginForm() {
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
 
-    ws.onmessage = (event) => {
-        const response = JSON.parse(event.data as string);
-        switch (response.event) {
-            case "LOGIN": {
-                if (response.status === "success") {
-                    localStorage.setItem("username", username)
-                    localStorage.setItem("reLoginCode", response.data.RE_LOGIN_CODE)
-                    navigate('/chat');
-                } else if (response.status === "error") {
-                    setErrorMsg(response.mes);
+    if (ws) {
+        ws.onmessage = (event) => {
+            const response = JSON.parse(event.data as string);
+            switch (response.event) {
+                case "LOGIN": {
+                    if (response.status === "success") {
+                        const loginInfo = {
+                            username: username,
+                            password: password,
+                            reLoginCode: response.data.RE_LOGIN_CODE
+                        };
+                        const jsonLoginInfoString = JSON.stringify(loginInfo);
+                        const base64LoginInfoString = btoa(jsonLoginInfoString);
+
+                        localStorage.setItem("user", base64LoginInfoString);
+
+                        navigate('/chat');
+                    } else if (response.status === "error") {
+                        setErrorMsg(response.mes);
+                    }
+                    break;
                 }
             }
-        }
-    };
+        };
+    }
 
     const handleLogin = () => {
         if (username.trim() !== "" && password.trim() !== "") {
@@ -83,16 +96,32 @@ function LoginForm() {
     return (
         <div className="login-form-container">
             <h1>Login Form</h1>
-            <input type="text" value={username} required={true} onChange={handleChangeUsername} placeholder="Username"
-                   className="input-field"/>
+            <input
+                type="text"
+                value={username}
+                required={true}
+                onChange={handleChangeUsername}
+                placeholder="Username"
+                className="input-field"
+                name="username"
+            />
             <br/><br/>
-            <input type="password" required={true} onKeyPress={handleEnterPass}
+            <input type="password"
+                   required={true}
+                   onKeyPress={handleEnterPass}
                    onChange={(e) => setPassword(e.target.value)}
                    placeholder="Password"
-                   className="input-field"/>
+                   className="input-field"
+                   name="password"
+            />
             <br/><br/>
             {errorMsg !== '' ? <p className="Text-danger">{errorMsg}</p> : <br/>}
-            <button className="login-button" onClick={handleLogin} type="button">Login</button>
+            <button
+                className="login-button"
+                onClick={handleLogin}
+                type="button"
+            >Login
+            </button>
         </div>
     );
 }
@@ -102,6 +131,7 @@ function SignupForm() {
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
+
     const handleSignUp = () => {
         if (rePassword !== password) {
             setErrorMsg("RePassword and Password are not matched");
@@ -112,41 +142,75 @@ function SignupForm() {
             })
         }
     }
+
     const handleEnterPass = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleSignUp();
         }
     }
 
-    ws.onmessage = (event) => {
-        const response = JSON.parse(event.data as string);
-        console.log('Nhận dữ liệu từ máy chủ:', response);
-        switch (response.event) {
-            case "REGISTER": {
-                if (response.status === "success") {
-                    setErrorMsg("register successfully, please log in to continue");
-                } else if (response.status === "error") {
-                    setErrorMsg(response.mes);
+    if (ws) {
+        ws.onmessage = (event) => {
+            const response = JSON.parse(event.data as string);
+            console.log('Nhận dữ liệu từ máy chủ:', response);
+            switch (response.event) {
+                case "REGISTER": {
+                    if (response.status === "success") {
+                        setErrorMsg("register successfully, please log in to continue");
+                    } else if (response.status === "error") {
+                        setErrorMsg(response.mes);
+                    }
+                    break;
                 }
-                break;
             }
-        }
-    };
+        };
+    }
 
     return (
         <div className="signup-form-container">
             <h1>Sign Up Form</h1>
-            <input type="text" placeholder="Username" required={true} onChange={(e) => setUsername(e.target.value)}
-                   className="input-field"/>
+            <input
+                type="text"
+                placeholder="Username"
+                required={true}
+                onChange={(e) => setUsername(e.target.value)}
+                className="input-field"
+                name="username"
+            />
             <br/><br/>
-            <input type="password" placeholder="Password" required={true} onChange={(e) => setPassword(e.target.value)}
-                   className="input-field"/>
+            <input
+                type="email"
+                required={true}
+                placeholder="Email"
+                className="input-field"
+                name="email"
+            />
             <br/><br/>
-            <input type="password" required={true} placeholder="RePassword" onKeyPress={handleEnterPass}
-                   onChange={(e) => setRePassword(e.target.value)} className="input-field"/>
+            <input
+                type="password"
+                placeholder="Password"
+                required={true}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                name="password"
+            />
             <br/><br/>
+            <input
+                type="password"
+                required={true}
+                placeholder="RePassword"
+                onKeyPress={handleEnterPass}
+                onChange={(e) => setRePassword(e.target.value)}
+                className="input-field"
+                name="rePassword"
+            />
+            <br/>
             {errorMsg !== '' ? <p className="Text-danger">{errorMsg}</p> : <br/>}
-            <button className="signup-button" onClick={handleSignUp} type="button">Sign Up</button>
+            <button
+                className="signup-button"
+                onClick={handleSignUp}
+                type="submit">Sign Up
+            </button>
         </div>
     );
 }

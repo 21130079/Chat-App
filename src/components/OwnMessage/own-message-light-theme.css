@@ -1,44 +1,57 @@
-.own-message-container {
+.own-message-container.light-theme {
   max-width: 70%;
   display: flex;
   align-self: flex-end;
   flex-direction: column;
 }
-.own-message-container .message-author {
+.own-message-container.light-theme .message-author {
   display: flex;
   align-self: flex-end;
   font-size: 13px;
   margin-right: 10px;
   height: 20px;
 }
-.own-message-container .message-content {
+.own-message-container.light-theme .message-content {
   display: flex;
   align-items: center;
+  margin-bottom: -10px;
 }
-.own-message-container .message-content .main-message {
+.own-message-container.light-theme .message-content .main-message {
   display: grid;
 }
-.own-message-container .message-content .main-message div {
+.own-message-container.light-theme .message-content .main-message p {
+  display: flex;
+  align-items: center;
+  text-align: justify;
+  word-break: break-word;
+  flex-direction: row-reverse;
+  border-radius: 10px;
+  padding: 5px 10px 5px 10px;
+  -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
+  background-color: #d0fee1;
+}
+.own-message-container.light-theme .message-content .main-message p img {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+}
+.own-message-container.light-theme .message-content .main-message div {
   display: flex;
   justify-self: right;
   flex-direction: row-reverse;
   border-radius: 10px;
   padding: 5px 5px 5px 20px;
-  box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
-  -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
-  background-color: #d0fee1;
   word-wrap: break-word;
   word-break: break-all;
   width: fit-content;
   max-width: 500px;
 }
-.own-message-container .message-content .main-message div .avatar {
+.own-message-container.light-theme .message-content .main-message div .avatar {
   width: 30px;
   height: 30px;
   margin-left: 10px;
 }
-.own-message-container .message-content .main-message .media {
+.own-message-container.light-theme .message-content .main-message .media {
   background-color: transparent;
   box-shadow: none;
   display: grid;
@@ -49,7 +62,7 @@
   direction: rtl;
   margin-bottom: 20px;
 }
-.own-message-container .message-content .main-message .media .send-image, .own-message-container .message-content .main-message .media .send-video {
+.own-message-container.light-theme .message-content .main-message .media .send-image, .own-message-container.light-theme .message-content .main-message .media .send-video {
   width: 100%;
   height: 100%;
   transition: all 0.3s ease;
@@ -60,7 +73,7 @@
   margin-top: 2px;
   aspect-ratio: 1/1;
 }
-.own-message-container .message-content .main-message .file {
+.own-message-container.light-theme .message-content .main-message .file {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,27 +86,27 @@
   -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
 }
-.own-message-container .message-content .main-message .file a {
+.own-message-container.light-theme .message-content .main-message .file a {
   margin-bottom: 10px;
 }
-.own-message-container .message-content .main-message .file img {
+.own-message-container.light-theme .message-content .main-message .file img {
   max-width: 30px;
   max-height: 30px;
 }
-.own-message-container .message-content .mess {
+.own-message-container.light-theme .message-content .mess {
   box-shadow: none !important;
   padding: 0 !important;
 }
-.own-message-container .message-content .mess .highlight {
+.own-message-container.light-theme .message-content .mess .highlight {
   background-color: lightseagreen;
   justify-self: left;
   margin: 0 1px;
 }
-.own-message-container .message-content .time-message {
+.own-message-container.light-theme .message-content .time-message {
   display: none;
 }
-.own-message-container .message-content .time-message p {
+.own-message-container.light-theme .message-content .time-message p {
   font-size: 13px;
 }
 
-/*# sourceMappingURL=OwnMessage.css.map */
+/*# sourceMappingURL=own-message-light-theme.css.map */
