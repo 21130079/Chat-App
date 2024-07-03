@@ -18,35 +18,37 @@ $messageColor: white;
     margin-bottom: -10px;
 
     .main-message {
-      display: flex;
+      display: grid;
       align-items: center;
 
-      div {
+      .message-line {
         display: flex;
         justify-self: left;
+        padding: 20px 5px 5px 5px;
+        width: fit-content;
         flex-direction: row;
-        border-radius: 10px;
-        padding: 5px 20px 5px 5px;
+        max-width: 500px;
 
-        .avatar {
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          margin-right: 10px;
-          border: 1px black solid;
-        }
-
-        p {
+        .mess {
           display: flex;
           align-items: center;
           text-align: justify;
           word-break: break-word;
-          flex-direction: row;
           border-radius: 10px;
           padding: 5px 10px 5px 10px;
-          -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-
+          -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
           background-color: $messageColor;
+          .highlight {
+            background-color: lightseagreen;
+            justify-self: left;
+            margin: 0 1px;
+          }
+        }
+
+        .avatar {
+          width: 30px;
+          height: 30px;
+          margin-right: 10px;
         }
       }
 
@@ -94,17 +96,6 @@ $messageColor: white;
       }
       margin-bottom: 20px;
     }
-
-    .mess {
-      box-shadow: none !important;
-      padding: 0 !important;
-      .highlight {
-        background-color: lightseagreen;
-        justify-self: left;
-        margin: 0 1px;
-      }
-    }
-
     .time-message {
       display: none;
 

@@ -39,7 +39,6 @@ interface MessageProps {
 function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
     const [mes, setMes] = useState<any>();
     const timeRef = useRef<HTMLDivElement>(null);
-    const [highlightedMessage, setHighlightedMessage] = useState<any>(null);
     const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
@@ -50,26 +49,24 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                 const iconMes = docSnap.data();
                 setMes(iconMes.mes);
             } else {
-                setMes(message?.mes);
             }
         }
 
-        if (message) {
-            if (isJsonString(message.mes)) {
-                const mesData = JSON.parse(message.mes);
-
-                if (mesData.idMes === '' || typeof mesData.idMes === 'undefined') {
-                    if (mesData.message === '') {
-                        setMes(message.mes);
-                    } else {
-                        setMes(mesData.message)
-                    }
+        const processMessage = (msg :Message) => {
+            try {
+                const mesData = JSON.parse(msg.mes);
+                if (!mesData.idMes) {
+                    setMes(mesData.message);
                 } else {
                     fetchData(mesData.idMes);
                 }
-            } else {
-                setMes(message.mes);
+            } catch (error)  {
+                setMes(msg.mes);
             }
+        };
+
+        if (message) {
+            processMessage(message);
         }
     }, [message]);
 
@@ -148,12 +145,11 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
         try {
             if (message?.mes) {
                 const parsedMessage = JSON.parse(message.mes);
-                const highlighted = highlightText(parsedMessage.message || message.mes, filterKeyword);
-                setHighlightedMessage(highlighted);
+                const highlighted = highlightText(parsedMessage.message, filterKeyword);
+                    setMes(highlighted);
             }
         } catch (error) {
             console.error('Error parsing or highlighting message:', error);
-            setHighlightedMessage(message?.mes || null);
         }
     }, [message, filterKeyword]);
 
@@ -182,10 +178,9 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                      id={idMess + ""}
                      onMouseEnter={handleMouseEnter}
                      onMouseLeave={handleMouseLeave}>
-                    {mes && <div>
+                    {mes && <div className="message-line">
                         <img className="avatar" src={userImg} alt=""/>
-                        <p>{mes}</p>
-                        {/*<div className="mess">{highlightedMessage}</div>*/}
+                        <div className="mess">{mes}</div>
                     </div>}
                     {medias && medias.length > 0 && (
                         <div className="media">

@@ -15,34 +15,37 @@
   margin-bottom: -10px;
 }
 .message-container.light-theme .message-content .main-message {
-  display: flex;
+  display: grid;
   align-items: center;
   margin-bottom: 20px;
 }
-.message-container.light-theme .message-content .main-message div {
+.message-container.light-theme .message-content .main-message .message-line {
   display: flex;
   justify-self: left;
+  padding: 20px 5px 5px 5px;
+  width: fit-content;
   flex-direction: row;
-  border-radius: 10px;
-  padding: 5px 20px 5px 5px;
+  max-width: 500px;
 }
-.message-container.light-theme .message-content .main-message div .avatar {
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-  border: 1px black solid;
-}
-.message-container.light-theme .message-content .main-message div p {
+.message-container.light-theme .message-content .main-message .message-line .mess {
   display: flex;
   align-items: center;
   text-align: justify;
   word-break: break-word;
-  flex-direction: row;
   border-radius: 10px;
   padding: 5px 10px 5px 10px;
-  -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
   background-color: white;
+}
+.message-container.light-theme .message-content .main-message .message-line .mess .highlight {
+  background-color: lightseagreen;
+  justify-self: left;
+  margin: 0 1px;
+}
+.message-container.light-theme .message-content .main-message .message-line .avatar {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
 }
 .message-container.light-theme .message-content .main-message .media {
   background-color: transparent;
@@ -82,15 +85,6 @@
 .message-container.light-theme .message-content .main-message .file img {
   max-width: 30px;
   max-height: 30px;
-}
-.message-container.light-theme .message-content .mess {
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-.message-container.light-theme .message-content .mess .highlight {
-  background-color: lightseagreen;
-  justify-self: left;
-  margin: 0 1px;
 }
 .message-container.light-theme .message-content .time-message {
   display: none;

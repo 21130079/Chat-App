@@ -206,4 +206,8 @@
   cursor: pointer;
 }
 
+.activeUser {
+  background-color: cadetblue;
+}
+
 /*# sourceMappingURL=chat-list-light-theme.css.map */

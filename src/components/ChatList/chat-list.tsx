@@ -3,7 +3,8 @@ import "./chat-list-light-theme.scss";
 import "./chat-list-dark-theme.scss";
 import userImg from '../../assets/images/user.png';
 import groupImg from '../../assets/images/group.png';
-import myAvt from '../../assets/images/myAvt.png';
+ import myAvt from '../../assets/images/myAvt.png';
+import classNames from 'classnames';
 import {
     logout,
     createRoom,
@@ -194,7 +195,7 @@ function ChatList({
                 {filteredUsers.map((user, index) => (
                     <div
                         key={index}
-                        className="chat-list__content-user"
+                        className={classNames('chat-list__content-user', { 'activeUser': selectedUser?.name === user.name })}
                         id={user.name}
                         onClick={() => handleSelectUser(user)}
                     >

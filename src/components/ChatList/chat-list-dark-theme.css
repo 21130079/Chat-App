@@ -205,5 +205,8 @@
   color: #e0e0e0;
   cursor: pointer;
 }
+.chat-list.dark-theme .activeUser {
+  background-color: cadetblue;
+}
 
 /*# sourceMappingURL=chat-list-dark-theme.css.map */
