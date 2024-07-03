@@ -71,8 +71,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
     const [messagesSearchKeyword, setMessagesSearchKeyword] = useState<string>("");
     const [searchIndex, setSearchIndex] = useState<number>(0); // Initialize with 0 to avoid out-of-bound issues
     const [matchingMessages, setMatchingMessages] = useState<Message[]>([]);
-    const [idMessSearch, setIdMessSearch] = useState<number>(0);
-    const messageRefs = useRef<Map<number, HTMLDivElement | null>>(new Map());
 
 
     useEffect(() => {
@@ -169,7 +167,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             to: user.name,
             type: user.type
         };
-
+        setBoxChatData(prev => [newChatMessage, ...prev]);
         // thuc hien xoa trong o nhap tin nhan de co trai nghiem tot hon
         let selectedMedias = base64Medias;
         let selectedFiles = fileIn;
@@ -204,8 +202,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
         }
 
         // gửi tin nhắn
-        if ((message && user && msgClone.trim().length > 0 && idMesClone.trim().length > 0) || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
-            setBoxChatData(prev => [newChatMessage, ...prev]);
+        if ( msgClone.trim().length > 0 || idMesClone.trim().length > 0 || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
 
             const messageObject = {
                 medias: uploadedMediaUrls,
@@ -436,6 +433,33 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             messageElement.style.color = "red";
         }
     };
+    useEffect(() => {
+        const handlePaste = async (event: ClipboardEvent) => {
+            const items = event.clipboardData?.items;
+            if (!items) return;
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.kind === 'file' ) {
+                    const file = item.getAsFile();
+                    if (file) {
+                        const mediaObj: Media = {
+                            url: URL.createObjectURL(file),
+                            file: file,
+                            type:  item.type.includes('image') ? 0: 1
+                        };
+                        setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
+                    }
+                }
+                // Add handling for other types of media (e.g., videos)
+            }
+        };
+
+        document.addEventListener('paste', handlePaste);
+        return () => {
+            document.removeEventListener('paste', handlePaste);
+        };
+    }, []);
 
     return (
         <div className={`chat-box ${theme}`}>
