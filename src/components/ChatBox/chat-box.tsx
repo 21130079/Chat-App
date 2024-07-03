@@ -2,6 +2,8 @@ import React, {useState, useEffect, useRef} from 'react';
 import "./chat-box-dark-theme.scss";
 import "./chat-box-light-theme.scss";
 import typing from '../../assets/images/typing.gif';
+import userImg from '../../assets/images/user.png';
+import groupImg from '../../assets/images/group.png';
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import {v4 as uuidv4} from 'uuid';
 import {ws} from "../../api/web-socket";
@@ -10,6 +12,7 @@ import OwnMessage from "../OwnMessage/OwnMessage";
 import EmojiPicker, {EmojiClickData} from "emoji-picker-react";
 import {db, storage} from "../firebase";
 import {doc, setDoc} from "firebase/firestore";
+
 import {
     checkUser,
     getPeopleChatMessages,
@@ -438,7 +441,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
         <div className={`chat-box ${theme}`}>
             <div className="chat-box__header">
                 <div className="chat-box__header-user">
-                    <img src={typing} alt="avatar"/>
+                    <img src={user?.type === 1 ? groupImg : userImg} alt="avatar"/>
                     <div className="info">
                         <h4>{user ? user.name : 'Name'}</h4>
                         <p className="status">{user ? userStatus : ''}</p>

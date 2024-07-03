@@ -1,4 +1,5 @@
 import typing from "../../assets/images/typing.gif";
+import userImg from '../../assets/images/user.png';
 import React, {useEffect, useRef, useState} from "react";
 import './message-light-theme.scss'
 import './message-dark-theme.scss'
@@ -148,7 +149,7 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
                      onMouseEnter={handleMouseEnter}
                      onMouseLeave={handleMouseLeave}>
                     {mes && <div>
-                        <img className="avatar" src={typing} alt=""/>
+                        <img className="avatar" src={userImg} alt=""/>
                         <p>{mes}</p>
                         {/*<div className="mess">{highlightedMessage}</div>*/}
                     </div>}

@@ -4,12 +4,16 @@ $mainHeaderColor: #2b2d30;
 $mainListChatColor: #2b2d30;
 $mainTextColor: #e0e0e0;
 $hoverColor: #60636e;
+$addColor: #8bff38;
+$joinColor: #38a9ff;
+$cancelColor: #fa5353;
 
 .chat-list.dark-theme {
   flex: 1;
   display: flex;
   flex-direction: column;
   height: 100%;
+  max-width: 400px;
   border-radius: 10px 0 0 0;
   color: $mainTextColor;
   border-right: 1px solid $mainBackgroundColor;
@@ -88,6 +92,7 @@ $hoverColor: #60636e;
           background: none;
           border: 0;
           color: $mainTextColor;
+          cursor: pointer;
 
           &:hover {
             background-color: $hoverColor;
@@ -114,7 +119,7 @@ $hoverColor: #60636e;
       flex: 1;
       padding: 10px;
       border-radius: 10px;
-      height: 6vh;
+      height: 4vh;
       outline: none;
     }
 
@@ -131,11 +136,10 @@ $hoverColor: #60636e;
     background-color: $mainHeaderColor;
 
     input {
-      max-width: 150px;
+      max-width: 350px;
       flex: 1;
-      padding: 15px;
       border-radius: 10px;
-      height: 6vh;
+      height: 4vh;
       outline: none;
     }
 
@@ -145,18 +149,24 @@ $hoverColor: #60636e;
     }
 
     .add{
+      width: 40px;
+      height: 40px;
+      border: none;
+      background-color: $addColor;
       margin: 5px;
-      width: 50px;
-      height: 30px;
     }
     .join{
-      width: 50px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background-color: $joinColor;
+      margin-left: 5px;
     }
     .cancel{
-      margin: 5px;
-      width: 50px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background-color: $cancelColor;
     }
 
 
@@ -184,8 +194,8 @@ $hoverColor: #60636e;
       min-width: 200px;
       min-height: 70px;
       height: 70px;
+      width: 100%;
       overflow: hidden;
-
       background-color: $mainListChatColor;
 
       .avatar {
@@ -195,8 +205,6 @@ $hoverColor: #60636e;
         justify-content: center;
         display: grid;
         border-radius: 50%;
-
-        background-color: $mainTextColor;
 
         img{
           width: 35px;
