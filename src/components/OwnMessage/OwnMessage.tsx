@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import './own-message-light-theme.scss'
 import './own-message-dark-theme.scss'
 import typing from "../../assets/images/typing.gif";
+import userImg from '../../assets/images/myAvt.png';
 import textImg from '../../assets/images/FileImg/text.png';
 import other from '../../assets/images/FileImg/other.png';
 import {db} from "../firebase";
@@ -182,7 +183,7 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                      onMouseEnter={handleMouseEnter}
                      onMouseLeave={handleMouseLeave}>
                     {mes && <div>
-                        <img className="avatar" src={typing} alt=""/>
+                        <img className="avatar" src={userImg} alt=""/>
                         <p>{mes}</p>
                         {/*<div className="mess">{highlightedMessage}</div>*/}
                     </div>}

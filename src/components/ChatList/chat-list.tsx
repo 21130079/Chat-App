@@ -3,6 +3,7 @@ import "./chat-list-light-theme.scss";
 import "./chat-list-dark-theme.scss";
 import userImg from '../../assets/images/user.png';
 import groupImg from '../../assets/images/group.png';
+import myAvt from '../../assets/images/myAvt.png';
 import {
     logout,
     createRoom,
@@ -149,7 +150,7 @@ function ChatList({
         <div className={`chat-list ${theme}`}>
             <div className="chat-list__header">
                 <div className="chat-list__header-user">
-                    <img src={userImg} alt="avatar"/>
+                    <img src={myAvt} alt="avatar"/>
                     <div className="info">
                         <h6>{username}</h6>
                         <p className="status">Online</p>
@@ -161,9 +162,14 @@ function ChatList({
                     {isMenuOpen && (
                         <div className="dropdown-menu"
                              style={{left: `${menuPosition.left}px`, top: `${menuPosition.top}px`}}>
-                            <div className="dropdown-item" onClick={handleOpenAddFriend}>Add Friend</div>
-                            <div className="dropdown-item" onClick={handleOpenAddGroup}>Add Group</div>
-                            <div className="dropdown-item" onClick={handleLogout}>Logout</div>
+                            <div className="dropdown-item" onClick={handleOpenAddFriend}><i
+                                className="bi bi-person-add"></i> Add Friend
+                            </div>
+                            <div className="dropdown-item" onClick={handleOpenAddGroup}><i className="bi bi-people"></i> Add
+                                Group
+                            </div>
+                            <div className="dropdown-item" onClick={handleLogout}><i className="bi bi-box-arrow-right"></i> Logout
+                            </div>
                         </div>
                     )}
                 </div>
@@ -174,11 +180,13 @@ function ChatList({
             </div>
             {isAddOpen && (
                 <div className="chat-list__add">
-                    <input type="text" placeholder={isAddingFriend ? "Input People Name" : "Input Group Name"}
+                    <input type="text" placeholder={isAddingFriend ? " Input People Name" : " Input Group Name"}
                            onChange={handleAddInput} value={addText}/>
-                    <button className="add" onClick={handleAddClick}>{isAddingFriend ? "Add" : "Create"}</button>
-                    {!isAddingFriend && <button className="join" onClick={handleJoinClick}>Join</button>}
-                    <button className="cancel" onClick={handleCloseAdd}>Cancel</button>
+                    {!isAddingFriend &&
+                        <button className="join" title="Join" onClick={handleJoinClick}><i className="bi bi-arrow-right-circle"></i>
+                        </button>}
+                    <button className="add" title="Add" onClick={handleAddClick}><i className="bi bi-plus-circle"></i></button>
+                    <button className="cancel" title="Cancel" onClick={handleCloseAdd}><i className="bi bi-x-circle"></i></button>
                 </div>)}
 
 
@@ -189,7 +197,6 @@ function ChatList({
                         className="chat-list__content-user"
                         id={user.name}
                         onClick={() => handleSelectUser(user)}
-                        style={{backgroundColor: selectedUser?.name === user.name ? '#FFC0CB' : 'white'}}
                     >
                         <div className="avatar">
                             {user.type === 1 ? <img src={groupImg} alt="avatar"/> :
