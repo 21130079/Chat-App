@@ -62,6 +62,8 @@ function ChatWindow() {
     }
 
     useEffect(() => {
+        setByTheme();
+
         setTimeout(() => {
             if (ws) {
                 getUserList();
@@ -112,6 +114,14 @@ function ChatWindow() {
             }
         }, 200);
     }, []);
+
+    const setByTheme = () => {
+        if (theme === "light-theme") {
+            document.body.style.backgroundColor = "#ebeaf0";
+        } else {
+            document.body.style.backgroundColor = "#1e1f22";
+        }
+    }
 
     const handleUserSelect = (user: User) => {
         setSelectedUser(user);

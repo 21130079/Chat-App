@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import "./chat-box-dark-theme.scss";
 import "./chat-box-light-theme.scss";
-import typing from '../../assets/images/typing.gif';
 import userImg from '../../assets/images/user.png';
 import groupImg from '../../assets/images/group.png';
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
@@ -78,6 +77,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
     }, [boxChatData]);
 
     useEffect(() => {
+
         if (user) {
             if (user.type === 1) {
                 setIsRoom(true);
@@ -129,6 +129,66 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
         }
     }, [user]);
 
+    useEffect(() => {
+        const handlePaste = async (event: ClipboardEvent) => {
+            const items = event.clipboardData?.items;
+            if (!items) return;
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.kind === 'file' ) {
+                    const file = item.getAsFile();
+                    if (file) {
+                        const mediaObj: Media = {
+                            url: URL.createObjectURL(file),
+                            file: file,
+                            type:  item.type.includes('image') ? 0: 1
+                        };
+                        setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
+                    }
+                }
+                // Add handling for other types of media (e.g., videos)
+            }
+        };
+
+        document.addEventListener('paste', handlePaste);
+        return () => {
+            document.removeEventListener('paste', handlePaste);
+        };
+    }, []);
+
+    useEffect(() => {
+        const countOccurrences = (text: string, term: string) => {
+            if (!term) return 0;
+            const regex = new RegExp(`(${term})`, 'gi');
+            return (text.match(regex) || []).length;
+        };
+
+        let matchingMessagesArray: Message[] = [];
+        boxChatData.forEach((chatData) => {
+            const mes = chatData.mes;
+            if (mes) {
+                try {
+                    if (countOccurrences(mes, messagesSearchKeyword) > 0) {
+                        matchingMessagesArray.push(chatData);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        });
+
+        setMatchingMessages(matchingMessagesArray.reverse());
+        setSearchIndex(matchingMessagesArray.length - 1);
+
+    }, [boxChatData, messagesSearchKeyword]);
+
+    useEffect(() => {
+        if (matchingMessages.length > 0 && searchIndex >= 0) {
+            scrollToMessage(matchingMessages[searchIndex].id);
+        }
+    }, [matchingMessages, searchIndex]);
+
     const scrollToBottom = () => {
         if (contentRef.current) {
             contentRef.current.scrollTop = contentRef.current.scrollHeight;
@@ -167,7 +227,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             to: user.name,
             type: user.type
         };
-        setBoxChatData(prev => [newChatMessage, ...prev]);
+
         // thuc hien xoa trong o nhap tin nhan de co trai nghiem tot hon
         let selectedMedias = base64Medias;
         let selectedFiles = fileIn;
@@ -203,6 +263,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
 
         // gửi tin nhắn
         if ( msgClone.trim().length > 0 || idMesClone.trim().length > 0 || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
+            setEmojiOpened(!emojiOpened);
+            setBoxChatData(prev => [newChatMessage, ...prev]);
 
             const messageObject = {
                 medias: uploadedMediaUrls,
@@ -211,7 +273,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                 idMes: idMesClone
             };
 
-            console.log(messageObject)
             if (isRoom && user) {
                 sendRoomChat({
                     to: user.name,
@@ -253,9 +314,13 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
 
     }
 
-    const handleEnterMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleSendMessage();
+        }
+
+        if (emojiOpened && e.key === 'Escape') {
+            setEmojiOpened(!emojiOpened);
         }
     }
 
@@ -349,18 +414,16 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
         }
     }
 
-    const handleClickMessage = () => {
-        if (setNewMessages) {
-            setNewMessages(prev => prev.filter(message => message !== user.name));
-        }
-    }
-
     const changeSearchState = () => {
         if (isSearch) {
             setMessagesSearchKeyword("");
             const remainingMessages = contentRef.current?.querySelectorAll(".main-message");
             remainingMessages?.forEach((element: Element) => {
-                (element as HTMLElement).style.color = "black";
+                if (theme === 'light-theme') {
+                    (element as HTMLElement).style.color = "black";
+                } else {
+                    (element as HTMLElement).style.color = "#e0e0e0";
+                }
             });
         }
         setIsSearch(!isSearch);
@@ -370,38 +433,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
         const searchTerm = event.target.value.toLowerCase();
         setMessagesSearchKeyword(searchTerm);
     };
-
-    useEffect(() => {
-        const countOccurrences = (text: string, term: string) => {
-            if (!term) return 0;
-            const regex = new RegExp(`(${term})`, 'gi');
-            return (text.match(regex) || []).length;
-        };
-
-        let matchingMessagesArray: Message[] = [];
-        boxChatData.forEach((chatData) => {
-            const mes = chatData.mes;
-            if (mes) {
-                try {
-                    if (countOccurrences(mes, messagesSearchKeyword) > 0) {
-                        matchingMessagesArray.push(chatData);
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
-            }
-        });
-
-        setMatchingMessages(matchingMessagesArray.reverse());
-        setSearchIndex(matchingMessagesArray.length - 1);
-
-    }, [boxChatData, messagesSearchKeyword]);
-
-    useEffect(() => {
-        if (matchingMessages.length > 0 && searchIndex >= 0) {
-            scrollToMessage(matchingMessages[searchIndex].id);
-        }
-    }, [matchingMessages, searchIndex]);
 
     const upDataSearch = () => {
         if(matchingMessages.length>0){
@@ -433,33 +464,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             messageElement.style.color = "red";
         }
     };
-    useEffect(() => {
-        const handlePaste = async (event: ClipboardEvent) => {
-            const items = event.clipboardData?.items;
-            if (!items) return;
-
-            for (let i = 0; i < items.length; i++) {
-                const item = items[i];
-                if (item.kind === 'file' ) {
-                    const file = item.getAsFile();
-                    if (file) {
-                        const mediaObj: Media = {
-                            url: URL.createObjectURL(file),
-                            file: file,
-                            type:  item.type.includes('image') ? 0: 1
-                        };
-                        setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
-                    }
-                }
-                // Add handling for other types of media (e.g., videos)
-            }
-        };
-
-        document.addEventListener('paste', handlePaste);
-        return () => {
-            document.removeEventListener('paste', handlePaste);
-        };
-    }, []);
 
     return (
         <div className={`chat-box ${theme}`}>
@@ -540,14 +544,17 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                             type="text"
                             placeholder="Type a message..."
                             value={message}
-                            onKeyPress={handleEnterMessage}
+                            onKeyDown={handleKeyPress}
                             onChange={handleTypeMessage}
                         />
 
-                        <div className="emoji">
+                        <div className="emoji" onKeyDown={handleKeyPress}>
                             <i className="bi bi-emoji-smile" onClick={emojiOpenHandler}></i>
                             <div className="emoji-picker">
-                                <EmojiPicker open={emojiOpened} onEmojiClick={emojiHandler}/>
+                                <EmojiPicker
+                                    open={emojiOpened}
+                                    onEmojiClick={emojiHandler}
+                                />
                             </div>
                         </div>
 

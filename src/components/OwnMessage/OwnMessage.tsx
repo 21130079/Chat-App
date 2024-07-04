@@ -49,18 +49,19 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                 const iconMes = docSnap.data();
                 setMes(iconMes.mes);
             } else {
+                setMes(message?.mes);
             }
         }
 
-        const processMessage = (msg :Message) => {
-            try {
+        const processMessage = (msg: Message) => {
+            if (isJsonString(msg.mes)) {
                 const mesData = JSON.parse(msg.mes);
-                if (!mesData.idMes) {
+                if (!mesData.idMes || mesData.idMes === "") {
                     setMes(mesData.message);
                 } else {
                     fetchData(mesData.idMes);
                 }
-            } catch (error)  {
+            } else {
                 setMes(msg.mes);
             }
         };
@@ -69,6 +70,35 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
             processMessage(message);
         }
     }, [message]);
+
+    useEffect(() => {
+        const highlightText = (text: string, term: string) => {
+            if (!term) return text;
+
+            const regex = new RegExp(`(${term})`, 'gi');
+            const parts = text.split(regex);
+
+            return parts.map((part, index) =>
+                part.toLowerCase() === term.toLowerCase() ? <span key={index} className="highlight">{part}</span> : part
+            );
+        };
+
+        if (message?.mes && isJsonString(message?.mes)) {
+            const parsedMessage = JSON.parse(message.mes);
+            const highlighted = highlightText(parsedMessage.message, filterKeyword);
+            setMes(highlighted);
+        } else {
+            setMes(message?.mes);
+        }
+    }, [filterKeyword, message?.mes]);
+
+    useEffect(() => {
+        return () => {
+            if (hoverTimer) {
+                clearTimeout(hoverTimer);
+            }
+        };
+    }, [hoverTimer]);
 
     const handleMouseEnter = () => {
         setHoverTimer(setTimeout(() => {
@@ -130,36 +160,14 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
         }
     };
 
-    useEffect(() => {
-        const highlightText = (text: string, term: string) => {
-            if (!term) return text;
-
-            const regex = new RegExp(`(${term})`, 'gi');
-            const parts = text.split(regex);
-
-            return parts.map((part, index) =>
-                part.toLowerCase() === term.toLowerCase() ? <span key={index} className="highlight">{part}</span> : part
-            );
-        };
-
+    const isJsonString = (str: string) => {
         try {
-            if (message?.mes) {
-                const parsedMessage = JSON.parse(message.mes);
-                const highlighted = highlightText(parsedMessage.message, filterKeyword);
-                    setMes(highlighted);
-            }
-        } catch (error) {
-            console.error('Error parsing or highlighting message:', error);
+            const parsedString = JSON.parse(str);
+            return typeof parsedString === 'object' && parsedString !== null && !Array.isArray(parsedString);
+        } catch (e) {
+            return false;
         }
-    }, [message, filterKeyword]);
-
-    useEffect(() => {
-        return () => {
-            if (hoverTimer) {
-                clearTimeout(hoverTimer);
-            }
-        };
-    }, [hoverTimer]);
+    }
 
     return (
         <div className={`own-message-container ${theme}`}>
@@ -183,54 +191,57 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                         <div className="mess">{mes}</div>
                     </div>}
                     {medias && medias.length > 0 && (
-                        <div className="media">
+                        <div className="media-container">
+                            <div className="media-item">
+                                <img className="avatar" src={userImg} alt=""/>
+                            </div>
+
                             {medias.map((media, index) => (
                                 media.type === 0 ? (
-                                    <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                                    <div key={index} className="media-item">
+                                        <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                                    </div>
                                 ) : (
-                                    <video key={index} className="send-video" src={media.url} controls/>
+                                    <div key={index} className="media-item">
+                                        <video key={index} className="send-video" src={media.url} controls/>
+                                    </div>
                                 )
                             ))}
                         </div>
+
                     )}
                     {files && files.length > 0 && (
-                        <div className="file">
-                            {files.map((file, index) => (
-                                <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
-                                   download={file.name}
-                                   className="send-file">
-                                    <img src={
-                                        (() => {
-                                            try {
-                                                switch (file.name.split('.').pop()) {
-                                                    case 'txt':
-                                                        return textImg;
-                                                    default:
-                                                        return other;
+                        <div className="file-container">
+                            <img className="avatar" src={userImg} alt=""/>
+                            <div className="file">
+                                {files.map((file, index) => (
+                                    <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
+                                       download={file.name}
+                                       className="send-file">
+                                        <img src={
+                                            (() => {
+                                                try {
+                                                    switch (file.name.split('.').pop()) {
+                                                        case 'txt':
+                                                            return textImg;
+                                                        default:
+                                                            return other;
+                                                    }
+                                                } catch (error) {
+                                                    return other;
                                                 }
-                                            } catch (error) {
-                                                return other;
-                                            }
-                                        })()
-                                    } alt={file.name}/>
-                                    {file.name}
-                                </a>
-                            ))}
+                                            })()
+                                        } alt={file.name}/>
+                                        {file.name}
+                                    </a>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>
             </div>
         </div>
     )
-}
-
-function isJsonString(str: string): boolean {
-    try {
-        const parsed = JSON.parse(str);
-        return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
-    } catch (e) {
-        return false;
-    }
 }
 
 export default OwnMessage;

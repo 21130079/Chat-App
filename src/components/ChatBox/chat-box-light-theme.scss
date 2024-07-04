@@ -26,13 +26,13 @@ $mainTextColor: black;
   height: 100%;
   border-radius: 0 10px 10px 0;
   color: $mainTextColor;
-  overflow-y: scroll;
+  overflow: auto;
   border-left: 1px solid $mainBackgroundColor;
 
   .chat-box__header {
     display: flex;
     align-items: center;
-    padding: 5px 30px;
+    padding: 10px 30px;
     border-radius: 0 10px 0 0;
     position: relative;
 
@@ -46,8 +46,8 @@ $mainTextColor: black;
       background-color: $mainHeaderColor;
 
       img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 1%;
         object-fit: cover;
       }
@@ -74,7 +74,7 @@ $mainTextColor: black;
       flex: 1;
       display: flex;
       justify-content: flex-end;
-      align-items:center ;
+      align-items: center;
       column-gap: 10%;
 
       background-color: $mainHeaderColor;
@@ -83,13 +83,14 @@ $mainTextColor: black;
         font-size: 1.4rem;
         cursor: pointer;
       }
+
       .bi-search {
         font-size: 1.2rem;
 
       }
     }
 
-    .chat-box__header-searchview{
+    .chat-box__header-searchview {
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -100,22 +101,26 @@ $mainTextColor: black;
       height: 100%;
       width: 100%;
       background-color: $mainHeaderColor;
-      input[type="text"]{
+
+      input[type="text"] {
         margin-left: 5%;
         width: 80%;
         min-height: 60%;
         border-radius: 10px;
         background-color: white;
       }
-      div{
+
+      div {
         margin: auto 10px;
       }
-      i{
-        padding:  2px 15px;
+
+      i {
+        padding: 2px 15px;
         border-radius: 5px;
         transition: background-color 0.3s ease;
       }
-      i:hover{
+
+      i:hover {
         background-color: lightgrey;
         cursor: pointer;
       }
@@ -123,7 +128,7 @@ $mainTextColor: black;
   }
 
   .chat-box__content {
-    padding: 20px;
+    padding: 0 20px 20px 20px;
     flex: 1;
     overflow-y: scroll;
     display: flex;
@@ -139,7 +144,7 @@ $mainTextColor: black;
     .chat-box__footer-container {
       display: flex;
       align-items: center;
-      margin: auto 20px 20px;
+      margin: 20px 20px;
       height: 50px;
       border-radius: 7px;
       background-color: $mainFooterColor;
@@ -181,8 +186,7 @@ $mainTextColor: black;
           flex: 1;
           border: none;
           outline: none;
-          margin: -15px;
-          width:50vw;
+          width: 39vw;
           font-size: 17px;
           color: $mainTextColor;
           background-color: $mainFooterColor;
@@ -202,15 +206,15 @@ $mainTextColor: black;
         i {
           display: flex;
           font-size: 1.4rem;
-          margin: 0 5px;
+          padding: 0 10px;
           cursor: pointer;
         }
 
         .send-button {
           display: inline-flex;
           align-items: flex-end;
+          margin-left: 10px;
           padding: 5px 20px;
-          margin: 0 20px;
           border-radius: 10px;
           border: none;
           color: $mainTextColor;

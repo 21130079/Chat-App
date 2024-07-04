@@ -20,13 +20,13 @@
   height: 100%;
   border-radius: 0 10px 10px 0;
   color: black;
-  overflow-y: scroll;
+  overflow: auto;
   border-left: 1px solid #eaebee;
 }
 .chat-box.light-theme .chat-box__header {
   display: flex;
   align-items: center;
-  padding: 5px 30px;
+  padding: 10px 30px;
   border-radius: 0 10px 0 0;
   position: relative;
   background-color: white;
@@ -38,8 +38,8 @@
   background-color: white;
 }
 .chat-box.light-theme .chat-box__header .chat-box__header-user img {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 1%;
   object-fit: cover;
 }
@@ -104,7 +104,7 @@
   cursor: pointer;
 }
 .chat-box.light-theme .chat-box__content {
-  padding: 20px;
+  padding: 0 20px 20px 20px;
   flex: 1;
   overflow-y: scroll;
   display: flex;
@@ -118,7 +118,7 @@
 .chat-box.light-theme .chat-box__footer .chat-box__footer-container {
   display: flex;
   align-items: center;
-  margin: auto 20px 20px;
+  margin: 20px 20px;
   height: 50px;
   border-radius: 7px;
   background-color: white;
@@ -156,8 +156,7 @@
   flex: 1;
   border: none;
   outline: none;
-  margin: -15px;
-  width: 50vw;
+  width: 39vw;
   font-size: 17px;
   color: black;
   background-color: white;
@@ -174,14 +173,14 @@
 .chat-box.light-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-typing i {
   display: flex;
   font-size: 1.4rem;
-  margin: 0 5px;
+  padding: 0 10px;
   cursor: pointer;
 }
 .chat-box.light-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-typing .send-button {
   display: inline-flex;
   align-items: flex-end;
+  margin-left: 10px;
   padding: 5px 20px;
-  margin: 0 20px;
   border-radius: 10px;
   border: none;
   color: black;
