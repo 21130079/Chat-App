@@ -6,6 +6,7 @@ $mainTextColor: #e0e0e0;
   display: flex;
   align-self: flex-end;
   flex-direction: column;
+  padding-bottom: 10px;
 
   .message-author {
     display: flex;
@@ -26,7 +27,6 @@ $mainTextColor: #e0e0e0;
       .message-line {
         display: flex;
         justify-self: right;
-        padding: 5px 0 5px 0;
         width: fit-content;
         flex-direction: row-reverse;
         max-width: 500px;

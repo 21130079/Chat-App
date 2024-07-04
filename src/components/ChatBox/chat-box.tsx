@@ -74,7 +74,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
 
     useEffect(() => {
         scrollToBottom();
-    }, [boxChatData]);
+    }, [contentRef.current?.scrollTop, boxChatData]);
 
     useEffect(() => {
 
@@ -147,7 +147,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                         setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
                     }
                 }
-                // Add handling for other types of media (e.g., videos)
             }
         };
 
@@ -189,28 +188,36 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
         }
     }, [matchingMessages, searchIndex]);
 
+    useEffect(() => {
+        const handleEmojiMessage = async () => {
+            if (emojiRegex.test(message)) {
+                const uuid = uuidv4();
+                const messageRef = doc(db, 'messages', uuid);
+
+                setIdMes(uuid);
+
+                console.log(idMes)
+
+                await setDoc(messageRef, {
+                    mes: message
+                });
+            } else {
+                setIdMes('');
+            }
+        }
+
+        handleEmojiMessage();
+    }, [message]);
+
+    const handleTypeMessage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setMessage(e.target.value);
+    }
+
     const scrollToBottom = () => {
         if (contentRef.current) {
             contentRef.current.scrollTop = contentRef.current.scrollHeight;
         }
     };
-
-    const handleTypeMessage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMessage(e.target.value);
-
-        if (emojiRegex.test(e.target.value)) {
-            const uuid = uuidv4();
-            const messageRef = doc(db, 'messages', uuid);
-
-            setIdMes(uuid);
-            await setDoc(messageRef, {
-                mes: message
-            });
-        } else {
-            setIdMes('');
-        }
-    }
-
 
     const handleSendMessage = async () => {
         // setdata

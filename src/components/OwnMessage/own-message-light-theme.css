@@ -3,6 +3,7 @@
   display: flex;
   align-self: flex-end;
   flex-direction: column;
+  padding-bottom: 10px;
 }
 .own-message-container.light-theme .message-author {
   display: flex;
@@ -22,7 +23,6 @@
 .own-message-container.light-theme .message-content .main-message .message-line {
   display: flex;
   justify-self: right;
-  padding: 5px 0 5px 0;
   width: fit-content;
   flex-direction: row-reverse;
   max-width: 500px;

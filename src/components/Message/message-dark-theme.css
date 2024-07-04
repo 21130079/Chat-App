@@ -12,6 +12,7 @@
 .message-container.dark-theme .message-content {
   display: flex;
   align-items: center;
+  padding-bottom: 10px;
 }
 .message-container.dark-theme .message-content .main-message {
   display: grid;
@@ -19,7 +20,6 @@
 .message-container.dark-theme .message-content .main-message .message-line {
   display: flex;
   justify-self: left;
-  padding: 5px 0 5px 0;
   width: fit-content;
   flex-direction: row;
   max-width: 500px;

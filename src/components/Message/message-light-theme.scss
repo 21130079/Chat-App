@@ -16,6 +16,7 @@ $mainTextColor: black;
   .message-content {
     display: flex;
     align-items: center;
+    padding-bottom: 10px;
 
     .main-message {
       display: grid;
@@ -23,7 +24,6 @@ $mainTextColor: black;
       .message-line {
         display: flex;
         justify-self: left;
-        padding: 5px 0 5px 5px;
         width: fit-content;
         flex-direction: row;
         max-width: 500px;
