@@ -1,8 +1,10 @@
-$mainBackgroundColor: #eaebee;
+$mainBackgroundColor: #e5e5e5;
 $mainHeaderColor: white;
 $mainFooterColor: white;
 $mainBoxChatColor: #eaebee;
 $mainTextColor: black;
+$iconBackgroundColor: #e4e6eb;
+$hoverColor: #d8dadf;
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -75,13 +77,26 @@ $mainTextColor: black;
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      column-gap: 10%;
-
+      column-gap: 5%;
       background-color: $mainHeaderColor;
 
-      i {
-        font-size: 1.4rem;
+      .search-box, .theme-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
         cursor: pointer;
+        background-color: $iconBackgroundColor;
+
+        &:hover {
+          background-color: $hoverColor;
+        }
+
+        i {
+          font-size: 1.2rem;
+        }
       }
 
       .bi-search {
@@ -128,11 +143,11 @@ $mainTextColor: black;
   }
 
   .chat-box__content {
-    padding: 0 20px 20px 20px;
+    padding: 0 20px 10px 20px;
     flex: 1;
     overflow-y: scroll;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
 
     background-color: $mainBoxChatColor;
   }
@@ -144,13 +159,15 @@ $mainTextColor: black;
     .chat-box__footer-container {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 10px 0;
       margin: 20px 20px;
-      height: 50px;
+      padding: 10px 10px;
       border-radius: 7px;
       background-color: $mainFooterColor;
 
       .chat-box__footer-file {
-        margin: 5px 20px;
+        margin: 5px 5px;
         display: flex;
         align-items: start;
         column-gap: 10px;
@@ -167,8 +184,8 @@ $mainTextColor: black;
           i {
             justify-self: right;
             position: absolute;
-            margin-top: 8px;
-            margin-right: 3px;
+            margin-top: 15px;
+            margin-right: -5px;
             font-size: 22px;
             cursor: pointer;
             z-index: 2;
@@ -176,53 +193,45 @@ $mainTextColor: black;
         }
       }
 
-      .chat-box__footer-typing {
+      input {
+        flex: 1;
+        border: none;
+        outline: none;
+        width: 39vw;
+        font-size: 17px;
+        color: $mainTextColor;
+        background-color: $mainFooterColor;
+      }
+
+      .emoji {
+        position: relative;
+
+        .emoji-picker {
+          position: absolute;
+          bottom: 40px;
+          right: 0;
+        }
+      }
+
+      i {
+        display: flex;
+        font-size: 1.4rem;
+        padding: 0 10px;
+        cursor: pointer;
+      }
+
+      .send-button {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        height: 50px;
-
-        input {
-          flex: 1;
-          border: none;
-          outline: none;
-          width: 39vw;
-          font-size: 17px;
-          color: $mainTextColor;
-          background-color: $mainFooterColor;
-        }
-
-        .emoji {
-          position: relative;
-          margin-left: 20px;
-
-          .emoji-picker {
-            position: absolute;
-            bottom: 40px;
-            right: 0;
-          }
-        }
+        justify-content: center;
+        padding: 5px 20px;
+        border-radius: 10px;
+        border: none;
+        color: $mainTextColor;
+        background-color: $mainBoxChatColor;
 
         i {
-          display: flex;
           font-size: 1.4rem;
-          padding: 0 10px;
-          cursor: pointer;
-        }
-
-        .send-button {
-          display: inline-flex;
-          align-items: flex-end;
-          margin-left: 10px;
-          padding: 5px 20px;
-          border-radius: 10px;
-          border: none;
-          color: $mainTextColor;
-          background-color: $mainBoxChatColor;
-
-          i {
-            font-size: 1.4rem;
-          }
         }
       }
     }

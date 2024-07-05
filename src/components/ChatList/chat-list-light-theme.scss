@@ -1,12 +1,13 @@
-$mainBackgroundColor: #ebeaf0;
+$mainBackgroundColor: #e5e5e5;
 $mainBodyColor: #eaebee;
 $mainHeaderColor: white;
 $mainListChatColor: white;
 $mainTextColor: black;
-$hoverColor: #dddddd;
+$hoverColor: #d8dadf;
 $addColor: #8bff38;
 $joinColor: #38a9ff;
 $cancelColor: #fa5353;
+$iconBackgroundColor: #e4e6eb;
 
 .chat-list.light-theme {
   flex: 1;
@@ -35,7 +36,6 @@ $cancelColor: #fa5353;
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        border: black 1px solid;
         object-fit: cover;
       }
 
@@ -62,10 +62,14 @@ $cancelColor: #fa5353;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 25px;
-      height: 25px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
-      border: 1px solid $mainTextColor;
+      background-color: $iconBackgroundColor;
+
+      &:hover {
+        background-color: $hoverColor;
+      }
 
       i {
         font-size: 20px;
@@ -134,7 +138,7 @@ $cancelColor: #fa5353;
     }
   }
 
-  .chat-list__add{
+  .chat-list__add {
     display: flex;
     align-items: center;
     padding: 10px 20px;
@@ -154,21 +158,23 @@ $cancelColor: #fa5353;
       cursor: pointer;
     }
 
-    .add{
+    .add {
       width: 40px;
       height: 40px;
       border: none;
       background-color: $addColor;
       margin: 5px;
     }
-    .join{
+
+    .join {
       width: 40px;
       height: 40px;
       border: none;
       background-color: $joinColor;
       margin-left: 5px;
     }
-    .cancel{
+
+    .cancel {
       width: 40px;
       height: 40px;
       border: none;
@@ -209,9 +215,7 @@ $cancelColor: #fa5353;
         display: grid;
         border-radius: 50%;
 
-        background-color: $mainTextColor;
-
-        img{
+        img {
           width: 35px;
           height: 35px;
           border-radius: 50%;
@@ -220,7 +224,7 @@ $cancelColor: #fa5353;
         }
       }
 
-      .time-message{
+      .time-message {
         justify-self: right;
       }
 
@@ -244,18 +248,19 @@ $cancelColor: #fa5353;
         }
       }
 
-      .time-message{
+      .time-message {
         justify-self: right;
       }
     }
 
     .chat-list__content-user:hover {
-      background-color: rgba(255, 255, 252, 0.6);
+      background-color: $hoverColor;
       color: $mainTextColor;
       cursor: pointer;
     }
   }
-}
-.activeUser{
-  background-color: cadetblue;
+
+  .activeUser {
+    background-color: cadetblue;
+  }
 }

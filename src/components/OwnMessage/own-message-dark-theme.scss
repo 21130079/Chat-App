@@ -1,5 +1,6 @@
 $ownMessageColor: #7796c5;
 $mainTextColor: #e0e0e0;
+$borderImgColor: #7e7e7e;
 
 .own-message-container.dark-theme {
   max-width: 70%;
@@ -13,7 +14,7 @@ $mainTextColor: #e0e0e0;
     align-self: flex-end;
     font-size: 13px;
     height: 20px;
-    padding-right: 55px;
+    padding-right: 50px;
   }
 
   .message-content {
@@ -72,6 +73,7 @@ $mainTextColor: #e0e0e0;
             aspect-ratio: 1 / 1;
             border-radius: 10px;
             background-color: $ownMessageColor;
+            border: 1px solid $borderImgColor;
           }
 
           .avatar {

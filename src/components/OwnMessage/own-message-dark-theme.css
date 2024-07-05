@@ -10,7 +10,7 @@
   align-self: flex-end;
   font-size: 13px;
   height: 20px;
-  padding-right: 55px;
+  padding-right: 50px;
 }
 .own-message-container.dark-theme .message-content {
   display: flex;
@@ -63,6 +63,7 @@
   aspect-ratio: 1/1;
   border-radius: 10px;
   background-color: #7796c5;
+  border: 1px solid #7e7e7e;
 }
 .own-message-container.dark-theme .message-content .main-message .media-container .media-item .avatar {
   width: 30px;

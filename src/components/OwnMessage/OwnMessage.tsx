@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import './own-message-light-theme.scss'
 import './own-message-dark-theme.scss'
-import typing from "../../assets/images/typing.gif";
 import userImg from '../../assets/images/myAvt.png';
 import textImg from '../../assets/images/FileImg/text.png';
 import other from '../../assets/images/FileImg/other.png';
@@ -57,7 +56,11 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
             if (isJsonString(msg.mes)) {
                 const mesData = JSON.parse(msg.mes);
                 if (!mesData.idMes || mesData.idMes === "") {
-                    setMes(mesData.message);
+                    if (!mesData.message || mesData.message === "") {
+                        setMes(msg.mes);
+                    } else {
+                        setMes(mesData.message);
+                    }
                 } else {
                     fetchData(mesData.idMes);
                 }
@@ -113,6 +116,7 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
             clearTimeout(hoverTimer);
             setHoverTimer(null);
         }
+
         if (timeRef.current) {
             timeRef.current.style.display = 'none';
         }
@@ -142,28 +146,10 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
         }
     })();
 
-    const downloadFileFromFirebase = async (url: string) => {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const blob = await response.blob();
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'file';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (error) {
-            console.error('Error downloading file:', error);
-        }
-    };
-
     const isJsonString = (str: string) => {
         try {
             const parsedString = JSON.parse(str);
-            return typeof parsedString === 'object' && parsedString !== null && !Array.isArray(parsedString);
+            return (typeof parsedString === 'object') && (parsedString !== null) && (!Array.isArray(parsedString));
         } catch (e) {
             return false;
         }
@@ -183,13 +169,15 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                 </div>
 
                 <div className="main-message"
-                     id={idMess + ""}
+                     id={idMess}
                      onMouseEnter={handleMouseEnter}
                      onMouseLeave={handleMouseLeave}>
+
                     {mes && <div className="message-line">
                         <img className="avatar" src={userImg} alt=""/>
                         <div className="mess">{mes}</div>
                     </div>}
+
                     {medias && medias.length > 0 && (
                         <div className="media-container">
                             <div className="media-item">
@@ -208,7 +196,6 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                                 )
                             ))}
                         </div>
-
                     )}
                     {files && files.length > 0 && (
                         <div className="file-container">

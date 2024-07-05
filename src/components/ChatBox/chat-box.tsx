@@ -50,7 +50,15 @@ interface Document {
     name: string;
 }
 
-function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, newMessages, setNewMessages}: ChatBoxProps) {
+function ChatBox({
+                     user,
+                     setIsMessageChange,
+                     isMessageChange,
+                     theme,
+                     setTheme,
+                     newMessages,
+                     setNewMessages
+                 }: ChatBoxProps) {
     const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2B50}\u{2B55}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
     const [isRoom, setIsRoom] = useState(true);
     const [boxChatData, setBoxChatData] = useState<Array<Message>>([]);
@@ -71,13 +79,11 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
     const [searchIndex, setSearchIndex] = useState<number>(0); // Initialize with 0 to avoid out-of-bound issues
     const [matchingMessages, setMatchingMessages] = useState<Message[]>([]);
 
-
     useEffect(() => {
         scrollToBottom();
-    }, [contentRef.current?.scrollTop, boxChatData]);
+    }, [contentRef.current?.scrollTop]);
 
     useEffect(() => {
-
         if (user) {
             if (user.type === 1) {
                 setIsRoom(true);
@@ -93,6 +99,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
         if (ws) {
             ws.onmessage = (event) => {
                 const response = JSON.parse(event.data as string);
+
                 switch (response.event) {
                     case "GET_ROOM_CHAT_MES": {
                         setBoxChatData(response.data.chatData)
@@ -107,15 +114,18 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                         break;
                     }
                     case "SEND_CHAT": {
+                        console.log(response)
                         if (response.data.to === user?.name) {
                             if (user?.type === 1) {
                                 getRoomChatMessages({name: user?.name, page: 1})
                             }
+
                             if (setNewMessages) {
                                 setNewMessages(prev => [response.data.to, ...prev]);
                             }
                         }
-                        if (response.data.to === localStorage.getItem("username") as string) {
+
+                        if (response.data.to === username) {
                             if (user?.type === 0) {
                                 getPeopleChatMessages({name: user?.name, page: 1})
                             }
@@ -136,13 +146,13 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
 
             for (let i = 0; i < items.length; i++) {
                 const item = items[i];
-                if (item.kind === 'file' ) {
+                if (item.kind === 'file') {
                     const file = item.getAsFile();
                     if (file) {
                         const mediaObj: Media = {
                             url: URL.createObjectURL(file),
                             file: file,
-                            type:  item.type.includes('image') ? 0: 1
+                            type: item.type.includes('image') ? 0 : 1
                         };
                         setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
                     }
@@ -151,6 +161,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
         };
 
         document.addEventListener('paste', handlePaste);
+
         return () => {
             document.removeEventListener('paste', handlePaste);
         };
@@ -196,8 +207,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
 
                 setIdMes(uuid);
 
-                console.log(idMes)
-
                 await setDoc(messageRef, {
                     mes: message
                 });
@@ -208,16 +217,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
 
         handleEmojiMessage();
     }, [message]);
-
-    const handleTypeMessage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMessage(e.target.value);
-    }
-
-    const scrollToBottom = () => {
-        if (contentRef.current) {
-            contentRef.current.scrollTop = contentRef.current.scrollHeight;
-        }
-    };
 
     const handleSendMessage = async () => {
         // setdata
@@ -269,8 +268,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
         }
 
         // gửi tin nhắn
-        if ( msgClone.trim().length > 0 || idMesClone.trim().length > 0 || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
-            setEmojiOpened(!emojiOpened);
+        if (msgClone.trim().length > 0 || idMesClone.trim().length > 0 || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
+            setEmojiOpened(false);
             setBoxChatData(prev => [newChatMessage, ...prev]);
 
             const messageObject = {
@@ -294,7 +293,17 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                 }
             }
         }
-    }
+    };
+
+    const handleTypeMessage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setMessage(e.target.value);
+    };
+
+    const scrollToBottom = () => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = contentRef.current.scrollHeight;
+        }
+    };
 
     // upload len database
     const uploadMedia = async (file: File, type: number) => {
@@ -326,8 +335,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             handleSendMessage();
         }
 
-        if (emojiOpened && e.key === 'Escape') {
-            setEmojiOpened(!emojiOpened);
+        if (e.key === 'Escape') {
+            setEmojiOpened(false);
         }
     }
 
@@ -442,16 +451,16 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
     };
 
     const upDataSearch = () => {
-        if(matchingMessages.length>0){
+        if (matchingMessages.length > 0) {
             setSearchIndex((prevIndex) => {
-                return prevIndex > 0 ? prevIndex - 1 : matchingMessages.length -1;
+                return prevIndex > 0 ? prevIndex - 1 : matchingMessages.length - 1;
             });
             scrollToMessage(matchingMessages[searchIndex].id);
         }
     };
 
     const downDataSearch = () => {
-        if(matchingMessages.length>0) {
+        if (matchingMessages.length > 0) {
             setSearchIndex((prevIndex) => {
                 return prevIndex < matchingMessages.length - 1 ? prevIndex + 1 : 0;
             });
@@ -467,7 +476,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             remainingMessages?.forEach((element: Element) => {
                 (element as HTMLElement).style.color = "black";
             });
-            messageElement.scrollIntoView({ behavior: "smooth" });
+            messageElement.scrollIntoView({behavior: "smooth"});
             messageElement.style.color = "red";
         }
     };
@@ -483,12 +492,16 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                     </div>
                 </div>
                 <div className="chat-box__header-icons">
-                    <i className="bi bi-search" onClick={changeSearchState}></i>
-                    <i className="bi bi-sun-fill" onClick={toggleTheme} ref={modeIcon}></i>
+                    <div className="search-box">
+                        <i className="bi bi-search" onClick={changeSearchState}></i>
+                    </div>
+                    <div className="theme-box">
+                        <i className="bi bi-sun-fill" onClick={toggleTheme} ref={modeIcon}></i>
+                    </div>
                 </div>
                 {isSearch ? <div className="chat-box__header-searchview">
-                    <input type="text" onChange={handleSearchInputChange} placeholder="Search..." />
-                    <div>{searchIndex+1}/{matchingMessages.length}</div>
+                    <input type="text" onChange={handleSearchInputChange} placeholder="Search..."/>
+                    <div>{searchIndex + 1}/{matchingMessages.length}</div>
                     <i className="bi bi-arrow-up" onClick={upDataSearch}></i>
                     <i className="bi bi-arrow-down" onClick={downDataSearch}></i>
                     <i className="bi bi-x-lg" onClick={changeSearchState}></i>
@@ -497,7 +510,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
 
             <div className="chat-box__content" ref={contentRef}>
                 {
-                    boxChatData && boxChatData.slice().reverse()
+                    boxChatData && boxChatData.slice()
                         .filter((chatData) => chatData.mes.trim().length > 0)
                         .map((chatData) => {
                             return (username === chatData.name
@@ -507,7 +520,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                                         message={chatData}
                                         theme={theme}
                                         filterKeyword={messagesSearchKeyword}
-                                        idMess = {chatData.id+""}
+                                        idMess={chatData.id + ""}
                                     />
                                     :
                                     <Message
@@ -515,7 +528,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                                         message={chatData}
                                         theme={theme}
                                         filterKeyword={messagesSearchKeyword}
-                                        idMess = {chatData.id+""}
+                                        idMess={chatData.id + ""}
                                     />
                             )
                         })
@@ -546,54 +559,52 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                             </div>
                         ))}
                     </div>
-                    <div className="chat-box__footer-typing">
-                        <input
-                            type="text"
-                            placeholder="Type a message..."
-                            value={message}
-                            onKeyDown={handleKeyPress}
-                            onChange={handleTypeMessage}
-                        />
+                    <input
+                        type="text"
+                        placeholder="Type a message..."
+                        value={message}
+                        onKeyDown={handleKeyPress}
+                        onChange={handleTypeMessage}
+                    />
 
-                        <div className="emoji" onKeyDown={handleKeyPress}>
-                            <i className="bi bi-emoji-smile" onClick={emojiOpenHandler}></i>
-                            <div className="emoji-picker">
-                                <EmojiPicker
-                                    open={emojiOpened}
-                                    onEmojiClick={emojiHandler}
-                                />
-                            </div>
+                    <div className="emoji" onKeyDown={handleKeyPress}>
+                        <i className="bi bi-emoji-smile" onClick={emojiOpenHandler}></i>
+                        <div className="emoji-picker">
+                            <EmojiPicker
+                                open={emojiOpened}
+                                onEmojiClick={emojiHandler}
+                            />
                         </div>
-
-                        <input
-                            type="file"
-                            accept="image/*,video/*"
-                            onChange={handleMediaChange}
-                            id="mediaInput"
-                            style={{display: 'none'}}
-                        />
-
-                        <input
-                            type="file"
-                            accept=".txt,.bat"
-                            onChange={handleFileChange}
-                            id="fileIn"
-                            style={{display: 'none'}}
-                        />
-
-                        <label htmlFor="mediaInput">
-                            <i className="bi bi-image"></i>
-                        </label>
-
-                        <label htmlFor="fileIn">
-                            <i className="bi bi-paperclip"></i>
-                        </label>
-
-                        <button className="send-button" onClick={handleSendMessage}>
-                            Send
-                            <i className="bi bi-arrow-right-circle-fill"></i>
-                        </button>
                     </div>
+
+                    <input
+                        type="file"
+                        accept="image/*,video/*"
+                        onChange={handleMediaChange}
+                        id="mediaInput"
+                        style={{display: 'none'}}
+                    />
+
+                    <input
+                        type="file"
+                        accept=".txt,.bat"
+                        onChange={handleFileChange}
+                        id="fileIn"
+                        style={{display: 'none'}}
+                    />
+
+                    <label htmlFor="mediaInput">
+                        <i className="bi bi-image"></i>
+                    </label>
+
+                    <label htmlFor="fileIn">
+                        <i className="bi bi-paperclip"></i>
+                    </label>
+
+                    <button className="send-button" onClick={handleSendMessage}>
+                        Send
+                        <i className="bi bi-arrow-right-circle-fill"></i>
+                    </button>
                 </div>
             </div>
         </div>

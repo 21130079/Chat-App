@@ -3,7 +3,7 @@ import "./chat-list-light-theme.scss";
 import "./chat-list-dark-theme.scss";
 import userImg from '../../assets/images/user.png';
 import groupImg from '../../assets/images/group.png';
- import myAvt from '../../assets/images/myAvt.png';
+import myAvt from '../../assets/images/myAvt.png';
 import classNames from 'classnames';
 import {
     logout,
@@ -166,10 +166,12 @@ function ChatList({
                             <div className="dropdown-item" onClick={handleOpenAddFriend}><i
                                 className="bi bi-person-add"></i> Add Friend
                             </div>
-                            <div className="dropdown-item" onClick={handleOpenAddGroup}><i className="bi bi-people"></i> Add
+                            <div className="dropdown-item" onClick={handleOpenAddGroup}><i
+                                className="bi bi-people"></i> Add
                                 Group
                             </div>
-                            <div className="dropdown-item" onClick={handleLogout}><i className="bi bi-box-arrow-right"></i> Logout
+                            <div className="dropdown-item" onClick={handleLogout}><i
+                                className="bi bi-box-arrow-right"></i> Logout
                             </div>
                         </div>
                     )}
@@ -184,10 +186,13 @@ function ChatList({
                     <input type="text" placeholder={isAddingFriend ? " Input People Name" : " Input Group Name"}
                            onChange={handleAddInput} value={addText}/>
                     {!isAddingFriend &&
-                        <button className="join" title="Join" onClick={handleJoinClick}><i className="bi bi-arrow-right-circle"></i>
+                        <button className="join" title="Join" onClick={handleJoinClick}><i
+                            className="bi bi-arrow-right-circle"></i>
                         </button>}
-                    <button className="add" title="Add" onClick={handleAddClick}><i className="bi bi-plus-circle"></i></button>
-                    <button className="cancel" title="Cancel" onClick={handleCloseAdd}><i className="bi bi-x-circle"></i></button>
+                    <button className="add" title="Add" onClick={handleAddClick}><i className="bi bi-plus-circle"></i>
+                    </button>
+                    <button className="cancel" title="Cancel" onClick={handleCloseAdd}><i
+                        className="bi bi-x-circle"></i></button>
                 </div>)}
 
 
@@ -195,7 +200,7 @@ function ChatList({
                 {filteredUsers.map((user, index) => (
                     <div
                         key={index}
-                        className={classNames('chat-list__content-user', { 'activeUser': selectedUser?.name === user.name })}
+                        className={classNames('chat-list__content-user', {'activeUser': selectedUser?.name === user.name})}
                         id={user.name}
                         onClick={() => handleSelectUser(user)}
                     >

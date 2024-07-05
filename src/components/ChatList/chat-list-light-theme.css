@@ -6,7 +6,7 @@
   max-width: 400px;
   border-radius: 10px 0 0 0;
   color: black;
-  border-right: 1px solid #ebeaf0;
+  border-right: 1px solid #e5e5e5;
 }
 .chat-list.light-theme .chat-list__header {
   display: flex;
@@ -25,7 +25,6 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: black 1px solid;
   object-fit: cover;
 }
 .chat-list.light-theme .chat-list__header .chat-list__header-user .info {
@@ -46,10 +45,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  border: 1px solid black;
+  background-color: #e4e6eb;
+}
+.chat-list.light-theme .chat-list__header .chat-list__header-icons:hover {
+  background-color: #d8dadf;
 }
 .chat-list.light-theme .chat-list__header .chat-list__header-icons i {
   font-size: 20px;
@@ -80,7 +82,7 @@
   cursor: pointer;
 }
 .chat-list.light-theme .chat-list__header .chat-list__header-icons .dropdown-menu .dropdown-item:hover {
-  background-color: #dddddd;
+  background-color: #d8dadf;
 }
 .chat-list.light-theme .chat-list__header .chat-list__header-icons .dropdown-menu .dropdown-divider {
   height: 1px;
@@ -176,7 +178,6 @@
   justify-content: center;
   display: grid;
   border-radius: 50%;
-  background-color: black;
 }
 .chat-list.light-theme .chat-list__content .chat-list__content-user .avatar img {
   width: 35px;
@@ -205,12 +206,11 @@
   justify-self: right;
 }
 .chat-list.light-theme .chat-list__content .chat-list__content-user:hover {
-  background-color: rgba(255, 255, 252, 0.6);
+  background-color: #d8dadf;
   color: black;
   cursor: pointer;
 }
-
-.activeUser {
+.chat-list.light-theme .activeUser {
   background-color: cadetblue;
 }
 

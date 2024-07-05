@@ -32,13 +32,13 @@ interface MessageProps {
     message: Message | null;
     theme?: string | null | undefined;
     filterKeyword: string;
-    idMess:string
+    idMess: string;
 }
 
 function Message({message, theme, filterKeyword, idMess}: MessageProps) {
     const [mes, setMes] = useState<any>();
     const timeRef = useRef<HTMLDivElement>(null);
-    let hoverTimer: NodeJS.Timeout;
+    const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const fetchData = async (idMes: string) => {
@@ -52,11 +52,15 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
             }
         }
 
-        const processMessage = (msg :Message) => {
+        const processMessage = (msg: Message) => {
             if (isJsonString(msg.mes)) {
                 const mesData = JSON.parse(msg.mes);
                 if (!mesData.idMes || mesData.idMes === "") {
-                    setMes(mesData.message);
+                    if (!mesData.message || mesData.message === "") {
+                        setMes(msg.mes);
+                    } else {
+                        setMes(mesData.message);
+                    }
                 } else {
                     fetchData(mesData.idMes);
                 }
@@ -73,8 +77,10 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
     useEffect(() => {
         const highlightText = (text: string, term: string) => {
             if (!term) return text;
+
             const regex = new RegExp(`(${term})`, 'gi');
             const parts = text.split(regex);
+
             return parts.map((part, index) =>
                 part.toLowerCase() === term.toLowerCase() ? <span key={index} className="highlight">{part}</span> : part
             );
@@ -89,18 +95,28 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
         }
     }, [filterKeyword, message?.mes]);
 
+    useEffect(() => {
+        return () => {
+            if (hoverTimer) {
+                clearTimeout(hoverTimer);
+            }
+        };
+    }, [hoverTimer]);
+
     const handleMouseEnter = () => {
-        hoverTimer = setTimeout(() => {
+        setHoverTimer(setTimeout(() => {
             if (timeRef.current) {
                 timeRef.current.style.display = 'flex';
             }
-        }, 500)
+        }, 500));
     }
 
     const handleMouseLeave = () => {
         if (hoverTimer) {
             clearTimeout(hoverTimer);
+            setHoverTimer(null);
         }
+
         if (timeRef.current) {
             timeRef.current.style.display = 'none';
         }
@@ -150,10 +166,12 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
                      id={idMess}
                      onMouseEnter={handleMouseEnter}
                      onMouseLeave={handleMouseLeave}>
+
                     {mes && <div className="message-line">
                         <img className="avatar" src={userImg} alt=""/>
                         <div className="mess">{mes}</div>
                     </div>}
+
                     {medias && medias.length > 0 && (
                         <div className="media-container">
                             <div className="media-item">

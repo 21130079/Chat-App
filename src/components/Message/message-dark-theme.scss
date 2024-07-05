@@ -1,5 +1,6 @@
 $messageColor: #33353b;
 $mainTextColor: #e0e0e0;
+$borderImgColor: #7e7e7e;
 
 .message-container.dark-theme {
   max-width: 70%;
@@ -9,7 +10,7 @@ $mainTextColor: #e0e0e0;
   .message-author {
     display: flex;
     font-size: 13px;
-    padding-left: 55px;
+    padding-left: 50px;
     height: 20px;
   }
 
@@ -69,6 +70,7 @@ $mainTextColor: #e0e0e0;
             aspect-ratio: 1 / 1;
             border-radius: 10px;
             background-color: $messageColor;
+            border: 1px solid $borderImgColor;
           }
 
           .avatar {

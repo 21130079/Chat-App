@@ -6,7 +6,7 @@
 .message-container.light-theme .message-author {
   display: flex;
   font-size: 13px;
-  padding-left: 55px;
+  padding-left: 50px;
   height: 20px;
 }
 .message-container.light-theme .message-content {
@@ -62,6 +62,7 @@
   aspect-ratio: 1/1;
   border-radius: 10px;
   background-color: white;
+  border: 1px solid #7e7e7e;
 }
 .message-container.light-theme .message-content .main-message .media-container .media-item .avatar {
   width: 30px;
