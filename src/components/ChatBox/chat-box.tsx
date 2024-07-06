@@ -71,7 +71,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
     const [messagesSearchKeyword, setMessagesSearchKeyword] = useState<string>("");
     const [searchIndex, setSearchIndex] = useState<number>(0); // Initialize with 0 to avoid out-of-bound issues
     const [matchingMessages, setMatchingMessages] = useState<Message[]>([]);
-
+    const [footerContainerHeight, setFooterContainerHeight] = useState<string>('50px');
+    const [footerInputHeight, setFooterInputHeight] = useState<string>('30px');
 
     useEffect(() => {
         scrollToBottom();
@@ -303,6 +304,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                     file
                 }]);
             };
+            setFooterContainerHeight('120px');
+            setFooterInputHeight('100px');
             clearInputFile();
         }
     };
@@ -330,6 +333,10 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             newArray.splice(index, 1);
             return newArray;
         });
+        if(index === 0){
+            setFooterContainerHeight('50px');
+            setFooterInputHeight('30px');
+        }
         clearInputFile()
     };
 
@@ -339,6 +346,10 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             newArray.splice(index, 1);
             return newArray;
         });
+        if(index === 0){
+            setFooterContainerHeight('50px');
+            setFooterInputHeight('30px');
+        }
         clearInputFile()
     }
 
@@ -512,42 +523,47 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             </div>
 
             <div className="chat-box__footer">
-                <div className="chat-box__footer-container">
-                    <div className="chat-box__footer-file">
-                        {base64Medias.map((media, index) => (
-                            <div key={index}>
-                                <i className="bi bi-x-circle" onClick={() => handleCloseMedia(index)}></i>
-                                {
-                                    media.type === 0
-                                        ?
-                                        <img src={media.url} alt=""/>
-                                        :
-                                        <video src={media.url} controls/>
-                                }
-                            </div>
-                        ))}
-                        {fileIn.map((file, index) => (
-                            <div key={index}>
-                                <i className="bi bi-x-circle" onClick={() => handleCloseFile(index)}></i>
-                                {
-                                    <span>{file.file.name}</span>
-                                }
-                            </div>
-                        ))}
-                    </div>
-                    <div className="chat-box__footer-typing">
+                <div className="chat-box__footer-container" style={{height: footerContainerHeight}}>
+                    <div className="chat-box__footer-type" >
+                        <div className="chat-box__footer-file">
+                            {base64Medias.map((media, index) => (
+                                <div key={index}>
+                                    <i className="bi bi-x-circle" onClick={() => handleCloseMedia(index)}></i>
+                                    {
+                                        media.type === 0
+                                            ?
+                                            <img src={media.url} alt=""/>
+                                            :
+                                            <video src={media.url} controls/>
+                                    }
+                                </div>
+                            ))}
+                            {fileIn.map((file, index) => (
+                                <div key={index}>
+                                    <i className="bi bi-x-circle" onClick={() => handleCloseFile(index)}></i>
+                                    {
+                                        <div className="files">
+                                            <span>{file.file.name}</span>
+                                        </div>
+
+                                    }
+                                </div>
+                            ))}
+                        </div>
                         <input
                             type="text"
                             placeholder="Type a message..."
                             value={message}
+                            style={{height: footerInputHeight}}
                             onKeyPress={handleEnterMessage}
                             onChange={handleTypeMessage}
                         />
-
+                    </div>
+                    <div className="chat-box__footer-typing">
                         <div className="emoji">
                             <i className="bi bi-emoji-smile" onClick={emojiOpenHandler}></i>
                             <div className="emoji-picker">
-                                <EmojiPicker open={emojiOpened} onEmojiClick={emojiHandler}/>
+                            <EmojiPicker open={emojiOpened} onEmojiClick={emojiHandler}/>
                             </div>
                         </div>
 
@@ -580,6 +596,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                             <i className="bi bi-arrow-right-circle-fill"></i>
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>

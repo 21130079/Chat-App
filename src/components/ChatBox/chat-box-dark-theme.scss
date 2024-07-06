@@ -138,14 +138,14 @@ $mainTextColor: #e0e0e0;
 
     .chat-box__footer-container {
       display: flex;
-      align-items: center;
-      margin: auto 20px 20px;
+      //align-items: center;
+      //margin: auto 20px 20px;
       height: 50px;
-      border-radius: 7px;
+      //border-radius: 7px;
       background-color: $mainFooterColor;
-
+  .chat-box__footer-type{
       .chat-box__footer-file {
-        margin: 5px 20px;
+        //margin: 5px 20px;
         display: flex;
         align-items: start;
         column-gap: 10px;
@@ -158,6 +158,9 @@ $mainTextColor: #e0e0e0;
             max-height: 100px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
           }
+          .files{
+            background-color: #61dafb;
+          }
 
           i {
             justify-self: right;
@@ -169,28 +172,32 @@ $mainTextColor: #e0e0e0;
             z-index: 2;
           }
         }
+
       }
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    margin: 10px;
+    height: 30px;
+    width: 43vw;
+    font-size: 17px;
+    color: $mainTextColor;
+    background-color: $mainBoxChatColor;
+    border-radius: 10px;
+  }
+}
+
 
       .chat-box__footer-typing {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        height: 50px;
-
-        input {
-          flex: 1;
-          border: none;
-          outline: none;
-          margin: -15px;
-          width: 50vw;
-          font-size: 17px;
-          color: $mainTextColor;
-          background-color: $mainFooterColor;
-        }
+        margin-left: 20px;
 
         .emoji {
           position: relative;
-          margin-left: 20px;
+
 
           .emoji-picker {
             position: absolute;
