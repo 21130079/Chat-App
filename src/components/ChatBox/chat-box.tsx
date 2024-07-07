@@ -12,6 +12,8 @@ import OwnMessage from "../OwnMessage/OwnMessage";
 import EmojiPicker, {EmojiClickData} from "emoji-picker-react";
 import {db, storage} from "../firebase";
 import {doc, setDoc} from "firebase/firestore";
+import textImg from '../../assets/images/FileImg/text.png';
+import other from '../../assets/images/FileImg/other.png';
 
 import {
     checkUser,
@@ -72,7 +74,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
     const [searchIndex, setSearchIndex] = useState<number>(0); // Initialize with 0 to avoid out-of-bound issues
     const [matchingMessages, setMatchingMessages] = useState<Message[]>([]);
     const [footerContainerHeight, setFooterContainerHeight] = useState<string>('50px');
-    const [footerInputHeight, setFooterInputHeight] = useState<string>('30px');
 
     useEffect(() => {
         scrollToBottom();
@@ -227,6 +228,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                 }
             }
         }
+        setFooterContainerHeight('50px');
+
     }
 
     // upload len database
@@ -304,8 +307,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                     file
                 }]);
             };
-            setFooterContainerHeight('120px');
-            setFooterInputHeight('100px');
+            setFooterContainerHeight('160px');
             clearInputFile();
         }
     };
@@ -317,12 +319,13 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             reader.readAsDataURL(file);
             reader.onloadend = () => {
                 setFileIn(prev => [...prev, {
-                    type: file.name,
+                    type: file.type,
                     name: file.name,
                     url: reader.result as string,
                     file
                 }]);
             };
+            setFooterContainerHeight('110px');
             clearInputFile();
         }
     }
@@ -333,9 +336,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             newArray.splice(index, 1);
             return newArray;
         });
-        if(index === 0){
+        if(base64Medias.length === 1){
             setFooterContainerHeight('50px');
-            setFooterInputHeight('30px');
         }
         clearInputFile()
     };
@@ -346,9 +348,8 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
             newArray.splice(index, 1);
             return newArray;
         });
-        if(index === 0){
+        if(fileIn.length === 1){
             setFooterContainerHeight('50px');
-            setFooterInputHeight('30px');
         }
         clearInputFile()
     }
@@ -454,15 +455,27 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                 if (item.kind === 'file' ) {
                     const file = item.getAsFile();
                     if (file) {
-                        const mediaObj: Media = {
-                            url: URL.createObjectURL(file),
-                            file: file,
-                            type:  item.type.includes('image') ? 0: 1
-                        };
-                        setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
+                        // Kiểm tra nếu file là hình ảnh hoặc video
+                        if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+                            const mediaObj = {
+                                url: URL.createObjectURL(file),
+                                file: file,
+                                type: file.type.startsWith('image') ? 0 : 1
+                            };
+                            setFooterContainerHeight('160px')
+                            setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
+                        }if(file.name.endsWith('.txt') || file.name.endsWith('.bat')){
+                            const fileObj = {
+                                url: URL.createObjectURL(file),
+                                name: file.name,
+                                file: file,
+                                type: file.name.split('.').pop() as string
+                            };
+                            setFooterContainerHeight('110px')
+                            setFileIn(prevFiles => [...prevFiles, fileObj]);
+                        }
                     }
                 }
-                // Add handling for other types of media (e.g., videos)
             }
         };
 
@@ -528,7 +541,7 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                         <div className="chat-box__footer-file">
                             {base64Medias.map((media, index) => (
                                 <div key={index}>
-                                    <i className="bi bi-x-circle" onClick={() => handleCloseMedia(index)}></i>
+                                    <i className="bi bi-x-circle imedia" onClick={() => handleCloseMedia(index)}></i>
                                     {
                                         media.type === 0
                                             ?
@@ -540,9 +553,23 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                             ))}
                             {fileIn.map((file, index) => (
                                 <div key={index}>
-                                    <i className="bi bi-x-circle" onClick={() => handleCloseFile(index)}></i>
+                                    <i className="bi bi-x-circle ifile" onClick={() => handleCloseFile(index)}></i>
                                     {
                                         <div className="files">
+                                            <img src={
+                                                (() => {
+                                                    try {
+                                                        switch (file.type) {
+                                                            case 'txt':
+                                                                return textImg;
+                                                            default:
+                                                                return other;
+                                                        }
+                                                    } catch (error) {
+                                                        return other;
+                                                    }
+                                                })()
+                                            }/>
                                             <span>{file.file.name}</span>
                                         </div>
 
@@ -554,7 +581,6 @@ function ChatBox({user, setIsMessageChange, isMessageChange, theme, setTheme, ne
                             type="text"
                             placeholder="Type a message..."
                             value={message}
-                            style={{height: footerInputHeight}}
                             onKeyPress={handleEnterMessage}
                             onChange={handleTypeMessage}
                         />

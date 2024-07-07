@@ -128,15 +128,7 @@
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div {
   display: grid;
 }
-.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div img, .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div video {
-  margin-top: 10px;
-  max-height: 100px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-}
-.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div .files {
-  background-color: #61dafb;
-}
-.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div i {
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div .imedia {
   justify-self: right;
   position: absolute;
   margin-top: 8px;
@@ -144,6 +136,34 @@
   font-size: 22px;
   cursor: pointer;
   z-index: 2;
+}
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div img, .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div video {
+  margin-top: 10px;
+  max-height: 100px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div .ifile {
+  justify-self: right;
+  position: absolute;
+  margin-top: -3px;
+  margin-right: -10px;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 2;
+}
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div .files {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  margin-top: 20px;
+  max-height: 100px;
+  max-width: 200px;
+  background-color: #3f4148;
+  color: #e0e0e0;
+}
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type .chat-box__footer-file div .files img {
+  margin: 0;
+  height: 30px;
 }
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-type input {
   flex: 1;
