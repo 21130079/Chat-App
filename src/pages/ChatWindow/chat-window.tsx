@@ -15,29 +15,7 @@ interface User {
     firstMess: string;
 }
 
-interface BoxChat {
-    name: string;
-    type: string;
-}
-
-interface BoxChatData {
-    id: string;
-    owner: string;
-    name: string;
-    type: string;
-    actionTime: string;
-}
-
-interface ChatData {
-    id: string;
-    name: string;
-    to: string;
-    type: string;
-    mes: string;
-    createAt: string;
-}
-
-const intialUser =() =>{
+const initialUser =() =>{
     return {
         name: '',
         type: 0,
@@ -48,13 +26,13 @@ const intialUser =() =>{
 
 function ChatWindow() {
     const [users, setUsers] = useState<User[]>([]);
-    const [selectedUser, setSelectedUser] = useState<User>(intialUser);
+    const [selectedUser, setSelectedUser] = useState<User>(initialUser);
     const [isMessageChange, setIsMessageChange] = useState<boolean>(false);
     const [theme, setTheme] = useState<string | null>("light-theme");
     const base64LoginInfo: string = localStorage.getItem("user") ?? '';
     const decodedLoginInfo: string = atob(base64LoginInfo);
     const userInfo = JSON.parse(decodedLoginInfo);
-    const [ newMessages, setNewMessages] = useState<Array<string>>([]);
+    const [newMessages, setNewMessages] = useState<Array<string>>([]);
 
     let userTheme = localStorage.getItem('theme') ?? 'light-theme';
     if (userTheme !== theme) {
@@ -62,6 +40,8 @@ function ChatWindow() {
     }
 
     useEffect(() => {
+        setByTheme();
+
         setTimeout(() => {
             if (ws) {
                 getUserList();
@@ -112,6 +92,14 @@ function ChatWindow() {
             }
         }, 200);
     }, []);
+
+    const setByTheme = () => {
+        if (theme === "light-theme") {
+            document.body.style.backgroundColor = "#ebeaf0";
+        } else {
+            document.body.style.backgroundColor = "#1e1f22";
+        }
+    }
 
     const handleUserSelect = (user: User) => {
         setSelectedUser(user);

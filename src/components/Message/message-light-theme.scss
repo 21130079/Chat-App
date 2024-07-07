@@ -1,4 +1,6 @@
 $messageColor: white;
+$mainTextColor: black;
+$borderImgColor: #7e7e7e;
 
 .message-container.light-theme {
   max-width: 70%;
@@ -8,26 +10,25 @@ $messageColor: white;
   .message-author {
     display: flex;
     font-size: 13px;
-    margin-left: 10px;
+    padding-left: 50px;
     height: 20px;
   }
 
   .message-content {
     display: flex;
     align-items: center;
-    margin-bottom: -10px;
+    padding-bottom: 10px;
 
     .main-message {
       display: grid;
-      align-items: center;
 
       .message-line {
         display: flex;
         justify-self: left;
-        padding: 20px 5px 5px 5px;
         width: fit-content;
         flex-direction: row;
         max-width: 500px;
+        align-items: flex-end;
 
         .mess {
           display: flex;
@@ -37,7 +38,9 @@ $messageColor: white;
           border-radius: 10px;
           padding: 5px 10px 5px 10px;
           -webkit-box-shadow: -4px 4px 5px 0px rgba(0, 0, 0, 0.4);
+          color: $mainTextColor;
           background-color: $messageColor;
+
           .highlight {
             background-color: lightseagreen;
             justify-self: left;
@@ -52,50 +55,77 @@ $messageColor: white;
         }
       }
 
-      .media {
+      .media-container {
         background-color: transparent;
-        box-shadow: none;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        max-width: 300px;
-        min-height: 100px;
-        width: 300px;
+        grid-template-columns: 40px 150px 150px 150px 150px;
+        gap: 10px 5px;
+        direction: ltr;
 
-        .send-image,.send-video{
-          width: 100%;
-          height:100%;
-          aspect-ratio: 1 / 1;
-          transition: all 0.3s ease;
-          object-fit: contain;
-          box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-          -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-          -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        }}
+        .media-item {
+          .send-image, .send-video {
+            width: 150px;
+            height: 150px;
+            transition: all 0.3s ease;
+            object-fit: contain;
+            -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+            aspect-ratio: 1 / 1;
+            border-radius: 10px;
+            background-color: $messageColor;
+            border: 1px solid $borderImgColor;
+          }
 
-      .file {
-        display:flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 10px;
-        border-radius: 10px;
-        margin: 10px 0;
-        box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        -moz-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
-        text-decoration: none;
+          .avatar {
+            width: 30px;
+            height: 30px;
+          }
 
-        a{
-          margin-bottom: 10px;
-        }
+          &:first-child {
+            display: flex;
+            align-items: flex-end;
+            width: fit-content;
+          }
 
-        img{
-          max-width: 30px;
-          max-height: 30px;
+          &:nth-child(6) {
+            grid-column: 2 ;
+          }
         }
       }
-      margin-bottom: 20px;
+
+      .file-container {
+        display: flex;
+        justify-self: left;
+        width: fit-content;
+        flex-direction: row;
+        align-items: flex-end;
+
+        .avatar {
+          width: 30px;
+          height: 30px;
+          margin-right: 10px;
+        }
+
+        .file {
+          padding: 10px;
+          border-radius: 10px;
+          text-decoration: none;
+          -webkit-box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);
+          background-color: $messageColor;
+
+          a {
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: $mainTextColor;
+          }
+
+          img {
+            max-width: 30px;
+            max-height: 30px;
+          }
+        }
+      }
     }
+
     .time-message {
       display: none;
 

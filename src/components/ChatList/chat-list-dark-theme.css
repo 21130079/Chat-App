@@ -19,12 +19,12 @@
   flex: 1;
   display: flex;
   background-color: #2b2d30;
+  align-items: center;
 }
 .chat-list.dark-theme .chat-list__header .chat-list__header-user img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: black 1px solid;
   object-fit: cover;
 }
 .chat-list.dark-theme .chat-list__header .chat-list__header-user .info {
@@ -33,8 +33,9 @@
   align-items: flex-start;
   padding: 0 10px;
 }
-.chat-list.dark-theme .chat-list__header .chat-list__header-user .info h4 {
+.chat-list.dark-theme .chat-list__header .chat-list__header-user .info h6 {
   display: flex;
+  padding-top: 6px;
   font-weight: bold;
 }
 .chat-list.dark-theme .chat-list__header .chat-list__header-user .info .status {
@@ -44,10 +45,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  border: 2px solid #e0e0e0;
+  background-color: #3a3b3c;
+}
+.chat-list.dark-theme .chat-list__header .chat-list__header-icons:hover {
+  background-color: #4e4f50;
 }
 .chat-list.dark-theme .chat-list__header .chat-list__header-icons i {
   font-size: 20px;
@@ -78,7 +82,7 @@
   cursor: pointer;
 }
 .chat-list.dark-theme .chat-list__header .chat-list__header-icons .dropdown-menu .dropdown-item:hover {
-  background-color: #60636e;
+  background-color: #4e4f50;
 }
 .chat-list.dark-theme .chat-list__header .chat-list__header-icons .dropdown-menu .dropdown-divider {
   height: 1px;
@@ -95,9 +99,12 @@
 .chat-list.dark-theme .chat-list__search input {
   flex: 1;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 20px;
   height: 4vh;
   outline: none;
+  color: #e0e0e0;
+  border: 1px solid #3f4148;
+  background-color: #2b2d30;
 }
 .chat-list.dark-theme .chat-list__search i {
   font-size: 1.4rem;
@@ -156,12 +163,10 @@
   display: grid;
   grid-template-columns: 1fr 4fr 1fr;
   align-items: center;
-  border-radius: 10px;
-  margin-bottom: 5px;
+  border-radius: 7px;
   padding: 0 20px;
   min-width: 200px;
   min-height: 70px;
-  height: 70px;
   width: 100%;
   overflow: hidden;
   background-color: #2b2d30;
@@ -201,7 +206,7 @@
   justify-self: right;
 }
 .chat-list.dark-theme .chat-list__content .chat-list__content-user:hover {
-  background-color: #60636e;
+  background-color: #4e4f50;
   color: #e0e0e0;
   cursor: pointer;
 }
