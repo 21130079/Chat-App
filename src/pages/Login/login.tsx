@@ -178,14 +178,7 @@ function SignupForm() {
                 name="username"
             />
             <br/><br/>
-            <input
-                type="email"
-                required={true}
-                placeholder="Email"
-                className="input-field"
-                name="email"
-            />
-            <br/><br/>
+
             <input
                 type="password"
                 placeholder="Password"
