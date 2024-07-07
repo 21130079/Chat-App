@@ -3,6 +3,8 @@ $mainHeaderColor: #2b2d30;
 $mainFooterColor: #2b2d30;
 $mainBoxChatColor: #3f4148;
 $mainTextColor: #e0e0e0;
+$iconBackgroundColor: #3a3b3c;
+$hoverColor: #4e4f50;
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -26,13 +28,13 @@ $mainTextColor: #e0e0e0;
   height: 100%;
   border-radius: 0 10px 10px 0;
   color: $mainTextColor;
-  overflow-y: scroll;
+  overflow: auto;
   border-left: 1px solid $mainBackgroundColor;
 
   .chat-box__header {
     display: flex;
     align-items: center;
-    padding: 5px 30px;
+    padding: 10px 30px;
     border-radius: 0 10px 0 0;
     position: relative;
 
@@ -46,8 +48,8 @@ $mainTextColor: #e0e0e0;
       background-color: $mainHeaderColor;
 
       img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 1%;
         object-fit: cover;
       }
@@ -76,12 +78,25 @@ $mainTextColor: #e0e0e0;
       justify-content: flex-end;
       align-items: center;
       column-gap: 10%;
-
       background-color: $mainHeaderColor;
 
-      i {
-        font-size: 1.4rem;
+      .search-box, .theme-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
         cursor: pointer;
+        background-color: $iconBackgroundColor;
+
+        &:hover {
+          background-color: $hoverColor;
+        }
+
+        i {
+          font-size: 1.2rem;
+        }
       }
 
       .bi-search {
@@ -128,11 +143,11 @@ $mainTextColor: #e0e0e0;
   }
 
   .chat-box__content {
-    padding: 20px;
+    padding: 0 20px 10px 20px;
     flex: 1;
     overflow-y: scroll;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
 
     background-color: $mainBoxChatColor;
   }
@@ -202,9 +217,7 @@ $mainTextColor: #e0e0e0;
               }
             }
 
-
           }
-
         }
 
         input {
@@ -231,34 +244,32 @@ $mainTextColor: #e0e0e0;
         .emoji {
           position: relative;
 
-
-          .emoji-picker {
-            position: absolute;
-            bottom: 40px;
-            right: 0;
-          }
+        .emoji-picker {
+          position: absolute;
+          bottom: 40px;
+          right: 0;
         }
+      }
+
+      i {
+        display: flex;
+        font-size: 1.4rem;
+        padding: 0 10px;
+        cursor: pointer;
+      }
+
+      .send-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 20px;
+        border-radius: 10px;
+        border: none;
+        color: $mainTextColor;
+        background-color: $mainBoxChatColor;
 
         i {
-          display: flex;
           font-size: 1.4rem;
-          margin: 0 5px;
-          cursor: pointer;
-        }
-
-        .send-button {
-          display: inline-flex;
-          align-items: flex-end;
-          padding: 5px 20px;
-          margin: 0 20px;
-          border-radius: 10px;
-          border: none;
-          color: $mainTextColor;
-          background-color: $mainBoxChatColor;
-
-          i {
-            font-size: 1.4rem;
-          }
         }
       }
     }

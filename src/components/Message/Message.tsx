@@ -1,4 +1,3 @@
-import typing from "../../assets/images/typing.gif";
 import userImg from '../../assets/images/user.png';
 import React, {useEffect, useRef, useState} from "react";
 import './message-light-theme.scss'
@@ -33,13 +32,13 @@ interface MessageProps {
     message: Message | null;
     theme?: string | null | undefined;
     filterKeyword: string;
-    idMess:string
+    idMess: string;
 }
 
 function Message({message, theme, filterKeyword, idMess}: MessageProps) {
     const [mes, setMes] = useState<any>();
     const timeRef = useRef<HTMLDivElement>(null);
-    let hoverTimer: NodeJS.Timeout;
+    const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const fetchData = async (idMes: string) => {
@@ -48,18 +47,24 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
             if (docSnap.exists()) {
                 const iconMes = docSnap.data();
                 setMes(iconMes.mes);
+            } else {
+                setMes(message?.mes);
             }
         }
 
-        const processMessage = (msg :Message) => {
-            try {
+        const processMessage = (msg: Message) => {
+            if (isJsonString(msg.mes)) {
                 const mesData = JSON.parse(msg.mes);
-                if (!mesData.idMes || mesData.idMes ==="") {
-                    setMes(mesData.message);
+                if (!mesData.idMes || mesData.idMes === "") {
+                    if (!mesData.message || mesData.message === "") {
+                        setMes(msg.mes);
+                    } else {
+                        setMes(mesData.message);
+                    }
                 } else {
                     fetchData(mesData.idMes);
                 }
-            } catch (error)  {
+            } else {
                 setMes(msg.mes);
             }
         };
@@ -72,36 +77,46 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
     useEffect(() => {
         const highlightText = (text: string, term: string) => {
             if (!term) return text;
-            console.log(term);
+
             const regex = new RegExp(`(${term})`, 'gi');
             const parts = text.split(regex);
+
             return parts.map((part, index) =>
                 part.toLowerCase() === term.toLowerCase() ? <span key={index} className="highlight">{part}</span> : part
             );
         };
 
-        try {
-            if (message?.mes) {
-                const parsedMessage = JSON.parse(message.mes);
-                const highlighted = highlightText(parsedMessage.message, filterKeyword);
-                setMes(highlighted);
-            }
-        } catch (error) {
+        if (message?.mes && isJsonString(message?.mes)) {
+            const parsedMessage = JSON.parse(message.mes);
+            const highlighted = highlightText(parsedMessage.message, filterKeyword);
+            setMes(highlighted);
+        } else {
+            setMes(message?.mes);
         }
-    }, [message, filterKeyword]);
+    }, [filterKeyword, message?.mes]);
+
+    useEffect(() => {
+        return () => {
+            if (hoverTimer) {
+                clearTimeout(hoverTimer);
+            }
+        };
+    }, [hoverTimer]);
 
     const handleMouseEnter = () => {
-        hoverTimer = setTimeout(() => {
+        setHoverTimer(setTimeout(() => {
             if (timeRef.current) {
                 timeRef.current.style.display = 'flex';
             }
-        }, 500)
+        }, 500));
     }
 
     const handleMouseLeave = () => {
         if (hoverTimer) {
             clearTimeout(hoverTimer);
+            setHoverTimer(null);
         }
+
         if (timeRef.current) {
             timeRef.current.style.display = 'none';
         }
@@ -131,6 +146,14 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
         }
     })();
 
+    const isJsonString = (str: string) => {
+        try {
+            const parsedString = JSON.parse(str);
+            return (typeof parsedString === 'object') && (parsedString !== null) && (!Array.isArray(parsedString));
+        } catch (e) {
+            return false;
+        }
+    }
 
     return (
         <div className={`message-container ${theme}`}>
@@ -143,44 +166,57 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
                      id={idMess}
                      onMouseEnter={handleMouseEnter}
                      onMouseLeave={handleMouseLeave}>
+
                     {mes && <div className="message-line">
                         <img className="avatar" src={userImg} alt=""/>
                         <div className="mess">{mes}</div>
                     </div>}
+
                     {medias && medias.length > 0 && (
-                        <div className="media">
+                        <div className="media-container">
+                            <div className="media-item">
+                                <img className="avatar" src={userImg} alt=""/>
+                            </div>
+
                             {medias.map((media, index) => (
                                 media.type === 0 ? (
-                                    <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                                    <div key={index} className="media-item">
+                                        <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                                    </div>
                                 ) : (
-                                    <video key={index} className="send-video" src={media.url} controls/>
+                                    <div key={index} className="media-item">
+                                        <video key={index} className="send-video" src={media.url} controls/>
+                                    </div>
                                 )
                             ))}
                         </div>
                     )}
                     {files && files.length > 0 && (
-                        <div className="file">
-                            {files.map((file, index) => (
-                                <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
-                                   download={file.name}
-                                   className="send-file">
-                                    <img src={
-                                        (() => {
-                                            try {
-                                                switch (file.name.split('.').pop()) {
-                                                    case 'txt':
-                                                        return textImg;
-                                                    default:
-                                                        return other;
+                        <div className="file-container">
+                            <img className="avatar" src={userImg} alt=""/>
+                            <div className="file">
+                                {files.map((file, index) => (
+                                    <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
+                                       download={file.name}
+                                       className="send-file">
+                                        <img src={
+                                            (() => {
+                                                try {
+                                                    switch (file.name.split('.').pop()) {
+                                                        case 'txt':
+                                                            return textImg;
+                                                        default:
+                                                            return other;
+                                                    }
+                                                } catch (error) {
+                                                    return other;
                                                 }
-                                            } catch (error) {
-                                                return other;
-                                            }
-                                        })()
-                                    }/>
-                                    {file.name}
-                                </a>
-                            ))}
+                                            })()
+                                        } alt={file.name}/>
+                                        {file.name}
+                                    </a>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>
@@ -194,7 +230,5 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
         </div>
     )
 }
-
-
 
 export default Message;

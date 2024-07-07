@@ -3,10 +3,11 @@ $mainBodyColor: #3f4148;
 $mainHeaderColor: #2b2d30;
 $mainListChatColor: #2b2d30;
 $mainTextColor: #e0e0e0;
-$hoverColor: #60636e;
+$hoverColor: #4e4f50;
 $addColor: #8bff38;
 $joinColor: #38a9ff;
 $cancelColor: #fa5353;
+$iconBackgroundColor: #3a3b3c;
 
 .chat-list.dark-theme {
   flex: 1;
@@ -29,12 +30,12 @@ $cancelColor: #fa5353;
       flex: 1;
       display: flex;
       background-color: $mainHeaderColor;
+      align-items: center;
 
       img {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        border: black 1px solid;
         object-fit: cover;
       }
 
@@ -44,8 +45,9 @@ $cancelColor: #fa5353;
         align-items: flex-start;
         padding: 0 10px;
 
-        h4 {
+        h6 {
           display: flex;
+          padding-top: 6px;
           font-weight: bold;
         }
 
@@ -60,10 +62,14 @@ $cancelColor: #fa5353;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 25px;
-      height: 25px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
-      border: 2px solid $mainTextColor;
+      background-color: $iconBackgroundColor;
+
+      &:hover {
+        background-color: $hoverColor;
+      }
 
       i {
         font-size: 20px;
@@ -118,9 +124,12 @@ $cancelColor: #fa5353;
     input {
       flex: 1;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 20px;
       height: 4vh;
       outline: none;
+      color: $mainTextColor;
+      border: 1px solid $mainBodyColor;
+      background-color: $mainHeaderColor;
     }
 
     i {
@@ -128,7 +137,8 @@ $cancelColor: #fa5353;
       cursor: pointer;
     }
   }
-  .chat-list__add{
+
+  .chat-list__add {
     display: flex;
     align-items: center;
     padding: 10px 20px;
@@ -148,21 +158,23 @@ $cancelColor: #fa5353;
       cursor: pointer;
     }
 
-    .add{
+    .add {
       width: 40px;
       height: 40px;
       border: none;
       background-color: $addColor;
       margin: 5px;
     }
-    .join{
+
+    .join {
       width: 40px;
       height: 40px;
       border: none;
       background-color: $joinColor;
       margin-left: 5px;
     }
-    .cancel{
+
+    .cancel {
       width: 40px;
       height: 40px;
       border: none;
@@ -181,19 +193,16 @@ $cancelColor: #fa5353;
     height: 80vh;
     overflow-y: scroll;
     row-gap: 10px;
-
     background-color: $mainBodyColor;
 
     .chat-list__content-user {
       display: grid;
       grid-template-columns: 1fr 4fr 1fr;
       align-items: center;
-      border-radius: 10px;
-      margin-bottom: 5px;
+      border-radius: 7px;
       padding: 0 20px;
       min-width: 200px;
       min-height: 70px;
-      height: 70px;
       width: 100%;
       overflow: hidden;
       background-color: $mainListChatColor;
@@ -206,7 +215,7 @@ $cancelColor: #fa5353;
         display: grid;
         border-radius: 50%;
 
-        img{
+        img {
           width: 35px;
           height: 35px;
           border-radius: 50%;
@@ -215,7 +224,7 @@ $cancelColor: #fa5353;
         }
       }
 
-      .time-message{
+      .time-message {
         justify-self: right;
       }
 
@@ -239,7 +248,7 @@ $cancelColor: #fa5353;
         }
       }
 
-      .time-message{
+      .time-message {
         justify-self: right;
       }
     }
@@ -250,7 +259,8 @@ $cancelColor: #fa5353;
       cursor: pointer;
     }
   }
-  .activeUser{
+
+  .activeUser {
     background-color: cadetblue;
   }
 }
