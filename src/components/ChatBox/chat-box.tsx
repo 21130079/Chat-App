@@ -11,6 +11,8 @@ import OwnMessage from "../OwnMessage/OwnMessage";
 import EmojiPicker, {EmojiClickData} from "emoji-picker-react";
 import {db, storage} from "../firebase";
 import {doc, setDoc} from "firebase/firestore";
+import textImg from '../../assets/images/FileImg/text.png';
+import other from '../../assets/images/FileImg/other.png';
 
 import {
     checkUser,
@@ -481,6 +483,14 @@ function ChatBox({
         }
     };
 
+    const handleImgForFile = (fileType: string) => {
+        if (fileType === 'txt') {
+            return textImg;
+        } else {
+            return other;
+        }
+    }
+
     return (
         <div className={`chat-box ${theme}`}>
             <div className="chat-box__header">
@@ -539,7 +549,7 @@ function ChatBox({
                 <div className="chat-box__footer-container">
                     <div className="chat-box__footer-file">
                         {base64Medias.map((media, index) => (
-                            <div key={index}>
+                            <div key={index} className="media">
                                 <i className="bi bi-x-circle" onClick={() => handleCloseMedia(index)}></i>
                                 {
                                     media.type === 0
@@ -551,11 +561,12 @@ function ChatBox({
                             </div>
                         ))}
                         {fileIn.map((file, index) => (
-                            <div key={index}>
-                                <i className="bi bi-x-circle" onClick={() => handleCloseFile(index)}></i>
+                            <div key={index} className="file">
+                                <img src={handleImgForFile(file.type)} alt={file.name}/>
                                 {
                                     <span>{file.file.name}</span>
                                 }
+                                <i className="bi bi-x-circle" onClick={() => handleCloseFile(index)}></i>
                             </div>
                         ))}
                     </div>
