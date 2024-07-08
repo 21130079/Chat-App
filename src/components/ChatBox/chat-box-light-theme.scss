@@ -172,7 +172,7 @@ $hoverColor: #d8dadf;
         align-items: start;
         column-gap: 10px;
 
-        div {
+        .media {
           display: grid;
 
           img, video {
@@ -189,6 +189,23 @@ $hoverColor: #d8dadf;
             font-size: 22px;
             cursor: pointer;
             z-index: 2;
+          }
+        }
+
+        .file {
+          display: flex;
+          padding: 7px 5px;
+          border-radius: 10px;
+          background-color: $mainBoxChatColor;
+
+          img {
+            max-height: 30px;
+          }
+
+          i {
+            padding-top: 4px;
+            font-size: 22px;
+            cursor: pointer;
           }
         }
       }
