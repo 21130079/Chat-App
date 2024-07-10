@@ -3,7 +3,7 @@ import "./chat-list-light-theme.scss";
 import "./chat-list-dark-theme.scss";
 import userImg from '../../assets/images/user.png';
 import groupImg from '../../assets/images/group.png';
- import myAvt from '../../assets/images/myAvt.png';
+import myAvt from '../../assets/images/myAvt.png';
 import classNames from 'classnames';
 import {
     logout,
@@ -32,8 +32,6 @@ interface ChatListProps {
 function ChatList({
                       users,
                       onUserSelect,
-                      setIsMessageChange,
-                      isMessageChange,
                       onUsersChange,
                       theme,
                       newMessages,
@@ -137,12 +135,20 @@ function ChatList({
         if (setNewMessages) {
             setNewMessages(prev => prev.filter(message => message !== user.name));
         }
+
     };
 
-    const getHoursAndMinutes = (dateTimeString: string) => {
-        const timePart = dateTimeString.split(' ')[1];
-        const [hours, minutes] = timePart.split(':');
-        return hours + ":" + minutes;
+    const getFormattedDateTime = (dateTimeString: string) => {
+        const [datePart, timePart] = dateTimeString.split(' ');
+        const [year, month, day] = datePart.split('-');
+        const [hours, minutes] = timePart.split(':').map(Number);
+
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes; // Add leading zero if needed
+        const date =day+"/"+month+"/"+year;
+        const time = formattedHours+":"+formattedMinutes+''+ ampm;
+        return {date,time};
     };
 
     let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
@@ -166,10 +172,12 @@ function ChatList({
                             <div className="dropdown-item" onClick={handleOpenAddFriend}><i
                                 className="bi bi-person-add"></i> Add Friend
                             </div>
-                            <div className="dropdown-item" onClick={handleOpenAddGroup}><i className="bi bi-people"></i> Add
+                            <div className="dropdown-item" onClick={handleOpenAddGroup}><i
+                                className="bi bi-people"></i> Add
                                 Group
                             </div>
-                            <div className="dropdown-item" onClick={handleLogout}><i className="bi bi-box-arrow-right"></i> Logout
+                            <div className="dropdown-item" onClick={handleLogout}><i
+                                className="bi bi-box-arrow-right"></i> Logout
                             </div>
                         </div>
                     )}
@@ -184,10 +192,13 @@ function ChatList({
                     <input type="text" placeholder={isAddingFriend ? " Input People Name" : " Input Group Name"}
                            onChange={handleAddInput} value={addText}/>
                     {!isAddingFriend &&
-                        <button className="join" title="Join" onClick={handleJoinClick}><i className="bi bi-arrow-right-circle"></i>
+                        <button className="join" title="Join" onClick={handleJoinClick}><i
+                            className="bi bi-arrow-right-circle"></i>
                         </button>}
-                    <button className="add" title="Add" onClick={handleAddClick}><i className="bi bi-plus-circle"></i></button>
-                    <button className="cancel" title="Cancel" onClick={handleCloseAdd}><i className="bi bi-x-circle"></i></button>
+                    <button className="add" title="Add" onClick={handleAddClick}><i className="bi bi-plus-circle"></i>
+                    </button>
+                    <button className="cancel" title="Cancel" onClick={handleCloseAdd}><i
+                        className="bi bi-x-circle"></i></button>
                 </div>)}
 
 
@@ -195,7 +206,7 @@ function ChatList({
                 {filteredUsers.map((user, index) => (
                     <div
                         key={index}
-                        className={classNames('chat-list__content-user', { 'activeUser': selectedUser?.name === user.name })}
+                        className={classNames('chat-list__content-user', { selected: selectedUser?.name === user.name })}
                         id={user.name}
                         onClick={() => handleSelectUser(user)}
                     >
@@ -212,7 +223,8 @@ function ChatList({
                             </div>
                         </div>
                         <div className="time-message">
-                            <p>{getHoursAndMinutes(user.actionTime)}</p>
+                            <div>{getFormattedDateTime(user.actionTime).date}</div>
+                            <strong>{getFormattedDateTime(user.actionTime).time}</strong>
                         </div>
                     </div>
                 ))}

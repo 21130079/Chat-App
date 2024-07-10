@@ -1,5 +1,4 @@
 import {w3cwebsocket} from "websocket";
-import {getUserList} from "./api";
 
 const wsUrl: string = 'ws://140.238.54.136:8080/chat/chat';
 

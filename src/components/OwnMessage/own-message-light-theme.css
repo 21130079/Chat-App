@@ -52,7 +52,7 @@
 .own-message-container.light-theme .message-content .main-message .media-container {
   background-color: transparent;
   display: grid;
-  grid-template-columns: 40px 150px 150px 150px 150px;
+  grid-template-columns: auto auto auto auto;
   gap: 10px 5px;
   direction: rtl;
 }
@@ -65,6 +65,7 @@
   aspect-ratio: 1/1;
   border-radius: 10px;
   background-color: #d0fee1;
+  border: 1px solid #7e7e7e;
 }
 .own-message-container.light-theme .message-content .main-message .media-container .media-item .avatar {
   width: 30px;

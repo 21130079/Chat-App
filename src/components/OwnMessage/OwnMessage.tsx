@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import './own-message-light-theme.scss'
 import './own-message-dark-theme.scss'
-import typing from "../../assets/images/typing.gif";
 import userImg from '../../assets/images/myAvt.png';
 import textImg from '../../assets/images/FileImg/text.png';
 import other from '../../assets/images/FileImg/other.png';
@@ -48,18 +47,24 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
             if (docSnap.exists()) {
                 const iconMes = docSnap.data();
                 setMes(iconMes.mes);
+            } else {
+                setMes(message?.mes);
             }
         }
 
-        const processMessage = (msg :Message) => {
-            try {
+        const processMessage = (msg: Message) => {
+            if (isJsonString(msg.mes)) {
                 const mesData = JSON.parse(msg.mes);
-                if (!mesData.idMes) {
-                    setMes(mesData.message);
+                if (!mesData.idMes || mesData.idMes === "") {
+                    if (!mesData.message || mesData.message === "") {
+                        setMes(msg.mes);
+                    } else {
+                        setMes(mesData.message);
+                    }
                 } else {
                     fetchData(mesData.idMes);
                 }
-            } catch (error)  {
+            } else {
                 setMes(msg.mes);
             }
         };
@@ -81,16 +86,14 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
             );
         };
 
-        try {
-            if (message?.mes) {
-                const parsedMessage = JSON.parse(message.mes);
-                const highlighted = highlightText(parsedMessage.message, filterKeyword);
-                setMes(highlighted);
-            }
-        } catch (error) {
-            console.error('Error parsing or highlighting message:', error);
+        if (message?.mes && isJsonString(message?.mes)) {
+            const parsedMessage = JSON.parse(message.mes);
+            const highlighted = highlightText(parsedMessage.message, filterKeyword);
+            setMes(highlighted);
+        } else {
+            setMes(message?.mes);
         }
-    }, [message, filterKeyword]);
+    }, [filterKeyword, message?.mes]);
 
     useEffect(() => {
         return () => {
@@ -113,6 +116,7 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
             clearTimeout(hoverTimer);
             setHoverTimer(null);
         }
+
         if (timeRef.current) {
             timeRef.current.style.display = 'none';
         }
@@ -145,7 +149,7 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
     const isJsonString = (str: string) => {
         try {
             const parsedString = JSON.parse(str);
-            return typeof parsedString === 'object' && parsedString !== null && !Array.isArray(parsedString);
+            return (typeof parsedString === 'object') && (parsedString !== null) && (!Array.isArray(parsedString));
         } catch (e) {
             return false;
         }
@@ -165,7 +169,7 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                 </div>
 
                 <div className="main-message"
-                     id={idMess + ""}
+                     id={idMess}
                      onMouseEnter={handleMouseEnter}
                      onMouseLeave={handleMouseLeave}>
 
@@ -192,9 +196,7 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                                 )
                             ))}
                         </div>
-
                     )}
-
                     {files && files.length > 0 && (
                         <div className="file-container">
                             <img className="avatar" src={userImg} alt=""/>

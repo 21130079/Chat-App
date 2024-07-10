@@ -1,5 +1,6 @@
 $ownMessageColor: #d0fee1;
 $mainTextColor: black;
+$borderImgColor: #7e7e7e;
 
 .own-message-container.light-theme {
   max-width: 70%;
@@ -60,7 +61,7 @@ $mainTextColor: black;
       .media-container {
         background-color: transparent;
         display: grid;
-        grid-template-columns: 40px 150px 150px 150px 150px;
+        grid-template-columns: auto auto auto auto;
         gap: 10px 5px;
         direction: rtl;
 
@@ -74,6 +75,7 @@ $mainTextColor: black;
             aspect-ratio: 1 / 1;
             border-radius: 10px;
             background-color: $ownMessageColor;
+            border: 1px solid $borderImgColor;
           }
 
           .avatar {
