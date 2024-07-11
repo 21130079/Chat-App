@@ -140,7 +140,7 @@ function ChatList({
 
     const getFormattedDateTime = (dateTimeString: string) => {
         const [datePart, timePart] = dateTimeString.split(' ');
-        const [year, month, day] = datePart.split('-');
+        const [year , month, day] = datePart.split('-');
         const [hours, minutes] = timePart.split(':').map(Number);
 
         const ampm = hours >= 12 ? 'PM' : 'AM';

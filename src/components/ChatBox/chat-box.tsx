@@ -38,6 +38,8 @@ interface ChatBoxProps {
     newMessages: string[];
     setNewMessages?: (value: (((prevState: Array<string>) => Array<string>) | Array<string>)) => void;
     users: User[],
+    setSelectedImage:(value: (((prevState: (string)) => (string )) | string )) => void;
+    selectedImage: string | null
 }
 
 interface Media {
@@ -58,7 +60,9 @@ function ChatBox({
                      theme,
                      setTheme,
                      newMessages,
-                     setNewMessages
+                     setNewMessages,
+                     setSelectedImage,
+                     selectedImage,
                  }: ChatBoxProps) {
     const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2B50}\u{2B55}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
     const [isRoom, setIsRoom] = useState(true);
@@ -177,11 +181,14 @@ function ChatBox({
             const mes = chatData.mes;
             if (mes) {
                 try {
-                    if (countOccurrences(mes, messagesSearchKeyword) > 0) {
+                    const message = JSON.parse(mes).message;
+                    if (countOccurrences(message, messagesSearchKeyword) > 0) {
                         matchingMessagesArray.push(chatData);
                     }
                 } catch (e) {
-                    console.error(e);
+                    if (countOccurrences(mes, messagesSearchKeyword) > 0) {
+                        matchingMessagesArray.push(chatData);
+                    }
                 }
             }
         });
@@ -231,7 +238,7 @@ function ChatBox({
             to: user.name,
             type: user.type
         };
-
+        setBoxChatData(prev => [newChatMessage, ...prev]);
         // thuc hien xoa trong o nhap tin nhan de co trai nghiem tot hon
         let selectedMedias = base64Medias;
         let selectedFiles = fileIn;
@@ -268,7 +275,7 @@ function ChatBox({
         // gửi tin nhắn
         if (msgClone.trim().length > 0 || idMesClone.trim().length > 0 || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
             setEmojiOpened(false);
-            setBoxChatData(prev => [newChatMessage, ...prev]);
+
 
             const messageObject = {
                 medias: uploadedMediaUrls,
@@ -431,7 +438,7 @@ function ChatBox({
     const changeSearchState = () => {
         if (isSearch) {
             setMessagesSearchKeyword("");
-            const remainingMessages = contentRef.current?.querySelectorAll(".main-message");
+            const remainingMessages = contentRef.current?.querySelectorAll(".mess");
             remainingMessages?.forEach((element: Element) => {
                 if (theme === 'light-theme') {
                     (element as HTMLElement).style.color = "black";
@@ -470,7 +477,7 @@ function ChatBox({
         const messageElement = document.getElementById(id.toString());
 
         if (contentRef && messageElement) {
-            const remainingMessages = contentRef.current?.querySelectorAll(".main-message");
+            const remainingMessages = contentRef.current?.querySelectorAll(".mess");
             remainingMessages?.forEach((element: Element) => {
                 (element as HTMLElement).style.color = "black";
             });
@@ -532,6 +539,7 @@ function ChatBox({
                                         theme={theme}
                                         filterKeyword={messagesSearchKeyword}
                                         idMess={chatData.id + ""}
+                                        setSelectedImage={setSelectedImage}
                                     />
                                     :
                                     <Message
@@ -540,6 +548,7 @@ function ChatBox({
                                         theme={theme}
                                         filterKeyword={messagesSearchKeyword}
                                         idMess={chatData.id + ""}
+                                        setSelectedImage={setSelectedImage}
                                     />
                             )
                         })

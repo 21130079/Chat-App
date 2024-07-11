@@ -4,7 +4,7 @@
   flex-direction: column;
   height: 100%;
   border-radius: 10px 0 0 0;
-  width: 300px;
+  max-width: 400px;
   color: black;
   border-right: 1px solid #e5e5e5;
 }

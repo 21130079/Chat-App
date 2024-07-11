@@ -175,6 +175,7 @@ $hoverColor: #4e4f50;
         .media {
           display: grid;
           position: relative;
+
           img, video {
             margin-top: 10px;
             max-height: 100px;
@@ -183,8 +184,8 @@ $hoverColor: #4e4f50;
 
           i {
             position: absolute;
-            right: -5px;
-            top: 15px;
+            right: 3px;
+            top: 5px;
             font-size: 22px;
             cursor: pointer;
             z-index: 2;
@@ -209,45 +210,51 @@ $hoverColor: #4e4f50;
         }
       }
 
-      input {
-        flex: 1;
-        border: none;
-        outline: none;
-        width: 39vw;
-        font-size: 17px;
-        color: $mainTextColor;
-        background-color: $mainFooterColor;
-      }
-
-      .emoji {
-        position: relative;
-
-        .emoji-picker {
-          position: absolute;
-          bottom: 40px;
-          right: 0;
-        }
-      }
-
-      i {
+      .chat-box__footer-toolbar {
         display: flex;
-        font-size: 1.4rem;
-        padding: 0 10px;
-        cursor: pointer;
-      }
-
-      .send-button {
-        display: flex;
-        align-items: center;
         justify-content: center;
-        padding: 5px 20px;
-        border-radius: 10px;
-        border: none;
-        color: white !important;
-        background-color: #11438a;
+        align-items: center;
+
+        input {
+          flex: 1;
+          border: none;
+          outline: none;
+          width: 39vw;
+          font-size: 17px;
+          color: $mainTextColor;
+          background-color: $mainFooterColor;
+        }
+
+        .emoji {
+          position: relative;
+
+          .emoji-picker {
+            position: absolute;
+            bottom: 40px;
+            right: 0;
+          }
+        }
 
         i {
+          display: flex;
           font-size: 1.4rem;
+          padding: 0 10px;
+          cursor: pointer;
+        }
+
+        .send-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 5px 20px;
+          border-radius: 10px;
+          border: none;
+          color: $mainTextColor;
+          background-color: #11438A;
+
+          i {
+            font-size: 1.4rem;
+          }
         }
       }
     }

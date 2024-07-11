@@ -1,11 +1,11 @@
 import userImg from '../../assets/images/user.png';
-import React, {useEffect, useRef, useState} from "react";
-import './message-light-theme.scss'
-import './message-dark-theme.scss'
+import React, { useEffect, useRef, useState } from "react";
+import './message-light-theme.scss';
+import './message-dark-theme.scss';
 import textImg from '../../assets/images/FileImg/text.png';
 import other from '../../assets/images/FileImg/other.png';
-import {doc, getDoc} from "firebase/firestore";
-import {db} from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 interface Message {
     createAt: string;
@@ -33,24 +33,28 @@ interface MessageProps {
     theme?: string | null | undefined;
     filterKeyword: string;
     idMess: string;
+    setSelectedImage:(value: (((prevState: (string)) => (string )) | string )) => void;
 }
 
-function Message({message, theme, filterKeyword, idMess}: MessageProps) {
+function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: MessageProps) {
     const [mes, setMes] = useState<any>();
     const timeRef = useRef<HTMLDivElement>(null);
     const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
 
+    const handleClickImage = (index: number) => {
+        setSelectedImage(medias ? medias[index].url : "");
+    };
+
+
+
     useEffect(() => {
         const fetchData = async (idMes: string) => {
             const docSnap = await getDoc(doc(db, 'messages', idMes));
-
             if (docSnap.exists()) {
                 const iconMes = docSnap.data();
                 setMes(iconMes.mes);
-            } else {
-                setMes(message?.mes);
             }
-        }
+        };
 
         const processMessage = (msg: Message) => {
             if (isJsonString(msg.mes)) {
@@ -86,13 +90,16 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
             );
         };
 
-        if (message?.mes && isJsonString(message?.mes)) {
-            const parsedMessage = JSON.parse(message.mes);
-            const highlighted = highlightText(parsedMessage.message, filterKeyword);
-            setMes(highlighted);
-        } else {
-            setMes(message?.mes);
-        }
+       if(message?.mes){
+           if ( isJsonString(message?.mes)) {
+               const parsedMessage = JSON.parse(message.mes);
+               const highlighted = highlightText(parsedMessage.message, filterKeyword);
+               setMes(highlighted);
+           } else {
+               const highlighted = highlightText(message?.mes, filterKeyword);
+               setMes(highlighted);
+           }
+       }
     }, [filterKeyword, message?.mes]);
 
     useEffect(() => {
@@ -109,7 +116,7 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
                 timeRef.current.style.display = 'flex';
             }
         }, 500));
-    }
+    };
 
     const handleMouseLeave = () => {
         if (hoverTimer) {
@@ -120,7 +127,7 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
         if (timeRef.current) {
             timeRef.current.style.display = 'none';
         }
-    }
+    };
 
     const medias: Media[] | null = (() => {
         try {
@@ -153,7 +160,7 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
         } catch (e) {
             return false;
         }
-    }
+    };
 
     return (
         <div className={`message-container ${theme}`}>
@@ -163,13 +170,13 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
 
             <div className="message-content">
                 <div className="main-message"
-                     id={idMess}
+
                      onMouseEnter={handleMouseEnter}
                      onMouseLeave={handleMouseLeave}>
 
                     {mes && <div className="message-line">
                         <img className="avatar" src={userImg} alt=""/>
-                        <div className="mess">{mes}</div>
+                        <div className="mess"  id={idMess}>{mes}</div>
                     </div>}
 
                     {medias && medias.length > 0 && (
@@ -181,7 +188,7 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
                             {medias.map((media, index) => (
                                 media.type === 0 ? (
                                     <div key={index} className="media-item">
-                                        <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                                        <img onClick={() => handleClickImage(index)} key={index} className="send-image" src={media.url} alt="sent image"/>
                                     </div>
                                 ) : (
                                     <div key={index} className="media-item">
@@ -191,6 +198,7 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
                             ))}
                         </div>
                     )}
+
                     {files && files.length > 0 && (
                         <div className="file-container">
                             <img className="avatar" src={userImg} alt=""/>
@@ -228,7 +236,7 @@ function Message({message, theme, filterKeyword, idMess}: MessageProps) {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default Message;
