@@ -145,6 +145,7 @@
 }
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-file .media {
   display: grid;
+  position: relative;
 }
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-file .media img, .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-file .media video {
   margin-top: 10px;
@@ -152,10 +153,9 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-file .media i {
-  justify-self: right;
   position: absolute;
-  margin-top: 15px;
-  margin-right: -5px;
+  right: 3px;
+  top: 5px;
   font-size: 22px;
   cursor: pointer;
   z-index: 2;
@@ -174,7 +174,12 @@
   font-size: 22px;
   cursor: pointer;
 }
-.chat-box.dark-theme .chat-box__footer .chat-box__footer-container input {
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-toolbar input {
   flex: 1;
   border: none;
   outline: none;
@@ -183,21 +188,21 @@
   color: #e0e0e0;
   background-color: #2b2d30;
 }
-.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .emoji {
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-toolbar .emoji {
   position: relative;
 }
-.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .emoji .emoji-picker {
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-toolbar .emoji .emoji-picker {
   position: absolute;
   bottom: 40px;
   right: 0;
 }
-.chat-box.dark-theme .chat-box__footer .chat-box__footer-container i {
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-toolbar i {
   display: flex;
   font-size: 1.4rem;
   padding: 0 10px;
   cursor: pointer;
 }
-.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .send-button {
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-toolbar .send-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -205,9 +210,9 @@
   border-radius: 10px;
   border: none;
   color: #e0e0e0;
-  background-color: #3f4148;
+  background-color: #11438A;
 }
-.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .send-button i {
+.chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-toolbar .send-button i {
   font-size: 1.4rem;
 }
 

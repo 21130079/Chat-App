@@ -207,11 +207,11 @@
 }
 .chat-list.dark-theme .chat-list__content .chat-list__content-user:hover {
   background-color: #4e4f50;
-  color: #e0e0e0;
   cursor: pointer;
 }
-.chat-list.dark-theme .activeUser {
-  background-color: cadetblue;
+.chat-list.dark-theme .selected {
+  color: #e0e0e0;
+  background-color: #11438a !important;
 }
 
 /*# sourceMappingURL=chat-list-dark-theme.css.map */

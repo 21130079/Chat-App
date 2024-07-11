@@ -17,7 +17,7 @@ import other from '../../assets/images/FileImg/other.png';
 import {
     checkUser,
     getPeopleChatMessages,
-    getRoomChatMessages,
+    getRoomChatMessages, getUserList,
     sendPeopleChat,
     sendRoomChat
 } from "../../api/api";
@@ -37,6 +37,9 @@ interface ChatBoxProps {
     setTheme?: (value: (((prevState: (string | null)) => (string | null)) | string | null)) => void;
     newMessages: string[];
     setNewMessages?: (value: (((prevState: Array<string>) => Array<string>) | Array<string>)) => void;
+    users: User[],
+    setSelectedImage:(value: (((prevState: (string)) => (string )) | string )) => void;
+    selectedImage: string | null
 }
 
 interface Media {
@@ -54,12 +57,12 @@ interface Document {
 
 function ChatBox({
                      user,
-                     setIsMessageChange,
-                     isMessageChange,
                      theme,
                      setTheme,
                      newMessages,
-                     setNewMessages
+                     setNewMessages,
+                     setSelectedImage,
+                     selectedImage,
                  }: ChatBoxProps) {
     const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2B50}\u{2B55}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F004}\u{1F0CF}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E6}-\u{1F1FF}\u{1F201}-\u{1F251}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
     const [isRoom, setIsRoom] = useState(true);
@@ -116,17 +119,6 @@ function ChatBox({
                         break;
                     }
                     case "SEND_CHAT": {
-                        console.log(response)
-                        if (response.data.to === user?.name) {
-                            if (user?.type === 1) {
-                                getRoomChatMessages({name: user?.name, page: 1})
-                            }
-
-                            if (setNewMessages) {
-                                setNewMessages(prev => [response.data.to, ...prev]);
-                            }
-                        }
-
                         if (response.data.to === username) {
                             if (user?.type === 0) {
                                 getPeopleChatMessages({name: user?.name, page: 1})
@@ -134,7 +126,15 @@ function ChatBox({
                             if (setNewMessages) {
                                 setNewMessages(prev => [response.data.name, ...prev]);
                             }
+                        }else{
+                            if (user?.type === 1) {
+                                getRoomChatMessages({name: user?.name, page: 1})
+                            }
+                            if (setNewMessages) {
+                                setNewMessages(prev => [response.data.to, ...prev]);
+                            }
                         }
+
                     }
                 }
             }
@@ -181,11 +181,14 @@ function ChatBox({
             const mes = chatData.mes;
             if (mes) {
                 try {
-                    if (countOccurrences(mes, messagesSearchKeyword) > 0) {
+                    const message = JSON.parse(mes).message;
+                    if (countOccurrences(message, messagesSearchKeyword) > 0) {
                         matchingMessagesArray.push(chatData);
                     }
                 } catch (e) {
-                    console.error(e);
+                    if (countOccurrences(mes, messagesSearchKeyword) > 0) {
+                        matchingMessagesArray.push(chatData);
+                    }
                 }
             }
         });
@@ -235,7 +238,7 @@ function ChatBox({
             to: user.name,
             type: user.type
         };
-
+        setBoxChatData(prev => [newChatMessage, ...prev]);
         // thuc hien xoa trong o nhap tin nhan de co trai nghiem tot hon
         let selectedMedias = base64Medias;
         let selectedFiles = fileIn;
@@ -272,7 +275,7 @@ function ChatBox({
         // gửi tin nhắn
         if (msgClone.trim().length > 0 || idMesClone.trim().length > 0 || uploadedMediaUrls.length > 0 || uploadedFileUrls.length > 0) {
             setEmojiOpened(false);
-            setBoxChatData(prev => [newChatMessage, ...prev]);
+
 
             const messageObject = {
                 medias: uploadedMediaUrls,
@@ -435,7 +438,7 @@ function ChatBox({
     const changeSearchState = () => {
         if (isSearch) {
             setMessagesSearchKeyword("");
-            const remainingMessages = contentRef.current?.querySelectorAll(".main-message");
+            const remainingMessages = contentRef.current?.querySelectorAll(".mess");
             remainingMessages?.forEach((element: Element) => {
                 if (theme === 'light-theme') {
                     (element as HTMLElement).style.color = "black";
@@ -474,7 +477,7 @@ function ChatBox({
         const messageElement = document.getElementById(id.toString());
 
         if (contentRef && messageElement) {
-            const remainingMessages = contentRef.current?.querySelectorAll(".main-message");
+            const remainingMessages = contentRef.current?.querySelectorAll(".mess");
             remainingMessages?.forEach((element: Element) => {
                 (element as HTMLElement).style.color = "black";
             });
@@ -488,6 +491,11 @@ function ChatBox({
             return textImg;
         } else {
             return other;
+        }
+    }
+    const handleClickMessage = () => {
+        if (setNewMessages) {
+            setNewMessages(prev => prev.filter(message => message !== username));
         }
     }
 
@@ -531,6 +539,7 @@ function ChatBox({
                                         theme={theme}
                                         filterKeyword={messagesSearchKeyword}
                                         idMess={chatData.id + ""}
+                                        setSelectedImage={setSelectedImage}
                                     />
                                     :
                                     <Message
@@ -539,6 +548,7 @@ function ChatBox({
                                         theme={theme}
                                         filterKeyword={messagesSearchKeyword}
                                         idMess={chatData.id + ""}
+                                        setSelectedImage={setSelectedImage}
                                     />
                             )
                         })
@@ -547,75 +557,80 @@ function ChatBox({
 
             <div className="chat-box__footer">
                 <div className="chat-box__footer-container">
-                    <div className="chat-box__footer-file">
-                        {base64Medias.map((media, index) => (
-                            <div key={index} className="media">
-                                <i className="bi bi-x-circle" onClick={() => handleCloseMedia(index)}></i>
-                                {
-                                    media.type === 0
-                                        ?
-                                        <img src={media.url} alt=""/>
-                                        :
-                                        <video src={media.url} controls/>
-                                }
-                            </div>
-                        ))}
-                        {fileIn.map((file, index) => (
-                            <div key={index} className="file">
-                                <img src={handleImgForFile(file.type)} alt={file.name}/>
-                                {
-                                    <span>{file.file.name}</span>
-                                }
-                                <i className="bi bi-x-circle" onClick={() => handleCloseFile(index)}></i>
-                            </div>
-                        ))}
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="Type a message..."
-                        value={message}
-                        onKeyDown={handleKeyPress}
-                        onChange={handleTypeMessage}
-                    />
+                    {base64Medias.length > 0 || fileIn.length > 0 ?
+                        <div className="chat-box__footer-file">
+                            {base64Medias.map((media, index) => (
+                                <div key={index} className="media">
+                                    <i className="bi bi-x-circle" onClick={() => handleCloseMedia(index)}></i>
+                                    {
+                                        media.type === 0
+                                            ?
+                                            <img src={media.url} alt=""/>
+                                            :
+                                            <video src={media.url} controls/>
+                                    }
+                                </div>
+                            ))}
+                            {fileIn.map((file, index) => (
+                                <div key={index} className="file">
+                                    <img src={handleImgForFile(file.type)} alt={file.name}/>
+                                    {
+                                        <span>{file.file.name}</span>
+                                    }
+                                    <i className="bi bi-x-circle" onClick={() => handleCloseFile(index)}></i>
+                                </div>
+                            ))}
+                        </div> : ""
+                    }
+                    <div className="chat-box__footer-toolbar">
+                        <input
+                            type="text"
+                            placeholder="Type a message..."
+                            value={message}
+                            onKeyDown={handleKeyPress}
+                            onClick={() => handleClickMessage}
+                            onChange={handleTypeMessage}
+                        />
 
-                    <div className="emoji" onKeyDown={handleKeyPress}>
-                        <i className="bi bi-emoji-smile" onClick={emojiOpenHandler}></i>
-                        <div className="emoji-picker">
-                            <EmojiPicker
-                                open={emojiOpened}
-                                onEmojiClick={emojiHandler}
-                            />
+                        <div className="emoji" onKeyDown={handleKeyPress}>
+                            <i className="bi bi-emoji-smile" onClick={emojiOpenHandler}></i>
+                            <div className="emoji-picker">
+                                <EmojiPicker
+                                    open={emojiOpened}
+                                    onEmojiClick={emojiHandler}
+                                />
+                            </div>
                         </div>
+
+                        <input
+                            type="file"
+                            accept="image/*,video/*"
+                            onChange={handleMediaChange}
+                            id="mediaInput"
+                            style={{display: 'none'}}
+                        />
+
+                        <input
+                            type="file"
+                            accept=".txt,.bat"
+                            onChange={handleFileChange}
+                            id="fileIn"
+                            style={{display: 'none'}}
+                        />
+
+                        <label htmlFor="mediaInput">
+                            <i className="bi bi-image"></i>
+                        </label>
+
+                        <label htmlFor="fileIn">
+                            <i className="bi bi-paperclip"></i>
+                        </label>
+
+                        <button className="send-button" onClick={handleSendMessage}>
+                            Send
+                            <i className="bi bi-arrow-right-circle-fill"></i>
+                        </button>
                     </div>
-
-                    <input
-                        type="file"
-                        accept="image/*,video/*"
-                        onChange={handleMediaChange}
-                        id="mediaInput"
-                        style={{display: 'none'}}
-                    />
-
-                    <input
-                        type="file"
-                        accept=".txt,.bat"
-                        onChange={handleFileChange}
-                        id="fileIn"
-                        style={{display: 'none'}}
-                    />
-
-                    <label htmlFor="mediaInput">
-                        <i className="bi bi-image"></i>
-                    </label>
-
-                    <label htmlFor="fileIn">
-                        <i className="bi bi-paperclip"></i>
-                    </label>
-
-                    <button className="send-button" onClick={handleSendMessage}>
-                        Send
-                        <i className="bi bi-arrow-right-circle-fill"></i>
-                    </button>
                 </div>
             </div>
         </div>

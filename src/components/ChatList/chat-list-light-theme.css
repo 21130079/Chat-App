@@ -3,8 +3,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 400px;
   border-radius: 10px 0 0 0;
+  max-width: 400px;
   color: black;
   border-right: 1px solid #e5e5e5;
 }
@@ -161,7 +161,7 @@
 }
 .chat-list.light-theme .chat-list__content .chat-list__content-user {
   display: grid;
-  grid-template-columns: 1fr 4fr 1fr;
+  grid-template-columns: 1fr 4fr 2fr;
   align-items: center;
   border-radius: 7px;
   padding: 0 20px;
@@ -188,6 +188,8 @@
 }
 .chat-list.light-theme .chat-list__content .chat-list__content-user .time-message {
   justify-self: right;
+  font-size: 14px;
+  align-items: center;
 }
 .chat-list.light-theme .chat-list__content .chat-list__content-user .info-message {
   display: flex;
@@ -210,8 +212,8 @@
   color: black;
   cursor: pointer;
 }
-.chat-list.light-theme .activeUser {
-  background-color: cadetblue;
+.chat-list.light-theme .selected {
+  background-color: lightseagreen !important;
 }
 
 /*# sourceMappingURL=chat-list-light-theme.css.map */

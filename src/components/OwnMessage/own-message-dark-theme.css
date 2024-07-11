@@ -51,7 +51,7 @@
 .own-message-container.dark-theme .message-content .main-message .media-container {
   background-color: transparent;
   display: grid;
-  grid-template-columns: 40px 150px 150px 150px 150px;
+  grid-template-columns: auto auto auto auto;
   gap: 10px 5px;
   direction: rtl;
 }

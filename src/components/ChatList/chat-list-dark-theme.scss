@@ -8,7 +8,8 @@ $addColor: #8bff38;
 $joinColor: #38a9ff;
 $cancelColor: #fa5353;
 $iconBackgroundColor: #3a3b3c;
-
+$selectedColor : #FFD9D8;
+//$signUpColor: #A380F9;
 .chat-list.dark-theme {
   flex: 1;
   display: flex;
@@ -255,12 +256,12 @@ $iconBackgroundColor: #3a3b3c;
 
     .chat-list__content-user:hover {
       background-color: $hoverColor;
-      color: $mainTextColor;
       cursor: pointer;
     }
   }
 
-  .activeUser {
-    background-color: cadetblue;
+  .selected{
+    color: $mainTextColor;
+    background-color: #11438a !important;
   }
 }

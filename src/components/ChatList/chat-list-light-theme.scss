@@ -8,14 +8,14 @@ $addColor: #8bff38;
 $joinColor: #38a9ff;
 $cancelColor: #fa5353;
 $iconBackgroundColor: #e4e6eb;
-
+//$signUpColor: #A380F9;
 .chat-list.light-theme {
   flex: 1;
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 400px;
   border-radius: 10px 0 0 0;
+  max-width: 400px;
   color: $mainTextColor;
   border-right: 1px solid $mainBackgroundColor;
 
@@ -197,7 +197,7 @@ $iconBackgroundColor: #e4e6eb;
 
     .chat-list__content-user {
       display: grid;
-      grid-template-columns: 1fr 4fr 1fr;
+      grid-template-columns: 1fr 4fr 2fr;
       align-items: center;
       border-radius: 7px;
       padding: 0 20px;
@@ -226,6 +226,8 @@ $iconBackgroundColor: #e4e6eb;
 
       .time-message {
         justify-self: right;
+        font-size: 14px;
+        align-items: center;
       }
 
       .info-message {
@@ -259,8 +261,8 @@ $iconBackgroundColor: #e4e6eb;
       cursor: pointer;
     }
   }
+  .selected{
+    background-color: lightseagreen !important;
 
-  .activeUser {
-    background-color: cadetblue;
   }
 }

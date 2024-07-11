@@ -1,3 +1,5 @@
+$loginColor : #F5AFC3;
+$signUpColor: #A380F9;
 * {
   margin: 0px;
   padding: 0px;
@@ -17,7 +19,7 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
   display: grid;
   grid-template-columns: 1fr 2fr;
-  background: linear-gradient(to bottom, rgb(6, 108, 100), rgb(14, 48, 122));
+  background: linear-gradient(to bottom, $loginColor, $signUpColor);
   width: 900px !important;
   margin: 10% auto;
   height: 450px;
@@ -27,7 +29,7 @@ body {
 
 .content-holder {
   text-align: center;
-  color: white;
+  color: black;
   font-size: 14px;
   font-weight: lighter;
   letter-spacing: 2px;
@@ -49,6 +51,7 @@ body {
     border-radius: 6px;
     background-color: white;
     width: 150px;
+
     margin: 20px auto;
   }
 }
@@ -69,7 +72,7 @@ button {
   margin-top: 10%;
 
   h1 {
-    color: #11438a;
+    color: $loginColor;
     font-size: 24px;
     padding: 20px;
   }
@@ -94,11 +97,12 @@ button {
   border: none;
   width: 250px;
   outline: none;
-  background-color: #11438a;
+  background-color: $loginColor;
 }
 
 .button-2 {
   display: block;
+
 }
 
 .signup-form-container {
@@ -110,7 +114,7 @@ button {
   display: block;
 
   h1 {
-    color: #08817b;
+    color: $signUpColor;
     font-size: 24px;
     padding: 20px;
   }
@@ -125,7 +129,7 @@ button {
   border: none;
   width: 250px;
   outline: none;
-  background-color: #088881;
+  background-color: $signUpColor;
 }
 
 #typing-img {

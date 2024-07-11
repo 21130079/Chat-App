@@ -32,8 +32,6 @@ interface ChatListProps {
 function ChatList({
                       users,
                       onUserSelect,
-                      setIsMessageChange,
-                      isMessageChange,
                       onUsersChange,
                       theme,
                       newMessages,
@@ -137,12 +135,20 @@ function ChatList({
         if (setNewMessages) {
             setNewMessages(prev => prev.filter(message => message !== user.name));
         }
+
     };
 
-    const getHoursAndMinutes = (dateTimeString: string) => {
-        const timePart = dateTimeString.split(' ')[1];
-        const [hours, minutes] = timePart.split(':');
-        return hours + ":" + minutes;
+    const getFormattedDateTime = (dateTimeString: string) => {
+        const [datePart, timePart] = dateTimeString.split(' ');
+        const [year , month, day] = datePart.split('-');
+        const [hours, minutes] = timePart.split(':').map(Number);
+
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes; // Add leading zero if needed
+        const date =day+"/"+month+"/"+year;
+        const time = formattedHours+":"+formattedMinutes+''+ ampm;
+        return {date,time};
     };
 
     let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
@@ -200,7 +206,7 @@ function ChatList({
                 {filteredUsers.map((user, index) => (
                     <div
                         key={index}
-                        className={classNames('chat-list__content-user', {'activeUser': selectedUser?.name === user.name})}
+                        className={classNames('chat-list__content-user', { selected: selectedUser?.name === user.name })}
                         id={user.name}
                         onClick={() => handleSelectUser(user)}
                     >
@@ -217,7 +223,8 @@ function ChatList({
                             </div>
                         </div>
                         <div className="time-message">
-                            <p>{getHoursAndMinutes(user.actionTime)}</p>
+                            <div>{getFormattedDateTime(user.actionTime).date}</div>
+                            <strong>{getFormattedDateTime(user.actionTime).time}</strong>
                         </div>
                     </div>
                 ))}

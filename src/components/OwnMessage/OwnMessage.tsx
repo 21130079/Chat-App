@@ -33,13 +33,16 @@ interface MessageProps {
     theme?: string | null | undefined;
     filterKeyword: string;
     idMess: string;
+    setSelectedImage:(value: (((prevState: (string)) => (string )) | string )) => void;
 }
 
-function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
+function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: MessageProps) {
     const [mes, setMes] = useState<any>();
     const timeRef = useRef<HTMLDivElement>(null);
     const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
-
+    const handleClickImage = (index: number) => {
+        setSelectedImage(medias ? medias[index].url : "");
+    };
     useEffect(() => {
         const fetchData = async (idMes: string) => {
             const docSnap = await getDoc(doc(db, 'messages', idMes));
@@ -47,8 +50,6 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
             if (docSnap.exists()) {
                 const iconMes = docSnap.data();
                 setMes(iconMes.mes);
-            } else {
-                setMes(message?.mes);
             }
         }
 
@@ -86,12 +87,15 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
             );
         };
 
-        if (message?.mes && isJsonString(message?.mes)) {
-            const parsedMessage = JSON.parse(message.mes);
-            const highlighted = highlightText(parsedMessage.message, filterKeyword);
-            setMes(highlighted);
-        } else {
-            setMes(message?.mes);
+        if(message?.mes){
+            if ( isJsonString(message?.mes)) {
+                const parsedMessage = JSON.parse(message.mes);
+                const highlighted = highlightText(parsedMessage.message, filterKeyword);
+                setMes(highlighted);
+            } else {
+                const highlighted = highlightText(message?.mes, filterKeyword);
+                setMes(highlighted);
+            }
         }
     }, [filterKeyword, message?.mes]);
 
@@ -169,13 +173,13 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                 </div>
 
                 <div className="main-message"
-                     id={idMess}
+
                      onMouseEnter={handleMouseEnter}
                      onMouseLeave={handleMouseLeave}>
 
                     {mes && <div className="message-line">
                         <img className="avatar" src={userImg} alt=""/>
-                        <div className="mess">{mes}</div>
+                        <div className="mess"  id={idMess}>{mes}</div>
                     </div>}
 
                     {medias && medias.length > 0 && (
@@ -187,7 +191,7 @@ function OwnMessage({message, theme, filterKeyword, idMess}: MessageProps) {
                             {medias.map((media, index) => (
                                 media.type === 0 ? (
                                     <div key={index} className="media-item">
-                                        <img key={index} className="send-image" src={media.url} alt="sent image"/>
+                                        <img key={index}  onClick={() => handleClickImage(index)} className="send-image" src={media.url} alt="sent image"/>
                                     </div>
                                 ) : (
                                     <div key={index} className="media-item">
