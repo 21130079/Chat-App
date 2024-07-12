@@ -53,6 +53,7 @@ $iconBackgroundColor: #e4e6eb;
 
         .status {
           line-height: 0;
+          color: $addColor;
         }
 
       }
@@ -146,11 +147,14 @@ $iconBackgroundColor: #e4e6eb;
     background-color: $mainHeaderColor;
 
     input {
-      max-width: 350px;
       flex: 1;
-      border-radius: 10px;
+      padding: 10px;
+      border-radius: 20px;
       height: 4vh;
       outline: none;
+      color: $mainTextColor;
+      border: 1px solid $mainBodyColor;
+      background-color: $mainHeaderColor;
     }
 
     i {

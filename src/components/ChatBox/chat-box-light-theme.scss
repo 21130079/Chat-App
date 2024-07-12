@@ -5,7 +5,9 @@ $mainBoxChatColor: #eaebee;
 $mainTextColor: black;
 $iconBackgroundColor: #e4e6eb;
 $hoverColor: #d8dadf;
-
+$blueColor: #1f73ff;
+$greenColor: #8bff38;
+$redColor: #ff4d4d;
 ::-webkit-scrollbar {
   width: 10px;
   -webkit-transition: 0.2s;
@@ -68,6 +70,13 @@ $hoverColor: #d8dadf;
 
         .status {
           line-height: 0;
+          color: $blueColor;
+        }
+        .status-online {
+          color: $greenColor;
+        }
+        .status-offline {
+          color: $redColor;
         }
       }
     }
@@ -215,6 +224,7 @@ $hoverColor: #d8dadf;
         display: flex;
         justify-content: center;
         align-items: center;
+
         input {
           flex: 1;
           border: none;

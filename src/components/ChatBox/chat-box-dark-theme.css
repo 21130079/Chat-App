@@ -56,6 +56,13 @@
 }
 .chat-box.dark-theme .chat-box__header .chat-box__header-user .info .status {
   line-height: 0;
+  color: #1f73ff;
+}
+.chat-box.dark-theme .chat-box__header .chat-box__header-user .info .status-online {
+  color: #8bff38;
+}
+.chat-box.dark-theme .chat-box__header .chat-box__header-user .info .status-offline {
+  color: #ff4d4d;
 }
 .chat-box.dark-theme .chat-box__header .chat-box__header-icons {
   flex: 1;
@@ -101,7 +108,9 @@
   width: 80%;
   min-height: 60%;
   border-radius: 10px;
-  background-color: white;
+  border: none;
+  background-color: #3f4148;
+  color: #e0e0e0;
 }
 .chat-box.dark-theme .chat-box__header .chat-box__header-searchview div {
   margin: auto 10px;
@@ -138,10 +147,12 @@
   background-color: #2b2d30;
 }
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-file {
+  scrollbar-width: thin;
   margin: 5px 5px;
   display: flex;
   align-items: start;
   column-gap: 10px;
+  overflow-y: auto;
 }
 .chat-box.dark-theme .chat-box__footer .chat-box__footer-container .chat-box__footer-file .media {
   display: grid;
@@ -183,7 +194,7 @@
   flex: 1;
   border: none;
   outline: none;
-  width: 39vw;
+  width: 44vw;
   font-size: 17px;
   color: #e0e0e0;
   background-color: #2b2d30;

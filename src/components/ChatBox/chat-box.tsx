@@ -506,12 +506,14 @@ function ChatBox({
                     <img src={user?.type === 1 ? groupImg : userImg} alt="avatar"/>
                     <div className="info">
                         <h4>{user ? user.name : 'Name'}</h4>
-                        <p className="status">{user ? userStatus : ''}</p>
+                        <p className={`status ${userStatus === 'Online' ? 'status-online' : userStatus === 'Offline' ? 'status-offline' : ''}`}>
+                            {user ? userStatus : ''}
+                        </p>
                     </div>
                 </div>
                 <div className="chat-box__header-icons">
                     <div className="search-box">
-                        <i className="bi bi-search" onClick={changeSearchState}></i>
+                    <i className="bi bi-search" onClick={changeSearchState}></i>
                     </div>
                     <div className="theme-box">
                         <i className="bi bi-sun-fill" onClick={toggleTheme} ref={modeIcon}></i>
