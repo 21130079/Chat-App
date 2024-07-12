@@ -89,7 +89,7 @@ $redColor: #ff4d4d;
       column-gap: 5%;
       background-color: $mainHeaderColor;
 
-      .search-box, .theme-box {
+      .search-box, .theme-box, .background-box {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -157,8 +157,11 @@ $redColor: #ff4d4d;
     overflow-y: scroll;
     display: flex;
     flex-direction: column-reverse;
-
     background-color: $mainBoxChatColor;
+
+    background-image: none;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 
   .chat-box__footer {
