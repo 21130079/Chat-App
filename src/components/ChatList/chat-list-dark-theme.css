@@ -40,6 +40,7 @@
 }
 .chat-list.dark-theme .chat-list__header .chat-list__header-user .info .status {
   line-height: 0;
+  color: #8bff38;
 }
 .chat-list.dark-theme .chat-list__header .chat-list__header-icons {
   display: flex;
@@ -118,11 +119,14 @@
   background-color: #2b2d30;
 }
 .chat-list.dark-theme .chat-list__add input {
-  max-width: 350px;
   flex: 1;
-  border-radius: 10px;
+  padding: 10px;
+  border-radius: 20px;
   height: 4vh;
   outline: none;
+  color: #e0e0e0;
+  border: 1px solid #3f4148;
+  background-color: #2b2d30;
 }
 .chat-list.dark-theme .chat-list__add i {
   font-size: 1.4rem;

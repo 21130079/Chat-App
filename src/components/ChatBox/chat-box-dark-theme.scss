@@ -5,7 +5,9 @@ $mainBoxChatColor: #3f4148;
 $mainTextColor: #e0e0e0;
 $iconBackgroundColor: #3a3b3c;
 $hoverColor: #4e4f50;
-
+$blueColor: #1f73ff;
+$greenColor: #8bff38;
+$redColor: #ff4d4d;
 ::-webkit-scrollbar {
   width: 10px;
   -webkit-transition: 0.2s;
@@ -68,6 +70,13 @@ $hoverColor: #4e4f50;
 
         .status {
           line-height: 0;
+          color: $blueColor;
+        }
+        .status-online {
+          color: $greenColor;
+        }
+        .status-offline {
+          color: $redColor;
         }
       }
     }
@@ -80,7 +89,7 @@ $hoverColor: #4e4f50;
       column-gap: 5%;
       background-color: $mainHeaderColor;
 
-      .search-box, .theme-box {
+      .search-box, .theme-box, .background-box {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -122,7 +131,9 @@ $hoverColor: #4e4f50;
         width: 80%;
         min-height: 60%;
         border-radius: 10px;
-        background-color: white;
+        border: none;
+        background-color: $mainBoxChatColor;
+        color: $mainTextColor;
       }
 
       div {
@@ -148,8 +159,12 @@ $hoverColor: #4e4f50;
     overflow-y: scroll;
     display: flex;
     flex-direction: column-reverse;
-
     background-color: $mainBoxChatColor;
+
+    background-image: none;
+    background-size: cover;
+    background-repeat: no-repeat;
+
   }
 
   .chat-box__footer {
@@ -167,10 +182,12 @@ $hoverColor: #4e4f50;
       background-color: $mainFooterColor;
 
       .chat-box__footer-file {
+        scrollbar-width: thin;
         margin: 5px 5px;
         display: flex;
         align-items: start;
         column-gap: 10px;
+        overflow-y: auto;
 
         .media {
           display: grid;
@@ -219,7 +236,7 @@ $hoverColor: #4e4f50;
           flex: 1;
           border: none;
           outline: none;
-          width: 39vw;
+          width: 44vw;
           font-size: 17px;
           color: $mainTextColor;
           background-color: $mainFooterColor;

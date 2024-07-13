@@ -13,6 +13,10 @@ import {db, storage} from "../firebase";
 import {doc, setDoc} from "firebase/firestore";
 import textImg from '../../assets/images/FileImg/text.png';
 import other from '../../assets/images/FileImg/other.png';
+import pdfImg from '../../assets/images/FileImg/pdf.png';
+import docImg from '../../assets/images/FileImg/doc.png';
+import xlsxImg from '../../assets/images/FileImg/xlsx.png';
+import pptxImg from '../../assets/images/FileImg/pptx.png';
 
 import {
     checkUser,
@@ -38,7 +42,7 @@ interface ChatBoxProps {
     newMessages: string[];
     setNewMessages?: (value: (((prevState: Array<string>) => Array<string>) | Array<string>)) => void;
     users: User[],
-    setSelectedImage:(value: (((prevState: (string)) => (string )) | string )) => void;
+    setSelectedImage: (value: (((prevState: (string)) => (string)) | string)) => void;
     selectedImage: string | null
 }
 
@@ -126,7 +130,7 @@ function ChatBox({
                             if (setNewMessages) {
                                 setNewMessages(prev => [response.data.name, ...prev]);
                             }
-                        }else{
+                        } else {
                             if (user?.type === 1) {
                                 getRoomChatMessages({name: user?.name, page: 1})
                             }
@@ -151,12 +155,24 @@ function ChatBox({
                 if (item.kind === 'file') {
                     const file = item.getAsFile();
                     if (file) {
-                        const mediaObj: Media = {
-                            url: URL.createObjectURL(file),
-                            file: file,
-                            type: item.type.includes('image') ? 0 : 1
-                        };
-                        setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
+                        // Determine if the file is an image or video
+                        if (item.type.includes('image') || item.type.includes('video')) {
+                            const mediaObj: Media = {
+                                url: URL.createObjectURL(file),
+                                file: file,
+                                type: item.type.includes('image') ? 0 : 1
+                            };
+                            setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
+                        } else {
+                            // Handle other file types
+                            const fileObj: Document = {
+                                url: URL.createObjectURL(file),
+                                file: file,
+                                type: file.name.split('.').pop() as string,
+                                name: file.name
+                            };
+                            setFileIn(prevFiles => [...prevFiles, fileObj]);
+                        }
                     }
                 }
             }
@@ -400,7 +416,7 @@ function ChatBox({
             reader.readAsDataURL(file);
             reader.onloadend = () => {
                 setFileIn(prev => [...prev, {
-                    type: file.name,
+                    type: file.name.split('.').pop() as string,
                     name: file.name,
                     url: reader.result as string,
                     file
@@ -487,18 +503,89 @@ function ChatBox({
     };
 
     const handleImgForFile = (fileType: string) => {
-        if (fileType === 'txt') {
-            return textImg;
-        } else {
+        try {
+            switch (fileType){
+                case 'txt':
+                    return textImg;
+                case 'pdf':
+                    return pdfImg;
+                case 'docx':
+                    return docImg;
+                case 'xlsx':
+                    return xlsxImg;
+                case 'pptx':
+                    return pptxImg;
+                default:
+                    return other;
+            }
+        } catch (error) {
             return other;
         }
     }
+
     const handleClickMessage = () => {
         if (setNewMessages) {
             setNewMessages(prev => prev.filter(message => message !== username));
         }
     }
 
+    const handleSetBackGround = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = async (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (file && file.size <= 250 * 1024) {
+                const imageBase64 = await readFileAsBase64(file);
+                localStorage.setItem(`backgroundImage_${user.name}`, imageBase64);
+                const chatBoxContent = document.querySelector('.chat-box__content') as HTMLElement;
+                chatBoxContent.style.backgroundImage = `url(${imageBase64})`;
+            } else if (file) {
+                alert("Please choose photos under 250kb in size.");
+            }
+        };
+
+        input.click();
+    };
+
+    const readFileAsBase64 = async (file: File): Promise<string> => {
+        return new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const handleOpenBackground = async () => {
+        const chatBoxContent = document.querySelector('.chat-box__content') as HTMLElement;
+        const backgroundImageBase64 = localStorage.getItem(`backgroundImage_${user.name}`);
+
+        if (chatBoxContent) {
+            try {
+                if (backgroundImageBase64) {
+                    const res = await fetch(backgroundImageBase64);
+                    const blob = await res.blob();
+                    const newImageUrl = URL.createObjectURL(blob);
+                    chatBoxContent.style.backgroundImage = `url(${newImageUrl})`;
+                } else {
+                    chatBoxContent.style.backgroundImage = 'none';
+                }
+            } catch (err) {
+                console.error('Error creating blob from Base64 string:', err);
+                chatBoxContent.style.backgroundImage = 'none';
+            }
+        }
+        console.log(localStorage.length);
+    }
+
+
+    useEffect(() => {
+        if (user) {
+            handleOpenBackground();
+        }
+    }, [user?.name]);
     return (
         <div className={`chat-box ${theme}`}>
             <div className="chat-box__header">
@@ -506,12 +593,17 @@ function ChatBox({
                     <img src={user?.type === 1 ? groupImg : userImg} alt="avatar"/>
                     <div className="info">
                         <h4>{user ? user.name : 'Name'}</h4>
-                        <p className="status">{user ? userStatus : ''}</p>
+                        <p className={`status ${userStatus === 'Online' ? 'status-online' : userStatus === 'Offline' ? 'status-offline' : ''}`}>
+                            {user ? userStatus : ''}
+                        </p>
                     </div>
                 </div>
                 <div className="chat-box__header-icons">
                     <div className="search-box">
                         <i className="bi bi-search" onClick={changeSearchState}></i>
+                    </div>
+                    <div className="background-box">
+                        <i className="bi bi-file-image" onClick={handleSetBackGround}></i>
                     </div>
                     <div className="theme-box">
                         <i className="bi bi-sun-fill" onClick={toggleTheme} ref={modeIcon}></i>
@@ -573,7 +665,7 @@ function ChatBox({
                             ))}
                             {fileIn.map((file, index) => (
                                 <div key={index} className="file">
-                                    <img src={handleImgForFile(file.type)} alt={file.name}/>
+                                    <img src={handleImgForFile(file.name.split('.').pop() as string)} alt={file.name}/>
                                     {
                                         <span>{file.file.name}</span>
                                     }
@@ -612,7 +704,7 @@ function ChatBox({
 
                         <input
                             type="file"
-                            accept=".txt,.bat"
+                            accept=".txt,.bat,.pdf,.docx"
                             onChange={handleFileChange}
                             id="fileIn"
                             style={{display: 'none'}}

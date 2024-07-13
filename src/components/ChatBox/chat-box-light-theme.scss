@@ -5,7 +5,9 @@ $mainBoxChatColor: #eaebee;
 $mainTextColor: black;
 $iconBackgroundColor: #e4e6eb;
 $hoverColor: #d8dadf;
-
+$blueColor: #1f73ff;
+$greenColor: #8bff38;
+$redColor: #ff4d4d;
 ::-webkit-scrollbar {
   width: 10px;
   -webkit-transition: 0.2s;
@@ -68,6 +70,13 @@ $hoverColor: #d8dadf;
 
         .status {
           line-height: 0;
+          color: $blueColor;
+        }
+        .status-online {
+          color: $greenColor;
+        }
+        .status-offline {
+          color: $redColor;
         }
       }
     }
@@ -80,7 +89,7 @@ $hoverColor: #d8dadf;
       column-gap: 5%;
       background-color: $mainHeaderColor;
 
-      .search-box, .theme-box {
+      .search-box, .theme-box, .background-box {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -148,8 +157,11 @@ $hoverColor: #d8dadf;
     overflow-y: scroll;
     display: flex;
     flex-direction: column-reverse;
-
     background-color: $mainBoxChatColor;
+
+    background-image: none;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 
   .chat-box__footer {
@@ -215,6 +227,7 @@ $hoverColor: #d8dadf;
         display: flex;
         justify-content: center;
         align-items: center;
+
         input {
           flex: 1;
           border: none;
