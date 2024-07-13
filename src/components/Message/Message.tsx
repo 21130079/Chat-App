@@ -4,6 +4,10 @@ import './message-light-theme.scss';
 import './message-dark-theme.scss';
 import textImg from '../../assets/images/FileImg/text.png';
 import other from '../../assets/images/FileImg/other.png';
+import pdfImg from '../../assets/images/FileImg/pdf.png';
+import docImg from '../../assets/images/FileImg/doc.png';
+import xlsxImg from '../../assets/images/FileImg/xlsx.png';
+import pptxImg from '../../assets/images/FileImg/pptx.png';
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -162,6 +166,27 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
         }
     };
 
+    const getFileIcon = (fileName: string) => {
+        try {
+            switch (fileName.split('.').pop()){
+                case 'txt':
+                    return textImg;
+                case 'pdf':
+                    return pdfImg;
+                case 'docx':
+                    return docImg;
+                case 'xlsx':
+                    return xlsxImg;
+                case 'pptx':
+                    return pptxImg;
+                default:
+                    return other;
+            }
+        } catch (error) {
+            return other;
+        }
+    };
+
     return (
         <div className={`message-container ${theme}`}>
             <div className="message-author">
@@ -208,18 +233,7 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
                                        download={file.name}
                                        className="send-file">
                                         <img src={
-                                            (() => {
-                                                try {
-                                                    switch (file.name.split('.').pop()) {
-                                                        case 'txt':
-                                                            return textImg;
-                                                        default:
-                                                            return other;
-                                                    }
-                                                } catch (error) {
-                                                    return other;
-                                                }
-                                            })()
+                                           getFileIcon(file.name)
                                         } alt={file.name}/>
                                         {file.name}
                                     </a>

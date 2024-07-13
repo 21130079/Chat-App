@@ -13,6 +13,10 @@ import {db, storage} from "../firebase";
 import {doc, setDoc} from "firebase/firestore";
 import textImg from '../../assets/images/FileImg/text.png';
 import other from '../../assets/images/FileImg/other.png';
+import pdfImg from '../../assets/images/FileImg/pdf.png';
+import docImg from '../../assets/images/FileImg/doc.png';
+import xlsxImg from '../../assets/images/FileImg/xlsx.png';
+import pptxImg from '../../assets/images/FileImg/pptx.png';
 
 import {
     checkUser,
@@ -151,12 +155,24 @@ function ChatBox({
                 if (item.kind === 'file') {
                     const file = item.getAsFile();
                     if (file) {
-                        const mediaObj: Media = {
-                            url: URL.createObjectURL(file),
-                            file: file,
-                            type: item.type.includes('image') ? 0 : 1
-                        };
-                        setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
+                        // Determine if the file is an image or video
+                        if (item.type.includes('image') || item.type.includes('video')) {
+                            const mediaObj: Media = {
+                                url: URL.createObjectURL(file),
+                                file: file,
+                                type: item.type.includes('image') ? 0 : 1
+                            };
+                            setBase64Medias(prevMedias => [...prevMedias, mediaObj]);
+                        } else {
+                            // Handle other file types
+                            const fileObj: Document = {
+                                url: URL.createObjectURL(file),
+                                file: file,
+                                type: file.name.split('.').pop() as string,
+                                name: file.name
+                            };
+                            setFileIn(prevFiles => [...prevFiles, fileObj]);
+                        }
                     }
                 }
             }
@@ -400,7 +416,7 @@ function ChatBox({
             reader.readAsDataURL(file);
             reader.onloadend = () => {
                 setFileIn(prev => [...prev, {
-                    type: file.name,
+                    type: file.name.split('.').pop() as string,
                     name: file.name,
                     url: reader.result as string,
                     file
@@ -487,12 +503,26 @@ function ChatBox({
     };
 
     const handleImgForFile = (fileType: string) => {
-        if (fileType === 'txt') {
-            return textImg;
-        } else {
+        try {
+            switch (fileType){
+                case 'txt':
+                    return textImg;
+                case 'pdf':
+                    return pdfImg;
+                case 'docx':
+                    return docImg;
+                case 'xlsx':
+                    return xlsxImg;
+                case 'pptx':
+                    return pptxImg;
+                default:
+                    return other;
+            }
+        } catch (error) {
             return other;
         }
     }
+
     const handleClickMessage = () => {
         if (setNewMessages) {
             setNewMessages(prev => prev.filter(message => message !== username));
@@ -552,7 +582,7 @@ function ChatBox({
 
 
     useEffect(() => {
-        if(user){
+        if (user) {
             handleOpenBackground();
         }
     }, [user?.name]);
@@ -635,7 +665,7 @@ function ChatBox({
                             ))}
                             {fileIn.map((file, index) => (
                                 <div key={index} className="file">
-                                    <img src={handleImgForFile(file.type)} alt={file.name}/>
+                                    <img src={handleImgForFile(file.name.split('.').pop() as string)} alt={file.name}/>
                                     {
                                         <span>{file.file.name}</span>
                                     }
@@ -674,7 +704,7 @@ function ChatBox({
 
                         <input
                             type="file"
-                            accept=".txt,.bat"
+                            accept=".txt,.bat,.pdf,.docx"
                             onChange={handleFileChange}
                             id="fileIn"
                             style={{display: 'none'}}
