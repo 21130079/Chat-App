@@ -84,25 +84,29 @@ function ChatList({
     }
     const handleAddClick = () => {
         const name = {name: addText};
+
+        console.log(getCurrentDate())
         if (isAddingFriend) {
             if (onUsersChange) {
                 onUsersChange([{
                     name: name.name,
                     type: 0,
-                    actionTime: new Date(Date.now()).toLocaleString(),
+                    actionTime: getCurrentDate()+" "+getCurrentTime(),
                     firstMess: ""
                 }, ...users]);
             }
         } else {
             createRoom(name);
             if (onUsersChange) {
+
                 onUsersChange([{
                     name: name.name,
                     type: 1,
-                    actionTime: new Date(Date.now()).toLocaleString(),
+                    actionTime: getCurrentDate()+" "+getCurrentTime(),
                     firstMess: ""
                 }, ...users]);
             }
+            console.log(new Date(Date.now()).toLocaleString())
         }
     };
 
@@ -113,12 +117,27 @@ function ChatList({
             onUsersChange([{
                 name: name.name,
                 type: 1,
-                actionTime: new Date(Date.now()).toLocaleString(),
+                actionTime: getCurrentDate()+" "+getCurrentTime(),
                 firstMess: ""
             }, ...users]);
         }
     };
 
+    function getCurrentDate(): string {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function getCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+    }
 
     const handleAddInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAddText(e.target.value)
@@ -146,7 +165,7 @@ function ChatList({
         const ampm = hours >= 12 ? 'PM' : 'AM';
         const formattedHours = hours % 12 || 12; // Convert to 12-hour format
         const formattedMinutes = minutes < 10 ? '0' + minutes : minutes; // Add leading zero if needed
-        const date =day+"/"+month+"/"+year;
+        const date = day+"/"+month+"/"+year;
         const time = formattedHours+":"+formattedMinutes+''+ ampm;
         return {date,time};
     };
