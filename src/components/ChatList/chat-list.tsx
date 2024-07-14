@@ -82,44 +82,48 @@ function ChatList({
     const handleCloseAdd = () => {
         setIsAddOpen(!isAddOpen)
     }
+
     const handleAddClick = () => {
         const name = {name: addText};
 
-        console.log(getCurrentDate())
         if (isAddingFriend) {
-            if (onUsersChange) {
-                onUsersChange([{
-                    name: name.name,
-                    type: 0,
-                    actionTime: getCurrentDate()+" "+getCurrentTime(),
-                    firstMess: ""
-                }, ...users]);
+            if(!(users.some((user: User) => user.name === name.name && user.type === 0))) {
+                if (onUsersChange) {
+                    onUsersChange([{
+                        name: name.name,
+                        type: 0,
+                        actionTime: getCurrentDate() + " " + getCurrentTime(),
+                        firstMess: ""
+                    }, ...users]);
+                }
             }
         } else {
-            createRoom(name);
-            if (onUsersChange) {
-
-                onUsersChange([{
-                    name: name.name,
-                    type: 1,
-                    actionTime: getCurrentDate()+" "+getCurrentTime(),
-                    firstMess: ""
-                }, ...users]);
+            if(!(users.some((user: User) => user.name === name.name && user.type === 1))) {
+                createRoom(name);
+                if (onUsersChange) {
+                    onUsersChange([{
+                        name: name.name,
+                        type: 1,
+                        actionTime: getCurrentDate() + " " + getCurrentTime(),
+                        firstMess: ""
+                    }, ...users]);
+                }
             }
-            console.log(new Date(Date.now()).toLocaleString())
         }
     };
 
     const handleJoinClick = () => {
         const name = {name: addText};
-        joinRoom(name);
-        if (onUsersChange) {
-            onUsersChange([{
-                name: name.name,
-                type: 1,
-                actionTime: getCurrentDate()+" "+getCurrentTime(),
-                firstMess: ""
-            }, ...users]);
+        if(!(users.some((user: User) => user.name === name.name && user.type === 1))) {
+            joinRoom(name);
+            if (onUsersChange) {
+                onUsersChange([{
+                    name: name.name,
+                    type: 1,
+                    actionTime: getCurrentDate() + " " + getCurrentTime(),
+                    firstMess: ""
+                }, ...users]);
+            }
         }
     };
 
@@ -144,8 +148,8 @@ function ChatList({
     }
 
     const handleLogout = () => {
-        logout();
         window.location.href = '/';
+        logout();
     };
 
     const handleSelectUser = (user: User) => {
@@ -157,18 +161,45 @@ function ChatList({
 
     };
 
-    const getFormattedDateTime = (dateTimeString: string) => {
-        const [datePart, timePart] = dateTimeString.split(' ');
-        const [year , month, day] = datePart.split('-');
-        const [hours, minutes] = timePart.split(':').map(Number);
+    const formatDateTime = (dateTime: string) => {
+        const [datePart, timePart] = dateTime.split(' ');
 
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        const formattedHours = hours % 12 || 12; // Convert to 12-hour format
-        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes; // Add leading zero if needed
-        const date = day+"/"+month+"/"+year;
-        const time = formattedHours+":"+formattedMinutes+''+ ampm;
-        return {date,time};
-    };
+        const [year, month, day] = datePart.split('-');
+        const [hours, minutes] = timePart.split(':');
+
+        let newYear = parseInt(year);
+        let newMonth = parseInt(month);
+        let newDay = parseInt(day);
+
+        let newHour = parseInt(hours) + 7;
+        let newMinute = parseInt(minutes);
+
+        if (newMinute >= 60) {
+            newMinute %= 60;
+            newHour += 1;
+        }
+
+        if (newHour >= 24) {
+            newHour %= 24;
+            newDay += 1;
+        }
+
+        let stringHour = newHour.toString();
+        let stringMinute = newMinute.toString();
+
+        if (stringHour.length < 2) {
+            stringHour = '0' + stringHour;
+        }
+
+        if (stringMinute.length < 2) {
+            stringMinute = '0' + stringMinute;
+        }
+
+        const date = newDay + '/' + newMonth + '/' + newYear;
+        const time = stringHour + ':' + stringMinute;
+
+        return {date, time};
+    }
 
     let filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()));
 
@@ -225,7 +256,8 @@ function ChatList({
                 {filteredUsers.map((user, index) => (
                     <div
                         key={index}
-                        className={classNames('chat-list__content-user', { selected: selectedUser?.name === user.name })}
+                        className={classNames('chat-list__content-user',
+                            {selected: (selectedUser?.name === user.name && selectedUser.type === user.type)})}
                         id={user.name}
                         onClick={() => handleSelectUser(user)}
                     >
@@ -242,8 +274,8 @@ function ChatList({
                             </div>
                         </div>
                         <div className="time-message">
-                            <div>{getFormattedDateTime(user.actionTime).date}</div>
-                            <strong>{getFormattedDateTime(user.actionTime).time}</strong>
+                            <div>{formatDateTime(user.actionTime).date}</div>
+                            <strong>{formatDateTime(user.actionTime).time}</strong>
                         </div>
                     </div>
                 ))}

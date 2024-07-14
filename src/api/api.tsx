@@ -66,7 +66,11 @@ export const logout = () => {
             event: 'LOGOUT'
         }
     };
-    localStorage.removeItem("user");
+
+    setTimeout(() => {
+        localStorage.removeItem("user");
+    }, 100);
+
     sendRequest(action);
 }
 

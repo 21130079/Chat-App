@@ -1,15 +1,15 @@
 $mainBackgroundColor: #1e1f22;
+$mainBackgroundColor: #1e1f22;
 $mainBodyColor: #3f4148;
 $mainHeaderColor: #2b2d30;
 $mainListChatColor: #2b2d30;
 $mainTextColor: #e0e0e0;
 $hoverColor: #4e4f50;
-$addColor: #8bff38;
+$addColor: #31a24c;
 $joinColor: #38a9ff;
 $cancelColor: #fa5353;
 $iconBackgroundColor: #3a3b3c;
 $selectedColor : #FFD9D8;
-//$signUpColor: #A380F9;
 .chat-list.dark-theme {
   flex: 1;
   display: flex;
@@ -125,9 +125,9 @@ $selectedColor : #FFD9D8;
 
     input {
       flex: 1;
-      padding: 10px;
+      padding: 0 10px;
       border-radius: 20px;
-      height: 4vh;
+      height: 5vh;
       outline: none;
       color: $mainTextColor;
       border: 1px solid $mainBodyColor;
@@ -143,15 +143,15 @@ $selectedColor : #FFD9D8;
   .chat-list__add {
     display: flex;
     align-items: center;
-    padding: 10px 20px;
-    border-radius: 0 0 0 0;
+    padding: 0 20px;
+    padding-bottom: 10px;
     background-color: $mainHeaderColor;
 
     input {
       flex: 1;
       padding: 10px;
       border-radius: 20px;
-      height: 4vh;
+      height: 5vh;
       outline: none;
       color: $mainTextColor;
       border: 1px solid $mainBodyColor;
@@ -164,25 +164,37 @@ $selectedColor : #FFD9D8;
     }
 
     .add {
-      width: 40px;
-      height: 40px;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       border: none;
+      border-radius: 50px;
       background-color: $addColor;
       margin: 5px;
     }
 
     .join {
-      width: 40px;
-      height: 40px;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50px;
       border: none;
       background-color: $joinColor;
       margin-left: 5px;
     }
 
     .cancel {
-      width: 40px;
-      height: 40px;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       border: none;
+      border-radius: 50px;
       background-color: $cancelColor;
     }
 
@@ -194,7 +206,7 @@ $selectedColor : #FFD9D8;
     flex-direction: column;
     align-items: center;
     border-radius: 0 0 0 10px;
-    padding: 20px 20px;
+    padding: 10px 20px;
     height: 80vh;
     overflow-y: scroll;
     row-gap: 10px;
@@ -225,7 +237,6 @@ $selectedColor : #FFD9D8;
           height: 35px;
           border-radius: 50%;
           object-fit: cover;
-          border: black 1px solid;
         }
       }
 
@@ -260,12 +271,12 @@ $selectedColor : #FFD9D8;
 
     .chat-list__content-user:hover {
       background-color: $hoverColor;
+      color: $mainTextColor;
       cursor: pointer;
     }
   }
 
   .selected{
-    color: $mainTextColor;
     background-color: #11438a !important;
   }
 }

@@ -1,5 +1,5 @@
 import userImg from '../../assets/images/user.png';
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import './message-light-theme.scss';
 import './message-dark-theme.scss';
 import textImg from '../../assets/images/FileImg/text.png';
@@ -8,8 +8,8 @@ import pdfImg from '../../assets/images/FileImg/pdf.png';
 import docImg from '../../assets/images/FileImg/doc.png';
 import xlsxImg from '../../assets/images/FileImg/xlsx.png';
 import pptxImg from '../../assets/images/FileImg/pptx.png';
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import {doc, getDoc} from "firebase/firestore";
+import {db} from "../firebase";
 
 interface Message {
     createAt: string;
@@ -37,10 +37,10 @@ interface MessageProps {
     theme?: string | null | undefined;
     filterKeyword: string;
     idMess: string;
-    setSelectedImage:(value: (((prevState: (string)) => (string )) | string )) => void;
+    setSelectedImage: (value: (((prevState: (string)) => (string)) | string)) => void;
 }
 
-function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: MessageProps) {
+function Message({message, theme, filterKeyword, idMess, setSelectedImage}: MessageProps) {
     const [mes, setMes] = useState<any>();
     const timeRef = useRef<HTMLDivElement>(null);
     const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
@@ -49,11 +49,10 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
         setSelectedImage(medias ? medias[index].url : "");
     };
 
-
-
     useEffect(() => {
         const fetchData = async (idMes: string) => {
             const docSnap = await getDoc(doc(db, 'messages', idMes));
+
             if (docSnap.exists()) {
                 const iconMes = docSnap.data();
                 setMes(iconMes.mes);
@@ -64,11 +63,7 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
             if (isJsonString(msg.mes)) {
                 const mesData = JSON.parse(msg.mes);
                 if (!mesData.idMes || mesData.idMes === "") {
-                    if (!mesData.message || mesData.message === "") {
-                        setMes(msg.mes);
-                    } else {
-                        setMes(mesData.message);
-                    }
+                    setMes(mesData.message);
                 } else {
                     fetchData(mesData.idMes);
                 }
@@ -94,16 +89,16 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
             );
         };
 
-       if(message?.mes){
-           if ( isJsonString(message?.mes)) {
-               const parsedMessage = JSON.parse(message.mes);
-               const highlighted = highlightText(parsedMessage.message, filterKeyword);
-               setMes(highlighted);
-           } else {
-               const highlighted = highlightText(message?.mes, filterKeyword);
-               setMes(highlighted);
-           }
-       }
+        if (message?.mes) {
+            if (isJsonString(message?.mes)) {
+                const parsedMessage = JSON.parse(message.mes);
+                const highlighted = highlightText(parsedMessage.message, filterKeyword);
+                setMes(highlighted);
+            } else {
+                const highlighted = highlightText(message?.mes, filterKeyword);
+                setMes(highlighted);
+            }
+        }
     }, [filterKeyword, message?.mes]);
 
     useEffect(() => {
@@ -118,6 +113,7 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
         setHoverTimer(setTimeout(() => {
             if (timeRef.current) {
                 timeRef.current.style.display = 'flex';
+                timeRef.current.style.alignItems = 'center';
             }
         }, 500));
     };
@@ -168,7 +164,7 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
 
     const getFileIcon = (fileName: string) => {
         try {
-            switch (fileName.split('.').pop()){
+            switch (fileName.split('.').pop()) {
                 case 'txt':
                     return textImg;
                 case 'pdf':
@@ -187,6 +183,50 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
         }
     };
 
+    const formatDateTime = (dateTime: string) => {
+        let dateTimeArr = dateTime.split(' ');
+
+        if (dateTime && dateTimeArr.length !== 2) {
+            dateTimeArr = dateTime.split('T');
+        }
+
+        const [year, month, day] = dateTimeArr[0]?.split('-');
+        const [hours, minutes] = dateTimeArr[1]?.split(':');
+
+        let newYear = parseInt(year);
+        let newMonth = parseInt(month);
+        let newDay = parseInt(day);
+
+        let newHour = parseInt(hours) + 7;
+        let newMinute = parseInt(minutes);
+
+        if (newMinute >= 60) {
+            newMinute %= 60;
+            newHour += 1;
+        }
+
+        if (newHour >= 24) {
+            newHour %= 24;
+            newDay += 1;
+        }
+
+        let stringHour = newHour.toString();
+        let stringMinute = newMinute.toString();
+
+        if (stringHour.length < 2) {
+            stringHour = '0' + stringHour;
+        }
+
+        if (stringMinute.length < 2) {
+            stringMinute = '0' + stringMinute;
+        }
+
+        const date = newDay + '/' + newMonth + '/' + newYear;
+        const time = stringHour + ':' + stringMinute;
+
+        return date + ' ' + time
+    }
+
     return (
         <div className={`message-container ${theme}`}>
             <div className="message-author">
@@ -201,7 +241,7 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
 
                     {mes && <div className="message-line">
                         <img className="avatar" src={userImg} alt=""/>
-                        <div className="mess"  id={idMess}>{mes}</div>
+                        <div className="mess" id={idMess}>{mes}</div>
                     </div>}
 
                     {medias && medias.length > 0 && (
@@ -213,7 +253,8 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
                             {medias.map((media, index) => (
                                 media.type === 0 ? (
                                     <div key={index} className="media-item">
-                                        <img onClick={() => handleClickImage(index)} key={index} className="send-image" src={media.url} alt="sent image"/>
+                                        <img onClick={() => handleClickImage(index)} key={index} className="send-image"
+                                             src={media.url} alt="sent image"/>
                                     </div>
                                 ) : (
                                     <div key={index} className="media-item">
@@ -221,19 +262,25 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
                                     </div>
                                 )
                             ))}
+
+                            <div className="time-message" ref={timeRef}>
+                                <p>
+                                    {message && formatDateTime(message.createAt)}
+                                </p>
+                            </div>
                         </div>
                     )}
 
                     {files && files.length > 0 && (
                         <div className="file-container">
-                            <img className="avatar" src={userImg} alt=""/>
+                        <img className="avatar" src={userImg} alt=""/>
                             <div className="file">
                                 {files.map((file, index) => (
                                     <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
                                        download={file.name}
                                        className="send-file">
                                         <img src={
-                                           getFileIcon(file.name)
+                                            getFileIcon(file.name)
                                         } alt={file.name}/>
                                         {file.name}
                                     </a>
@@ -243,11 +290,13 @@ function Message({ message, theme, filterKeyword, idMess,setSelectedImage }: Mes
                     )}
                 </div>
 
-                <div className="time-message" ref={timeRef}>
-                    <p>
-                        {message?.createAt}
-                    </p>
-                </div>
+                {medias && medias.length <= 0 && (
+                    <div className="time-message" ref={timeRef}>
+                        <p>
+                            {message && formatDateTime(message.createAt)}
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     );
