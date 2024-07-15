@@ -37,16 +37,17 @@ interface MessageProps {
     theme?: string | null | undefined;
     filterKeyword: string;
     idMess: string;
-    setSelectedImage:(value: (((prevState: (string)) => (string )) | string )) => void;
+    setSelectedImage: (value: (((prevState: (string)) => (string)) | string)) => void;
 }
 
-function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: MessageProps) {
+function OwnMessage({message, theme, filterKeyword, idMess, setSelectedImage}: MessageProps) {
     const [mes, setMes] = useState<any>();
     const timeRef = useRef<HTMLDivElement>(null);
     const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
     const handleClickImage = (index: number) => {
         setSelectedImage(medias ? medias[index].url : "");
     };
+
     useEffect(() => {
         const fetchData = async (idMes: string) => {
             const docSnap = await getDoc(doc(db, 'messages', idMes));
@@ -55,17 +56,13 @@ function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: Me
                 const iconMes = docSnap.data();
                 setMes(iconMes.mes);
             }
-        }
+        };
 
         const processMessage = (msg: Message) => {
             if (isJsonString(msg.mes)) {
                 const mesData = JSON.parse(msg.mes);
                 if (!mesData.idMes || mesData.idMes === "") {
-                    if (!mesData.message || mesData.message === "") {
-                        setMes(msg.mes);
-                    } else {
-                        setMes(mesData.message);
-                    }
+                    setMes(mesData.message);
                 } else {
                     fetchData(mesData.idMes);
                 }
@@ -91,8 +88,8 @@ function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: Me
             );
         };
 
-        if(message?.mes){
-            if ( isJsonString(message?.mes)) {
+        if (message?.mes) {
+            if (isJsonString(message?.mes)) {
                 const parsedMessage = JSON.parse(message.mes);
                 const highlighted = highlightText(parsedMessage.message, filterKeyword);
                 setMes(highlighted);
@@ -162,9 +159,10 @@ function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: Me
             return false;
         }
     }
+
     const getFileIcon = (fileName: string) => {
         try {
-            switch (fileName.split('.').pop()){
+            switch (fileName.split('.').pop()) {
                 case 'txt':
                     return textImg;
                 case 'pdf':
@@ -183,6 +181,50 @@ function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: Me
         }
     };
 
+    const formatDateTime = (dateTime: string) => {
+        let dateTimeArr = dateTime.split(' ');
+
+        if (dateTime && dateTimeArr.length !== 2) {
+            dateTimeArr = dateTime.split('T');
+        }
+
+        const [year, month, day] = dateTimeArr[0]?.split('-');
+        const [hours, minutes] = dateTimeArr[1]?.split(':');
+
+        let newYear = parseInt(year);
+        let newMonth = parseInt(month);
+        let newDay = parseInt(day);
+
+        let newHour = parseInt(hours) + 7;
+        let newMinute = parseInt(minutes);
+
+        if (newMinute >= 60) {
+            newMinute %= 60;
+            newHour += 1;
+        }
+
+        if (newHour >= 24) {
+            newHour %= 24;
+            newDay += 1;
+        }
+
+        let stringHour = newHour.toString();
+        let stringMinute = newMinute.toString();
+
+        if (stringHour.length < 2) {
+            stringHour = '0' + stringHour;
+        }
+
+        if (stringMinute.length < 2) {
+            stringMinute = '0' + stringMinute;
+        }
+
+        const date = newDay + '/' + newMonth + '/' + newYear;
+        const time = stringHour + ':' + stringMinute;
+
+        return date + ' ' + time
+    }
+
     return (
         <div className={`own-message-container ${theme}`}>
             <div className="message-author">
@@ -192,7 +234,7 @@ function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: Me
             <div className="message-content">
                 <div className="time-message" ref={timeRef}>
                     <p>
-                        {message?.createAt}
+                        {message && formatDateTime(message.createAt)}
                     </p>
                 </div>
 
@@ -203,7 +245,7 @@ function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: Me
 
                     {mes && <div className="message-line">
                         <img className="avatar" src={userImg} alt=""/>
-                        <div className="mess"  id={idMess}>{mes}</div>
+                        <div className="mess" id={idMess}>{mes}</div>
                     </div>}
 
                     {medias && medias.length > 0 && (
@@ -215,7 +257,8 @@ function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: Me
                             {medias.map((media, index) => (
                                 media.type === 0 ? (
                                     <div key={index} className="media-item">
-                                        <img key={index}  onClick={() => handleClickImage(index)} className="send-image" src={media.url} alt="sent image"/>
+                                        <img key={index} onClick={() => handleClickImage(index)} className="send-image"
+                                             src={media.url} alt="sent image"/>
                                     </div>
                                 ) : (
                                     <div key={index} className="media-item">
@@ -234,7 +277,7 @@ function OwnMessage({message, theme, filterKeyword, idMess,setSelectedImage}: Me
                                        download={file.name}
                                        className="send-file">
                                         <img src={
-                                           getFileIcon(file.name)
+                                            getFileIcon(file.name)
                                         } alt={file.name}/>
                                         {file.name}
                                     </a>

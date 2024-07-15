@@ -91,7 +91,7 @@ function ChatWindow() {
                     }
                 };
             }
-        }, 10);
+        }, 200);
     }, []);
 
     const setByTheme = () => {

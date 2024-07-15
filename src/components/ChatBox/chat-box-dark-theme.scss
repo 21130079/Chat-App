@@ -154,7 +154,7 @@ $redColor: #ff4d4d;
   }
 
   .chat-box__content {
-    padding: 0 20px 10px 20px;
+    padding: 0 20px 0 20px;
     flex: 1;
     overflow-y: scroll;
     display: flex;
@@ -164,7 +164,6 @@ $redColor: #ff4d4d;
     background-image: none;
     background-size: cover;
     background-repeat: no-repeat;
-
   }
 
   .chat-box__footer {
@@ -176,7 +175,7 @@ $redColor: #ff4d4d;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px 0;
-      margin: 20px 20px;
+      margin: 0 20px 20px;
       padding: 10px 10px;
       border-radius: 7px;
       background-color: $mainFooterColor;
@@ -211,6 +210,8 @@ $redColor: #ff4d4d;
 
         .file {
           display: flex;
+          align-items: center;
+          gap: 5px;
           padding: 7px 5px;
           border-radius: 10px;
           background-color: $mainBoxChatColor;

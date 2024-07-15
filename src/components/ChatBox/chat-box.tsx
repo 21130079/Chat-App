@@ -21,7 +21,7 @@ import pptxImg from '../../assets/images/FileImg/pptx.png';
 import {
     checkUser,
     getPeopleChatMessages,
-    getRoomChatMessages, getUserList,
+    getRoomChatMessages,
     sendPeopleChat,
     sendRoomChat
 } from "../../api/api";
@@ -547,7 +547,7 @@ function ChatBox({
                     localStorage.setItem(backgroundImageKey, imageBase64);
                     chatBoxContent.style.backgroundImage = `url(${imageBase64})`;
                 } else if (file) {
-                    alert("Please choose photos under 250kb in size.");
+                    alert("Please choose photos under 250KB in size.");
                 }
             };
             input.click();
@@ -582,7 +582,6 @@ function ChatBox({
                 chatBoxContent.style.backgroundImage = 'none';
             }
         }
-        console.log(localStorage.length);
     }
 
 
@@ -591,6 +590,7 @@ function ChatBox({
             handleOpenBackground();
         }
     }, [user?.name]);
+
     return (
         <div className={`chat-box ${theme}`}>
             <div className="chat-box__header">

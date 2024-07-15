@@ -95,6 +95,7 @@ $borderImgColor: #7e7e7e;
 
       .file-container {
         display: flex;
+        padding-top: 5px;
         justify-self: right;
         width: fit-content;
         flex-direction: row-reverse;
@@ -130,7 +131,9 @@ $borderImgColor: #7e7e7e;
       display: none;
 
       p {
+        padding-right: 5px;
         font-size: 13px;
+        margin-bottom: 0;
       }
     }
   }

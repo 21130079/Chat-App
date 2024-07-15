@@ -152,7 +152,7 @@ $redColor: #ff4d4d;
   }
 
   .chat-box__content {
-    padding: 0 20px 10px 20px;
+    padding: 0 20px 0 20px;
     flex: 1;
     overflow-y: scroll;
     display: flex;
@@ -169,11 +169,11 @@ $redColor: #ff4d4d;
     background-color: $mainBoxChatColor;
 
     .chat-box__footer-container {
-      display: grid;
+      display: flex;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px 0;
-      margin: 20px 20px;
+      margin: 0 20px 20px;
       padding: 10px 10px;
       border-radius: 7px;
       background-color: $mainFooterColor;
@@ -189,6 +189,7 @@ $redColor: #ff4d4d;
         .media {
           display: grid;
           position: relative;
+
           img, video {
             margin-top: 10px;
             max-height: 100px;
@@ -196,7 +197,6 @@ $redColor: #ff4d4d;
           }
 
           i {
-
             position: absolute;
             right: 3px;
             top: 5px;
@@ -208,6 +208,8 @@ $redColor: #ff4d4d;
 
         .file {
           display: flex;
+          align-items: center;
+          gap: 5px;
           padding: 7px 5px;
           border-radius: 10px;
           background-color: $mainBoxChatColor;
@@ -223,7 +225,8 @@ $redColor: #ff4d4d;
           }
         }
       }
-      .chat-box__footer-toolbar{
+
+      .chat-box__footer-toolbar {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -232,7 +235,7 @@ $redColor: #ff4d4d;
           flex: 1;
           border: none;
           outline: none;
-          width: 39vw;
+          width: 44vw;
           font-size: 17px;
           color: $mainTextColor;
           background-color: $mainFooterColor;
@@ -263,14 +266,13 @@ $redColor: #ff4d4d;
           border-radius: 10px;
           border: none;
           color: $mainTextColor;
-          background-color: #20B2AA;
+          background-color: #56e0c5;
 
           i {
             font-size: 1.4rem;
           }
         }
       }
-
     }
   }
 }
